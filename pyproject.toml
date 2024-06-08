@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "llm-engineering"
+version = "0.1.0"
+description = ""
+authors = ["iusztinpaul <p.e.iusztin@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "~3.11"
+zenml = {version = "0.58.1", extras = ["server"]}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poe.tasks]
+start-zenml-server="docker run -it -d --platform linux/amd64 -p 8080:8080 zenmldocker/zenml-server"
+
