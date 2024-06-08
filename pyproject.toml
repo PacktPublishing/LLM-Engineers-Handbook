@@ -9,6 +9,13 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "~3.11"
 zenml = {version = "0.58.1", extras = ["server"]}
+pymongo = "^4.6.2"
+pydantic = "^1.9.0"
+selenium = "^4.21.0"
+webdriver-manager = "^4.0.1"
+beautifulsoup4 = "^4.12.3"
+jmespath = "^1.0.1"
+loguru = "^0.7.2"
 
 
 [build-system]
@@ -16,5 +23,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poe.tasks]
-start-zenml-server="docker run -it -d --platform linux/amd64 -p 8080:8080 zenmldocker/zenml-server"
+run-digital-data-etl = "python -m llm_engineering.pipelines.digital_data_etl"
 
+start-local-infrastructure = "docker-compose up -d"
+start-local-zenml-server="docker run -it -d --platform linux/amd64 -p 8080:8080 zenmldocker/zenml-server"

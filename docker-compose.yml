@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo
+    container_name: "llm_engineering_mongo"
+    logging:
+      options:
+        max-size: 1g
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "decodingml"
+      MONGO_INITDB_ROOT_PASSWORD: "decodingml"
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - local
+    restart: always
+
+volumes:
+  mongo_data:
+
+networks:
+  local:
+    driver: bridge
