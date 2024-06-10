@@ -6,6 +6,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
 from llm_engineering.data.db.documents import BaseDocument
+from llm_engineering.settings import settings
 
 
 class BaseCrawler(ABC):
@@ -18,8 +19,9 @@ class BaseCrawler(ABC):
 class BaseAbstractCrawler(BaseCrawler, ABC):
     def __init__(self, scroll_limit: int = 5) -> None:
         options = webdriver.ChromeOptions()
-        # TODO: How to handle this? Should we use a docker image for easily handling the chrome drivers?
-        # options.binary_location = "/opt/chrome/chrome"
+        if settings.SELENIUM_BROWSER_BINARY_PATH:
+            options.binary_location = settings.SELENIUM_BROWSER_BINARY_PATH
+            # options.binary_location = "/opt/chrome/chrome"
         options.add_argument("--no-sandbox")
         options.add_argument("--headless=new")
         options.add_argument("--single-process")
@@ -40,8 +42,7 @@ class BaseAbstractCrawler(BaseCrawler, ABC):
 
         self.scroll_limit = scroll_limit
         self.driver = webdriver.Chrome(
-            # TODO: Generalize path. Still use docker image for the ETL pipeline?
-            service=webdriver.ChromeService("/Users/pauliusztin/.local/bin/chromedriver"),
+            service=webdriver.ChromeService(settings.SELENIUM_BROWSER_DRIVER_PATH),
             options=options,
         )
 

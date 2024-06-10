@@ -7,7 +7,7 @@ from llm_engineering.data.db.documents import UserDocument
 from llm_engineering.exceptions import ImproperlyConfigured
 
 
-def user_to_names(user: str | None) -> tuple[str, str]:
+def user_id_to_names(user: str | None) -> tuple[str, str]:
     if user is None:
         raise ImproperlyConfigured("User name is empty")
 
@@ -23,8 +23,10 @@ def user_to_names(user: str | None) -> tuple[str, str]:
 
 
 @step
-def get_or_create_user() -> Annotated[UserDocument, "user"]:
-    first_name, last_name = user_to_names("Paul Iusztin")
+def get_or_create_user(user_id: str) -> Annotated[UserDocument, "user"]:
+    logger.info(f"Getting or creating user with id: {user_id}")
+    
+    first_name, last_name = user_id_to_names(user_id)
 
     user = UserDocument.get_or_create(first_name=first_name, last_name=last_name)
 
@@ -32,26 +34,31 @@ def get_or_create_user() -> Annotated[UserDocument, "user"]:
 
 
 @step
-def crawl_links(user: UserDocument) -> Annotated[dict, "result"]:
+def crawl_links(user: UserDocument, links: list[str]):
     dispatcher = (
         CrawlerDispatcher.build()
         .register_linkedin()
         .register_medium()
         .register_github()
     )
+    
+    logger.info(f"Starting to crawl {len(links)} links.")
 
-    # TODO: Fix LI crawler
-    # link = "https://www.linkedin.com/in/vesaalexandru/"
-    link = "https://medium.com/decodingml/architect-scalable-and-cost-effective-llm-rag-inference-pipelines-73b94ef82a99"
+    successfull_crawls = 0
+    for link in links:
+        successfull_crawls += _crawl_link(dispatcher, link, user)
+        
+    logger.info(f"Successfully crawled {successfull_crawls} / {len(links)} links.")
+
+
+def _crawl_link(dispatcher: CrawlerDispatcher, link: str, user: UserDocument) -> bool:
     crawler = dispatcher.get_crawler(link)
 
     try:
         crawler.extract(link=link, user=user)
-
-        logger.info(f"Link processed successfully: {link}")
-
-        return {"statusCode": 200, "body": "Link processed successfully"}
+        
+        return True
     except Exception as e:
-        logger.error(f"An error occurred: {str(e)}")
-
-        return {"statusCode": 500, "body": f"An error occurred: {str(e)}"}
+        logger.error(f"An error occurred while crowling: {str(e)}")
+        
+        return False

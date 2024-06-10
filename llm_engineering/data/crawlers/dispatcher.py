@@ -39,4 +39,4 @@ class CrawlerDispatcher:
             if re.match(pattern, url):
                 return crawler()
         else:
-            raise ValueError("No crawler found for the provided link")
+            raise ValueError(f"No crawler found for the provided link: {url}")

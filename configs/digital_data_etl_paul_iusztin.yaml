@@ -1,0 +1,4 @@
+parameters:
+  user_id: Paul Iusztin
+  links:
+    - https://medium.com/decodingml/architect-scalable-and-cost-effective-llm-rag-inference-pipelines-73b94ef82a99

@@ -16,6 +16,7 @@ webdriver-manager = "^4.0.1"
 beautifulsoup4 = "^4.12.3"
 jmespath = "^1.0.1"
 loguru = "^0.7.2"
+click = ">=8.0.1,<8.1.4"
 
 
 [build-system]
@@ -23,7 +24,10 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poe.tasks]
-run-digital-data-etl = "python -m llm_engineering.pipelines.digital_data_etl"
+start-local-zenml-server="poetry run zenml up"
+close-local-zenml-server="poetry run zenml down"
+
+run-digital-data-etl = "python -m llm_engineering.run --only-etl"
 
 start-local-infrastructure = "docker-compose up -d"
-start-local-zenml-server="docker run -it -d --platform linux/amd64 -p 8080:8080 zenmldocker/zenml-server"
+# start-local-zenml-server="docker run -it -d --platform linux/amd64 -p 8080:8080 zenmldocker/zenml-server"

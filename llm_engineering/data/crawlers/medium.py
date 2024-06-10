@@ -5,7 +5,6 @@ from selenium.webdriver.common.by import By
 from llm_engineering.data.db.documents import ArticleDocument
 
 from .base import BaseAbstractCrawler
-from .base import BaseAbstractCrawler
 
 
 class MediumCrawler(BaseAbstractCrawler):
@@ -32,8 +31,12 @@ class MediumCrawler(BaseAbstractCrawler):
 
         logger.info(f"Successfully scraped and saved article: {link}")
         self.driver.close()
+        
         instance = self.model(
-            platform="medium", content=data, link=link, author_id=str(kwargs.get("user").id)
+            platform="medium",
+            content=data,
+            link=link,
+            author_id=str(kwargs.get("user").id),
         )
         instance.save()
 
