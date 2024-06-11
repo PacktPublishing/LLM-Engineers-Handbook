@@ -7,9 +7,9 @@ from loguru import logger
 from selenium.webdriver.common.by import By
 
 from .base import BaseAbstractCrawler
-from llm_engineering.data.db.documents import PostDocument
+from llm_engineering.domain.documents import PostDocument
 from llm_engineering.settings import settings
-from llm_engineering.exceptions import ImproperlyConfigured
+from llm_engineering.domain.exceptions import ImproperlyConfigured
 
 
 class LinkedInCrawler(BaseAbstractCrawler):

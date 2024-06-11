@@ -5,7 +5,7 @@ from tempfile import mkdtemp
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-from llm_engineering.data.db.documents import BaseDocument
+from llm_engineering.domain.documents import BaseDocument
 from llm_engineering.settings import settings
 
 

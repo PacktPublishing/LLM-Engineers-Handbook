@@ -11,23 +11,44 @@ python = "~3.11"
 zenml = {version = "0.58.1", extras = ["server"]}
 pymongo = "^4.6.2"
 pydantic = "^1.9.0"
+click = "^8.0.1"
+loguru = "^0.7.2"
+numpy = "^1.26.4"
+
+# Digital data ETL
 selenium = "^4.21.0"
 webdriver-manager = "^4.0.1"
 beautifulsoup4 = "^4.12.3"
 jmespath = "^1.0.1"
-loguru = "^0.7.2"
-click = ">=8.0.1,<8.1.4"
 
+# Feature engineering
+qdrant-client = "^1.8.0"
+unstructured = "^0.12.0"
+langchain = "^0.1.13"
+sentence-transformers = "^2.6.1"
+instructorembedding = "^1.0.1"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poe.tasks]
-start-local-zenml-server="poetry run zenml up"
+# Pipelines
+run-digital-data-etl = "python -m llm_engineering.run --run-etl"
+run-feature_engineering-pipeline = "python -m llm_engineering.run --run-feature-engineering"
+
+# Local infrastructure
 close-local-zenml-server="poetry run zenml down"
-
-run-digital-data-etl = "python -m llm_engineering.run --only-etl"
-
 start-local-infrastructure = "docker-compose up -d"
 # start-local-zenml-server="docker run -it -d --platform linux/amd64 -p 8080:8080 zenmldocker/zenml-server"
+
+[tool.poe.tasks.start-local-zenml-server]
+control.expr = "sys.platform"
+
+  [[tool.poe.tasks.start-local-zenml-server.switch]]
+  case = "darwin"
+  env = { OBJC_DISABLE_INITIALIZE_FORK_SAFETY = "YES" }
+  cmd  = "poetry run zenml up"
+
+  [[tool.poe.tasks.start-local-zenml-server.switch]]
+  cmd  = "poetry run zenml up"

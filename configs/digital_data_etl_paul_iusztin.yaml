@@ -1,4 +1,4 @@
 parameters:
-  user_id: Paul Iusztin
+  user_full_name: Paul Iusztin # [First Name(s)] [Last Name]
   links:
     - https://medium.com/decodingml/architect-scalable-and-cost-effective-llm-rag-inference-pipelines-73b94ef82a99

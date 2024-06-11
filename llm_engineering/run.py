@@ -3,7 +3,7 @@ from pathlib import Path
 
 import click
 
-from llm_engineering.pipelines import digital_data_etl
+from llm_engineering.pipelines import digital_data_etl, feature_engineering
 
 
 @click.command(
@@ -42,33 +42,51 @@ Examples:
     help="Disable caching for the pipeline run.",
 )
 @click.option(
-    "--only-etl",
+    "--run-etl",
     is_flag=True,
     default=False,
-    help="Whether to run only ETL pipeline.",
+    help="Whether to run the ETL pipeline.",
+)
+@click.option(
+    "--run-feature-engineering",
+    is_flag=True,
+    default=False,
+    help="Whether to run the FE pipeline.",
 )
 def main(
     no_cache: bool = False,
-    only_etl: bool = False,
+    run_etl: bool = False,
+    run_feature_engineering: bool = False,
 ) -> None:
+    assert run_etl or run_feature_engineering, "Please specify a pipeline to run."
+    
     pipeline_args = {
         "enable_cache": not no_cache,
     }
 
-    # Execute digital data ETL
-    run_args_etl = {}
-    pipeline_args["config_path"] = (
-        Path(__file__).resolve().parent.parent
-        / "configs"
-        / "digital_data_etl_paul_iusztin.yaml"
-    )
-    pipeline_args["run_name"] = (
-        f"digital_data_etl_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
-    )
-    digital_data_etl.with_options(**pipeline_args)(**run_args_etl)
-    if only_etl is True:
-        return
+    if run_etl:
+        run_args_etl = {}
+        pipeline_args["config_path"] = (
+            Path(__file__).resolve().parent.parent
+            / "configs"
+            / "digital_data_etl_paul_iusztin.yaml"
+        )
+        pipeline_args["run_name"] = (
+            f"digital_data_etl_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+        )
+        digital_data_etl.with_options(**pipeline_args)(**run_args_etl)
 
+    if run_feature_engineering:
+        run_args_fe = {}
+        pipeline_args["config_path"] = (
+            Path(__file__).resolve().parent.parent
+            / "configs"
+            / "feature_engineering.yaml"
+        )
+        pipeline_args["run_name"] = (
+            f"feature_engineering_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+        )
+        feature_engineering.with_options(**pipeline_args)(**run_args_fe)
 
 if __name__ == "__main__":
     main()

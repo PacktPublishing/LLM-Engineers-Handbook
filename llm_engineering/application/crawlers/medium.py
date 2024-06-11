@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 from loguru import logger
 from selenium.webdriver.common.by import By
 
-from llm_engineering.data.db.documents import ArticleDocument
+from llm_engineering.domain.documents import ArticleDocument
 
 from .base import BaseAbstractCrawler
 

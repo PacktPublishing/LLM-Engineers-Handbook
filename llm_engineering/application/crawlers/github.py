@@ -6,7 +6,7 @@ import tempfile
 from loguru import logger
 
 from .base import BaseCrawler
-from llm_engineering.data.db.documents import RepositoryDocument
+from llm_engineering.domain.documents import RepositoryDocument
 
 
 class GithubCrawler(BaseCrawler):
