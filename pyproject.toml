@@ -38,9 +38,13 @@ run-digital-data-etl = "python -m llm_engineering.run --run-etl"
 run-feature_engineering-pipeline = "python -m llm_engineering.run --run-feature-engineering"
 
 # Local infrastructure
-close-local-zenml-server="poetry run zenml down"
+
 start-local-infrastructure = "docker-compose up -d"
+stop-local-infrastructure = "docker-compose stop"
+
+close-local-zenml-server="poetry run zenml down"
 # start-local-zenml-server="docker run -it -d --platform linux/amd64 -p 8080:8080 zenmldocker/zenml-server"
+
 
 [tool.poe.tasks.start-local-zenml-server]
 control.expr = "sys.platform"

@@ -1,8 +1,7 @@
 from typing import Optional
 
-from llm_engineering.domain.types import DataType
-
-from .base import DataModel
+from llm_engineering.domain.base import DataModel
+from llm_engineering.domain.types import DataCategory
 
 
 class PostChunkModel(DataModel):
@@ -11,10 +10,9 @@ class PostChunkModel(DataModel):
     chunk_content: str
     author_id: str
     image: Optional[str] = None
-    
-    @property
-    def type(self) -> DataType:
-        return DataType.POSTS
+
+    class Config:
+        category = DataCategory.POSTS
 
 
 class ArticleChunkModel(DataModel):
@@ -24,9 +22,9 @@ class ArticleChunkModel(DataModel):
     chunk_content: str
     author_id: str
 
-    @property
-    def type(self) -> DataType:
-        return DataType.ARTICLES
+    class Config:
+        category = DataCategory.ARTICLES
+
 
 class RepositoryChunkModel(DataModel):
     name: str
@@ -35,6 +33,5 @@ class RepositoryChunkModel(DataModel):
     chunk_content: str
     owner_id: str
 
-    @property
-    def type(self) -> DataType:
-        return DataType.REPOSITORIES
+    class Config:
+        category = DataCategory.REPOSITORIES

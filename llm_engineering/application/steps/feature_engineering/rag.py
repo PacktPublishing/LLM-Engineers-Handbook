@@ -5,7 +5,6 @@ from llm_engineering.application.preprocessing import (
     ChunkingDispatcher,
     EmbeddingDispatcher,
 )
-from llm_engineering.domain.base import DataModel
 
 
 @step
@@ -19,5 +18,7 @@ def chunk_and_embed(
             # TODO: Create method to handle a batch of chunks.
             embedded_chunk = EmbeddingDispatcher.dispatch(chunk)
             embedded_documents.append(embedded_chunk)
+            
+        break
 
     return embedded_documents

@@ -2,8 +2,17 @@ import hashlib
 from abc import ABC, abstractmethod
 
 from llm_engineering.domain.base import DataModel
-from llm_engineering.domain.chunk import ArticleChunkModel, PostChunkModel, RepositoryChunkModel
-from llm_engineering.domain.clean import ArticleCleanedModel, PostCleanedModel, RepositoryCleanedModel
+from llm_engineering.domain.chunk import (
+    ArticleChunkModel,
+    PostChunkModel,
+    RepositoryChunkModel,
+)
+from llm_engineering.domain.clean import (
+    ArticleCleanedModel,
+    PostCleanedModel,
+    RepositoryCleanedModel,
+)
+
 from .operations import chunk_text
 
 

@@ -1,12 +1,17 @@
 from abc import ABC, abstractmethod
 
 from llm_engineering.domain.base import DataModel
-from llm_engineering.domain.chunk import ArticleChunkModel, PostChunkModel, RepositoryChunkModel
+from llm_engineering.domain.chunk import (
+    ArticleChunkModel,
+    PostChunkModel,
+    RepositoryChunkModel,
+)
 from llm_engineering.domain.embedded_chunk import (
     ArticleEmbeddedChunkModel,
     PostEmbeddedChunkModel,
     RepositoryEmbeddedChunkModel,
 )
+
 from .operations import embedd_text
 
 
@@ -28,7 +33,7 @@ class PostEmbeddingHandler(EmbeddingDataHandler):
             platform=data_model.platform,
             chunk_id=data_model.chunk_id,
             chunk_content=data_model.chunk_content,
-            embedded_content=embedd_text(data_model.chunk_content),
+            embedding=embedd_text(data_model.chunk_content).tolist(),
             author_id=data_model.author_id,
         )
 
@@ -41,7 +46,7 @@ class ArticleEmbeddingHandler(EmbeddingDataHandler):
             link=data_model.link,
             chunk_content=data_model.chunk_content,
             chunk_id=data_model.chunk_id,
-            embedded_content=embedd_text(data_model.chunk_content),
+            embedding=embedd_text(data_model.chunk_content).tolist(),
             author_id=data_model.author_id,
         )
 
@@ -54,6 +59,6 @@ class RepositoryEmbeddingHandler(EmbeddingDataHandler):
             link=data_model.link,
             chunk_id=data_model.chunk_id,
             chunk_content=data_model.chunk_content,
-            embedded_content=embedd_text(data_model.chunk_content),
+            embedding=embedd_text(data_model.chunk_content).tolist(),
             owner_id=data_model.owner_id,
         )

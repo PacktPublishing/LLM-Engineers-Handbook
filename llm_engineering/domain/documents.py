@@ -6,13 +6,14 @@ from pydantic import UUID4, BaseModel, Field
 from pymongo import errors
 
 from llm_engineering.domain.exceptions import ImproperlyConfigured
-from llm_engineering.domain.types import DataType
-from llm_engineering.infrastructure.db.connectors import connection
+from llm_engineering.domain.types import DataCategory
+from llm_engineering.infrastructure.db.mongo import connection
 from llm_engineering.settings import settings
 
 _database = connection.get_database(settings.DATABASE_NAME)
 
 
+# TODO: Move this to base?
 class BaseDocument(BaseModel):
     id: UUID4 = Field(default_factory=uuid.uuid4)
 
@@ -95,7 +96,7 @@ class BaseDocument(BaseModel):
             return []
 
     @classmethod
-    def get_collection_name(cls):
+    def get_collection_name(cls) -> str:
         if not hasattr(cls, "Settings") or not hasattr(cls.Settings, "name"):
             raise ImproperlyConfigured(
                 "Document should define an Settings configuration class with the name of the collection."
@@ -119,7 +120,7 @@ class RepositoryDocument(BaseDocument):
     owner_id: str = Field(alias="owner_id")
 
     class Settings:
-        name = DataType.REPOSITORIES
+        name = DataCategory.REPOSITORIES
 
 
 class PostDocument(BaseDocument):
@@ -129,7 +130,7 @@ class PostDocument(BaseDocument):
     image: Optional[str] = None
 
     class Settings:
-        name = DataType.POSTS
+        name = DataCategory.POSTS
 
 
 class ArticleDocument(BaseDocument):
@@ -139,4 +140,4 @@ class ArticleDocument(BaseDocument):
     author_id: str = Field(alias="author_id")
 
     class Settings:
-        name = DataType.ARTICLES
+        name = DataCategory.ARTICLES

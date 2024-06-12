@@ -1,1 +1,1 @@
-from .types import DataType
+from .types import DataCategory

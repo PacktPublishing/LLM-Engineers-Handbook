@@ -18,7 +18,7 @@ class MongoDatabaseConnector:
                 raise
 
         logger.info(
-            f"Connection to database with uri: {settings.DATABASE_HOST} successful"
+            f"Connection to MongoDB with URI successful: {settings.DATABASE_HOST}"
         )
         return cls._instance
 

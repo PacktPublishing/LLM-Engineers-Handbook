@@ -1,8 +1,18 @@
 from abc import ABC, abstractmethod
 
 from llm_engineering.domain.base import DataModel
-from llm_engineering.domain.clean import ArticleCleanedModel, PostCleanedModel, RepositoryCleanedModel
-from llm_engineering.domain.documents import BaseDocument, ArticleDocument, PostDocument, RepositoryDocument
+from llm_engineering.domain.clean import (
+    ArticleCleanedModel,
+    PostCleanedModel,
+    RepositoryCleanedModel,
+)
+from llm_engineering.domain.documents import (
+    ArticleDocument,
+    BaseDocument,
+    PostDocument,
+    RepositoryDocument,
+)
+
 from .operations import clean_text
 
 
@@ -36,6 +46,17 @@ class ArticleCleaningHandler(CleaningDataHandler):
             link=data_model.link,
             cleaned_content=clean_text("".join(data_model.content.values())),
             author_id=data_model.author_id,
+        )
+
+
+class RepositoryCleaningHandler(CleaningDataHandler):
+    def clean(self, data_model: RepositoryDocument) -> RepositoryCleanedModel:
+        return RepositoryCleanedModel(
+            id=data_model.id,
+            name=data_model.name,
+            link=data_model.link,
+            cleaned_content=clean_text("".join(data_model.content.values())),
+            owner_id=data_model.owner_id,
         )
 
 

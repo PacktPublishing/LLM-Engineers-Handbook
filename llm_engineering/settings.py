@@ -21,20 +21,23 @@ class Settings(BaseSettings):
     LINKEDIN_PASSWORD: str | None = None
 
     # Embedding Models
+    # TODO: Extract the max input length directly from the model
     TEXT_EMBEDDING_MODEL_ID: str = "sentence-transformers/all-MiniLM-L6-v2"
     TEXT_EMBEDDING_MODEL_MAX_INPUT_LENGTH: int = 256
     CODE_EMBEDDING_MODEL_ID: str = "hkunlp/instructor-xl"
     
+    # TODO: Extract the embedding size directly from the model
     EMBEDDING_SIZE: int = 384
     EMBEDDING_MODEL_DEVICE: str = "cpu"
     
     # QdrantDB Vector DB
+    USE_QDRANT_CLOUD: bool = False
+    
     QDRANT_DATABASE_HOST: str = "localhost"
     QDRANT_DATABASE_PORT: int = 6333
     QDRANT_DATABASE_URL: str = "http://localhost:6333"
 
     QDRANT_CLOUD_URL: str = "str"
-    USE_QDRANT_CLOUD: bool = False
     QDRANT_APIKEY: str | None = None
     
     # OpenAI API
