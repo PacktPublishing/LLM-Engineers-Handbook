@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from llm_engineering.domain.base import DataModel
 from llm_engineering.domain.clean import ArticleCleanedModel, PostCleanedModel, RepositoryCleanedModel
-from llm_engineering.domain.raw import ArticleRawModel, PostsRawModel, RepositoryRawModel
+from llm_engineering.domain.documents import BaseDocument, ArticleDocument, PostDocument, RepositoryDocument
 from .operations import clean_text
 
 
@@ -13,41 +13,38 @@ class CleaningDataHandler(ABC):
     """
 
     @abstractmethod
-    def clean(self, data_model: DataModel) -> DataModel:
+    def clean(self, data_model: BaseDocument) -> DataModel:
         pass
 
 
 class PostCleaningHandler(CleaningDataHandler):
-    def clean(self, data_model: PostsRawModel) -> PostCleanedModel:
+    def clean(self, data_model: PostDocument) -> PostCleanedModel:
         return PostCleanedModel(
-            entry_id=data_model.entry_id,
+            id=data_model.id,
             platform=data_model.platform,
             cleaned_content=clean_text("".join(data_model.content.values())),
             author_id=data_model.author_id,
             image=data_model.image if data_model.image else None,
-            type=data_model.type,
         )
 
 
 class ArticleCleaningHandler(CleaningDataHandler):
-    def clean(self, data_model: ArticleRawModel) -> ArticleCleanedModel:
+    def clean(self, data_model: ArticleDocument) -> ArticleCleanedModel:
         return ArticleCleanedModel(
-            entry_id=data_model.entry_id,
+            id=data_model.id,
             platform=data_model.platform,
             link=data_model.link,
             cleaned_content=clean_text("".join(data_model.content.values())),
             author_id=data_model.author_id,
-            type=data_model.type,
         )
 
 
 class RepositoryCleaningHandler(CleaningDataHandler):
-    def clean(self, data_model: RepositoryRawModel) -> RepositoryCleanedModel:
+    def clean(self, data_model: RepositoryDocument) -> RepositoryCleanedModel:
         return RepositoryCleanedModel(
-            entry_id=data_model.entry_id,
+            id=data_model.id,
             name=data_model.name,
             link=data_model.link,
             cleaned_content=clean_text("".join(data_model.content.values())),
             owner_id=data_model.owner_id,
-            type=data_model.type,
         )

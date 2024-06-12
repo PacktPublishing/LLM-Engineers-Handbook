@@ -2,24 +2,28 @@ from typing import Tuple
 
 import numpy as np
 
+from llm_engineering.domain.types import DataType
+
 from .base import VectorDBDataModel
 
 
 class PostEmbeddedChunkModel(VectorDBDataModel):
-    entry_id: str
     platform: str
     chunk_id: str
     chunk_content: str
     embedded_content: np.ndarray
     author_id: str
-    type: str
 
     class Config:
         arbitrary_types_allowed = True
+        
+    @property
+    def type(self) -> DataType:
+        return DataType.POSTS
 
     def to_payload(self) -> Tuple[str, np.ndarray, dict]:
         data = {
-            "id": self.entry_id,
+            "id": self.id,
             "platform": self.platform,
             "content": self.chunk_content,
             "owner_id": self.author_id,
@@ -30,21 +34,23 @@ class PostEmbeddedChunkModel(VectorDBDataModel):
 
 
 class ArticleEmbeddedChunkModel(VectorDBDataModel):
-    entry_id: str
     platform: str
     link: str
     chunk_id: str
     chunk_content: str
     embedded_content: np.ndarray
     author_id: str
-    type: str
 
     class Config:
         arbitrary_types_allowed = True
+        
+    @property
+    def type(self) -> DataType:
+        return DataType.ARTICLES
 
     def to_payload(self) -> Tuple[str, np.ndarray, dict]:
         data = {
-            "id": self.entry_id,
+            "id": self.id,
             "platform": self.platform,
             "content": self.chunk_content,
             "link": self.link,
@@ -56,21 +62,23 @@ class ArticleEmbeddedChunkModel(VectorDBDataModel):
 
 
 class RepositoryEmbeddedChunkModel(VectorDBDataModel):
-    entry_id: str
     name: str
     link: str
     chunk_id: str
     chunk_content: str
     embedded_content: np.ndarray
     owner_id: str
-    type: str
 
     class Config:
         arbitrary_types_allowed = True
+        
+    @property
+    def type(self) -> DataType:
+        return DataType.REPOSITORIES
 
     def to_payload(self) -> Tuple[str, np.ndarray, dict]:
         data = {
-            "id": self.entry_id,
+            "id": self.id,
             "name": self.name,
             "content": self.chunk_content,
             "link": self.link,

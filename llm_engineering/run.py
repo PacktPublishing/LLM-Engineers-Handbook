@@ -3,7 +3,7 @@ from pathlib import Path
 
 import click
 
-from llm_engineering.pipelines import digital_data_etl, feature_engineering
+from llm_engineering.application.pipelines import digital_data_etl, feature_engineering
 
 
 @click.command(

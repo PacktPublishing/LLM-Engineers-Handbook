@@ -27,13 +27,12 @@ class PostChunkingHandler(ChunkingDataHandler):
 
         for chunk in chunks:
             model = PostChunkModel(
-                entry_id=data_model.entry_id,
+                id=data_model.id,
                 platform=data_model.platform,
                 chunk_id=hashlib.md5(chunk.encode()).hexdigest(),
                 chunk_content=chunk,
                 author_id=data_model.author_id,
                 image=data_model.image if data_model.image else None,
-                type=data_model.type,
             )
             data_models_list.append(model)
 
@@ -49,13 +48,12 @@ class ArticleChunkingHandler(ChunkingDataHandler):
 
         for chunk in chunks:
             model = ArticleChunkModel(
-                entry_id=data_model.entry_id,
+                id=data_model.id,
                 platform=data_model.platform,
                 link=data_model.link,
                 chunk_id=hashlib.md5(chunk.encode()).hexdigest(),
                 chunk_content=chunk,
                 author_id=data_model.author_id,
-                type=data_model.type,
             )
             data_models_list.append(model)
 
@@ -71,13 +69,12 @@ class RepositoryChunkingHandler(ChunkingDataHandler):
 
         for chunk in chunks:
             model = RepositoryChunkModel(
-                entry_id=data_model.entry_id,
+                id=data_model.id,
                 name=data_model.name,
                 link=data_model.link,
                 chunk_id=hashlib.md5(chunk.encode()).hexdigest(),
                 chunk_content=chunk,
                 owner_id=data_model.owner_id,
-                type=data_model.type,
             )
             data_models_list.append(model)
 

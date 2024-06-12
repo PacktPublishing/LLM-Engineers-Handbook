@@ -6,9 +6,9 @@ from pydantic import UUID4, BaseModel, Field
 from pymongo import errors
 
 from llm_engineering.domain.exceptions import ImproperlyConfigured
+from llm_engineering.domain.types import DataType
+from llm_engineering.infrastructure.db.connectors import connection
 from llm_engineering.settings import settings
-
-from ..data.db.connectors import connection
 
 _database = connection.get_database(settings.DATABASE_NAME)
 
@@ -19,7 +19,7 @@ class BaseDocument(BaseModel):
     @classmethod
     def from_mongo(cls, data: dict) -> "BaseDocument":
         """Convert "_id" (str object) into "id" (UUID object)."""
-        
+
         if not data:
             raise ValueError("Data is empty.")
 
@@ -39,7 +39,7 @@ class BaseDocument(BaseModel):
         return parsed
 
     def save(self, **kwargs):
-        collection = _database[self._get_collection_name()]
+        collection = _database[self.get_collection_name()]
         try:
             result = collection.insert_one(self.to_mongo(**kwargs))
             return result.inserted_id
@@ -50,7 +50,7 @@ class BaseDocument(BaseModel):
     # TODO: Add generics to this method & return type
     @classmethod
     def get_or_create(cls, **filter_options) -> "BaseDocument":
-        collection = _database[cls._get_collection_name()]
+        collection = _database[cls.get_collection_name()]
         try:
             instance = collection.find_one(filter_options)
             if instance:
@@ -69,7 +69,7 @@ class BaseDocument(BaseModel):
 
     @classmethod
     def bulk_insert(cls, documents: List, **kwargs) -> Optional[List[str]]:
-        collection = _database[cls._get_collection_name()]
+        collection = _database[cls.get_collection_name()]
         try:
             result = collection.insert_many(
                 [doc.to_mongo(**kwargs) for doc in documents]
@@ -81,7 +81,7 @@ class BaseDocument(BaseModel):
 
     @classmethod
     def bulk_find(cls, **filter_options) -> list["BaseDocument"]:
-        collection = _database[cls._get_collection_name()]
+        collection = _database[cls.get_collection_name()]
         try:
             instances = collection.find(filter_options)
             return [
@@ -95,7 +95,7 @@ class BaseDocument(BaseModel):
             return []
 
     @classmethod
-    def _get_collection_name(cls):
+    def get_collection_name(cls):
         if not hasattr(cls, "Settings") or not hasattr(cls.Settings, "name"):
             raise ImproperlyConfigured(
                 "Document should define an Settings configuration class with the name of the collection."
@@ -119,16 +119,17 @@ class RepositoryDocument(BaseDocument):
     owner_id: str = Field(alias="owner_id")
 
     class Settings:
-        name = "repositories"
+        name = DataType.REPOSITORIES
 
 
 class PostDocument(BaseDocument):
     platform: str
     content: dict
     author_id: str = Field(alias="author_id")
+    image: Optional[str] = None
 
     class Settings:
-        name = "posts"
+        name = DataType.POSTS
 
 
 class ArticleDocument(BaseDocument):
@@ -138,4 +139,4 @@ class ArticleDocument(BaseDocument):
     author_id: str = Field(alias="author_id")
 
     class Settings:
-        name = "articles"
+        name = DataType.ARTICLES

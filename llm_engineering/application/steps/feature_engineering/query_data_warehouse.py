@@ -15,7 +15,7 @@ from llm_engineering.domain.documents import (
 @step
 def query_data_warehouse(
     user_full_name: str,
-) -> Annotated[list[BaseDocument], "raw_data"]:
+) -> Annotated[list, "raw_documents"]:
     logger.info(f"Querying data warehouse for user: {user_full_name}")
 
     first_name, last_name = utils.split_user_full_name(user_full_name)
@@ -27,6 +27,6 @@ def query_data_warehouse(
     posts = PostDocument.bulk_find(author_id=str(user.id))
     repositories = RepositoryDocument.bulk_find(owner_id=str(user.id))
 
-    user_digital_data = [*articles, *posts, *repositories]
+    user_documents = [*articles, *posts, *repositories]
 
-    return user_digital_data
+    return user_documents

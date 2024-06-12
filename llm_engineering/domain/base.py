@@ -1,25 +1,28 @@
 from abc import ABC, abstractmethod
 
-from pydantic import BaseModel
+from pydantic import UUID4, BaseModel
+
+from llm_engineering.domain.types import DataType
 
 
-class DataModel(ABC, BaseModel):
+class DataModel(BaseModel, ABC):
     """
     Abstract class for all data model
     """
 
-    entry_id: int
-    type: str
+    id: UUID4
+    
+    @property
+    @abstractmethod
+    def type(self) -> DataType:
+        pass
 
 
-class VectorDBDataModel(DataModel):
+class VectorDBDataModel(DataModel, ABC):
     """
     Abstract class for all data models that need to be saved into a vector DB (e.g. Qdrant)
     """
-
-    entry_id: int
-    type: str
-
+    
     @abstractmethod
     def to_payload(self) -> tuple:
         pass

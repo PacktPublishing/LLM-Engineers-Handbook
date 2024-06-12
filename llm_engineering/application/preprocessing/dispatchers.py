@@ -1,5 +1,9 @@
 from loguru import logger
 
+from llm_engineering.domain.base import DataModel
+from llm_engineering.domain.documents import BaseDocument
+from llm_engineering.domain.types import DataType
+
 from .chunking_data_handlers import (
     ArticleChunkingHandler,
     ChunkingDataHandler,
@@ -18,35 +22,16 @@ from .embedding_data_handlers import (
     PostEmbeddingHandler,
     RepositoryEmbeddingHandler,
 )
-from llm_engineering.domain.base import DataModel
-from llm_engineering.domain.raw import ArticleRawModel, PostsRawModel, RepositoryRawModel
-
-
-class RawDispatcher:
-    @staticmethod
-    def handle_mq_message(message: dict) -> DataModel:
-        data_type = message.get("type")
-
-        logger.info("Received message.", data_type=data_type)
-
-        if data_type == "posts":
-            return PostsRawModel(**message)
-        elif data_type == "articles":
-            return ArticleRawModel(**message)
-        elif data_type == "repositories":
-            return RepositoryRawModel(**message)
-        else:
-            raise ValueError("Unsupported data type")
 
 
 class CleaningHandlerFactory:
     @staticmethod
     def create_handler(data_type) -> CleaningDataHandler:
-        if data_type == "posts":
+        if data_type == DataType.POSTS:
             return PostCleaningHandler()
-        elif data_type == "articles":
+        elif data_type == DataType.ARTICLES:
             return ArticleCleaningHandler()
-        elif data_type == "repositories":
+        elif data_type == DataType.REPOSITORIES:
             return RepositoryCleaningHandler()
         else:
             raise ValueError("Unsupported data type")
@@ -56,8 +41,8 @@ class CleaningDispatcher:
     cleaning_factory = CleaningHandlerFactory()
 
     @classmethod
-    def dispatch_cleaner(cls, data_model: DataModel) -> DataModel:
-        data_type = data_model.type
+    def dispatch(cls, data_model: BaseDocument) -> DataModel:
+        data_type = data_model.get_collection_name()
         handler = cls.cleaning_factory.create_handler(data_type)
         clean_model = handler.clean(data_model)
 
@@ -73,11 +58,11 @@ class CleaningDispatcher:
 class ChunkingHandlerFactory:
     @staticmethod
     def create_handler(data_type) -> ChunkingDataHandler:
-        if data_type == "posts":
+        if data_type == DataType.POSTS:
             return PostChunkingHandler()
-        elif data_type == "articles":
+        elif data_type == DataType.ARTICLES:
             return ArticleChunkingHandler()
-        elif data_type == "repositories":
+        elif data_type == DataType.REPOSITORIES:
             return RepositoryChunkingHandler()
         else:
             raise ValueError("Unsupported data type")
@@ -87,7 +72,7 @@ class ChunkingDispatcher:
     cleaning_factory = ChunkingHandlerFactory
 
     @classmethod
-    def dispatch_chunker(cls, data_model: DataModel) -> list[DataModel]:
+    def dispatch(cls, data_model: DataModel) -> list[DataModel]:
         data_type = data_model.type
         handler = cls.cleaning_factory.create_handler(data_type)
         chunk_models = handler.chunk(data_model)
@@ -104,11 +89,11 @@ class ChunkingDispatcher:
 class EmbeddingHandlerFactory:
     @staticmethod
     def create_handler(data_type) -> EmbeddingDataHandler:
-        if data_type == "posts":
+        if data_type == DataType.POSTS:
             return PostEmbeddingHandler()
-        elif data_type == "articles":
+        elif data_type == DataType.ARTICLES:
             return ArticleEmbeddingHandler()
-        elif data_type == "repositories":
+        elif data_type == DataType.REPOSITORIES:
             return RepositoryEmbeddingHandler()
         else:
             raise ValueError("Unsupported data type")
@@ -118,7 +103,7 @@ class EmbeddingDispatcher:
     cleaning_factory = EmbeddingHandlerFactory
 
     @classmethod
-    def dispatch_embedder(cls, data_model: DataModel) -> DataModel:
+    def dispatch(cls, data_model: DataModel) -> DataModel:
         data_type = data_model.type
         handler = cls.cleaning_factory.create_handler(data_type)
         embedded_chunk_model = handler.embedd(data_model)

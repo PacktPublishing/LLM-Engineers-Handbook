@@ -1,63 +1,69 @@
 from typing import Optional, Tuple
 
+from pydantic import UUID4
+
 from .base import VectorDBDataModel
+from .types import DataType
 
 
 class PostCleanedModel(VectorDBDataModel):
-    entry_id: str
     platform: str
     cleaned_content: str
     author_id: str
     image: Optional[str] = None
-    type: str
+    
+    @property
+    def type(self) -> DataType:
+        return DataType.POSTS
 
-    def to_payload(self) -> Tuple[str, dict]:
+    def to_payload(self) -> Tuple[UUID4, dict]:
         data = {
             "platform": self.platform,
             "author_id": self.author_id,
             "cleaned_content": self.cleaned_content,
             "image": self.image,
-            "type": self.type,
         }
 
-        return self.entry_id, data
+        return self.id, data
 
 
 class ArticleCleanedModel(VectorDBDataModel):
-    entry_id: str
     platform: str
     link: str
     cleaned_content: str
     author_id: str
-    type: str
+    
+    @property
+    def type(self) -> DataType:
+        return DataType.ARTICLES
 
-    def to_payload(self) -> Tuple[str, dict]:
+    def to_payload(self) -> Tuple[UUID4, dict]:
         data = {
             "platform": self.platform,
             "link": self.link,
             "cleaned_content": self.cleaned_content,
             "author_id": self.author_id,
-            "type": self.type,
         }
 
-        return self.entry_id, data
+        return self.id, data
 
 
 class RepositoryCleanedModel(VectorDBDataModel):
-    entry_id: str
     name: str
     link: str
     cleaned_content: str
     owner_id: str
-    type: str
+    
+    @property
+    def type(self) -> DataType:
+        return DataType.REPOSITORIES
 
-    def to_payload(self) -> Tuple[str, dict]:
+    def to_payload(self) -> Tuple[UUID4, dict]:
         data = {
             "name": self.name,
             "link": self.link,
             "cleaned_content": self.cleaned_content,
             "owner_id": self.owner_id,
-            "type": self.type,
         }
 
-        return self.entry_id, data
+        return self.id, data

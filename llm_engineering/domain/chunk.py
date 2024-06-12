@@ -1,33 +1,40 @@
 from typing import Optional
 
+from llm_engineering.domain.types import DataType
+
 from .base import DataModel
 
 
 class PostChunkModel(DataModel):
-    entry_id: str
     platform: str
     chunk_id: str
     chunk_content: str
     author_id: str
     image: Optional[str] = None
-    type: str
+    
+    @property
+    def type(self) -> DataType:
+        return DataType.POSTS
 
 
 class ArticleChunkModel(DataModel):
-    entry_id: str
     platform: str
     link: str
     chunk_id: str
     chunk_content: str
     author_id: str
-    type: str
 
+    @property
+    def type(self) -> DataType:
+        return DataType.ARTICLES
 
 class RepositoryChunkModel(DataModel):
-    entry_id: str
     name: str
     link: str
     chunk_id: str
     chunk_content: str
     owner_id: str
-    type: str
+
+    @property
+    def type(self) -> DataType:
+        return DataType.REPOSITORIES
