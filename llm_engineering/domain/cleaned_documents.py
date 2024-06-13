@@ -11,7 +11,7 @@ class CleanedDocument(VectorBaseDocument, ABC):
     author_id: str
 
 
-class CleanedPost(CleanedDocument):
+class CleanedPostDocument(CleanedDocument):
     image: Optional[str] = None
 
     class Config:
@@ -20,7 +20,7 @@ class CleanedPost(CleanedDocument):
         use_vector_index = False
 
 
-class CleanedArticle(CleanedDocument):
+class CleanedArticleDocument(CleanedDocument):
     link: str
 
     class Config:
@@ -29,7 +29,7 @@ class CleanedArticle(CleanedDocument):
         use_vector_index = False
 
 
-class RepositoryCleanedModel(CleanedDocument):
+class CleanedRepositoryDocument(CleanedDocument):
     name: str
     link: str
 

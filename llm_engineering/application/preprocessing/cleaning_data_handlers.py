@@ -1,12 +1,18 @@
 from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 
-from llm_engineering.domain.cleaned_documents import (CleanedArticle,
-                                                      CleanedDocument,
-                                                      CleanedPost,
-                                                      RepositoryCleanedModel)
-from llm_engineering.domain.documents import (ArticleDocument, Document,
-                                              PostDocument, RepositoryDocument)
+from llm_engineering.domain.cleaned_documents import (
+    CleanedArticleDocument,
+    CleanedDocument,
+    CleanedPostDocument,
+    CleanedRepositoryDocument,
+)
+from llm_engineering.domain.documents import (
+    ArticleDocument,
+    Document,
+    PostDocument,
+    RepositoryDocument,
+)
 
 from .operations import clean_text
 
@@ -26,8 +32,8 @@ class CleaningDataHandler(ABC, Generic[DocumentT, CleanedDocumentT]):
 
 
 class PostCleaningHandler(CleaningDataHandler):
-    def clean(self, data_model: PostDocument) -> CleanedPost:
-        return CleanedPost(
+    def clean(self, data_model: PostDocument) -> CleanedPostDocument:
+        return CleanedPostDocument(
             id=data_model.id,
             content=clean_text("".join(data_model.content.values())),
             platform=data_model.platform,
@@ -37,8 +43,8 @@ class PostCleaningHandler(CleaningDataHandler):
 
 
 class ArticleCleaningHandler(CleaningDataHandler):
-    def clean(self, data_model: ArticleDocument) -> CleanedArticle:
-        return CleanedArticle(
+    def clean(self, data_model: ArticleDocument) -> CleanedArticleDocument:
+        return CleanedArticleDocument(
             id=data_model.id,
             content=clean_text("".join(data_model.content.values())),
             platform=data_model.platform,
@@ -48,8 +54,8 @@ class ArticleCleaningHandler(CleaningDataHandler):
 
 
 class RepositoryCleaningHandler(CleaningDataHandler):
-    def clean(self, data_model: RepositoryDocument) -> RepositoryCleanedModel:
-        return RepositoryCleanedModel(
+    def clean(self, data_model: RepositoryDocument) -> CleanedRepositoryDocument:
+        return CleanedRepositoryDocument(
             id=data_model.id,
             content=clean_text("".join(data_model.content.values())),
             platform=data_model.platform,

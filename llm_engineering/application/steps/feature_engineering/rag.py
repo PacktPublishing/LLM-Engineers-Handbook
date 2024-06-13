@@ -15,10 +15,7 @@ def chunk_and_embed(
     for document in cleaned_documents:
         chunks = ChunkingDispatcher.dispatch(document)
         for chunk in chunks:
-            # TODO: Create method to handle a batch of chunks.
             embedded_chunk = EmbeddingDispatcher.dispatch(chunk)
             embedded_documents.append(embedded_chunk)
-            
-        break
 
     return embedded_documents

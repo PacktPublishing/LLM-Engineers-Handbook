@@ -15,14 +15,14 @@ class EmbeddedChunk(VectorBaseDocument, ABC):
     author_id: str
 
 
-class PostEmbeddedChunkModel(EmbeddedChunk):
+class EmbeddedPostChunk(EmbeddedChunk):
     class Config:
         name = "embedded_posts"
         category = DataCategory.POSTS
         use_vector_index = True
 
 
-class ArticleEmbeddedChunkModel(EmbeddedChunk):
+class EmbeddedArticleChunk(EmbeddedChunk):
     link: str
 
     class Config:
@@ -31,7 +31,7 @@ class ArticleEmbeddedChunkModel(EmbeddedChunk):
         use_vector_index = True
 
 
-class RepositoryEmbeddedChunkModel(EmbeddedChunk):
+class EmbeddedRepositoryChunk(EmbeddedChunk):
     name: str
     link: str
 

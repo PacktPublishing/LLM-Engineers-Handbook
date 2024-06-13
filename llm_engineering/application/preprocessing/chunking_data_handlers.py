@@ -10,10 +10,10 @@ from llm_engineering.domain.chunks import (
     RepositoryChunk,
 )
 from llm_engineering.domain.cleaned_documents import (
-    CleanedArticle,
+    CleanedArticleDocument,
     CleanedDocument,
-    CleanedPost,
-    RepositoryCleanedModel,
+    CleanedPostDocument,
+    CleanedRepositoryDocument,
 )
 
 from .operations import chunk_text
@@ -34,7 +34,7 @@ class ChunkingDataHandler(ABC, Generic[CleanedDocumentT, ChunkT]):
 
 
 class PostChunkingHandler(ChunkingDataHandler):
-    def chunk(self, data_model: CleanedPost) -> list[PostChunk]:
+    def chunk(self, data_model: CleanedPostDocument) -> list[PostChunk]:
         data_models_list = []
 
         cleaned_content = data_model.content
@@ -56,7 +56,7 @@ class PostChunkingHandler(ChunkingDataHandler):
 
 
 class ArticleChunkingHandler(ChunkingDataHandler):
-    def chunk(self, data_model: CleanedArticle) -> list[ArticleChunk]:
+    def chunk(self, data_model: CleanedArticleDocument) -> list[ArticleChunk]:
         data_models_list = []
 
         cleaned_content = data_model.content
@@ -78,7 +78,7 @@ class ArticleChunkingHandler(ChunkingDataHandler):
 
 
 class RepositoryChunkingHandler(ChunkingDataHandler):
-    def chunk(self, data_model: RepositoryCleanedModel) -> list[RepositoryChunk]:
+    def chunk(self, data_model: CleanedRepositoryDocument) -> list[RepositoryChunk]:
         data_models_list = []
 
         cleaned_content = data_model.content

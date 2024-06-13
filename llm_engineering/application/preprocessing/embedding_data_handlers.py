@@ -1,11 +1,18 @@
 from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 
-from llm_engineering.domain.chunks import (ArticleChunk, Chunk, PostChunk,
-                                           RepositoryChunk)
+from llm_engineering.domain.chunks import (
+    ArticleChunk,
+    Chunk,
+    PostChunk,
+    RepositoryChunk,
+)
 from llm_engineering.domain.embedded_chunks import (
-    ArticleEmbeddedChunkModel, EmbeddedChunk, PostEmbeddedChunkModel,
-    RepositoryEmbeddedChunkModel)
+    EmbeddedArticleChunk,
+    EmbeddedChunk,
+    EmbeddedPostChunk,
+    EmbeddedRepositoryChunk,
+)
 
 from .operations import embedd_text
 
@@ -25,8 +32,8 @@ class EmbeddingDataHandler(ABC, Generic[ChunkT, EmbeddedChunkT]):
 
 
 class PostEmbeddingHandler(EmbeddingDataHandler):
-    def embedd(self, data_model: PostChunk) -> PostEmbeddedChunkModel:
-        return PostEmbeddedChunkModel(
+    def embedd(self, data_model: PostChunk) -> EmbeddedPostChunk:
+        return EmbeddedPostChunk(
             id=data_model.id,
             content=data_model.content,
             embedding=embedd_text(data_model.content).tolist(),
@@ -37,8 +44,8 @@ class PostEmbeddingHandler(EmbeddingDataHandler):
 
 
 class ArticleEmbeddingHandler(EmbeddingDataHandler):
-    def embedd(self, data_model: ArticleChunk) -> ArticleEmbeddedChunkModel:
-        return ArticleEmbeddedChunkModel(
+    def embedd(self, data_model: ArticleChunk) -> EmbeddedArticleChunk:
+        return EmbeddedArticleChunk(
             id=data_model.id,
             content=data_model.content,
             embedding=embedd_text(data_model.content).tolist(),
@@ -50,8 +57,8 @@ class ArticleEmbeddingHandler(EmbeddingDataHandler):
 
 
 class RepositoryEmbeddingHandler(EmbeddingDataHandler):
-    def embedd(self, data_model: RepositoryChunk) -> RepositoryEmbeddedChunkModel:
-        return RepositoryEmbeddedChunkModel(
+    def embedd(self, data_model: RepositoryChunk) -> EmbeddedRepositoryChunk:
+        return EmbeddedRepositoryChunk(
             id=data_model.id,
             content=data_model.content,
             embedding=embedd_text(data_model.content).tolist(),

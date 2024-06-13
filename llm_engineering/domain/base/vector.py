@@ -3,6 +3,7 @@ from abc import ABC
 import numpy as np
 from pydantic import UUID4, BaseModel
 from qdrant_client.models import PointStruct
+from qdrant_client.models import CollectionInfo
 
 from llm_engineering.domain.exceptions import ImproperlyConfigured
 from llm_engineering.domain.types import DataCategory
@@ -24,15 +25,16 @@ class VectorBaseDocument(BaseModel, ABC):
             vector = vector.tolist()
 
         return PointStruct(id=_id, vector=vector, payload=payload)
-
+    
     @classmethod
-    def bulk_insert(cls, documents: list["VectorBaseDocument"]):
-        # TODO: Move this to a separate step
-        connection.get_or_create_collection(
+    def get_or_create_collection(cls) -> CollectionInfo:
+        return connection.get_or_create_collection(
             collection_name=cls.get_collection_name(),
             use_vector_index=cls.get_use_vector_index(),
         )
 
+    @classmethod
+    def bulk_insert(cls, documents: list["VectorBaseDocument"]):
         points = [doc.to_point() for doc in documents]
 
         return connection.upsert(

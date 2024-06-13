@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     # Embedding Models
     # TODO: Extract the max input length directly from the model
     TEXT_EMBEDDING_MODEL_ID: str = "sentence-transformers/all-MiniLM-L6-v2"
+    # TODO: Also add MAX_INPUT_LENGTH for code embedding model
     TEXT_EMBEDDING_MODEL_MAX_INPUT_LENGTH: int = 256
     CODE_EMBEDDING_MODEL_ID: str = "hkunlp/instructor-xl"
     

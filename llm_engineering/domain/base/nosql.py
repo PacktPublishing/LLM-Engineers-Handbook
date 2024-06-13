@@ -46,7 +46,6 @@ class NoSQLBaseDocument(BaseModel):
             logger.error(f"Failed to insert document {e}")
             return None
 
-    # TODO: Add generics to this method & return type
     @classmethod
     def get_or_create(cls, **filter_options) -> "NoSQLBaseDocument":
         collection = _database[cls.get_collection_name()]
