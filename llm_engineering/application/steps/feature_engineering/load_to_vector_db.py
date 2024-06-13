@@ -15,5 +15,4 @@ def load_to_vector_db(
     for document_class, documents in grouped_documents.items():
         logger.info(f"Loading documents into {document_class.get_collection_name()}")
         
-        document_class.get_or_create_collection()
         document_class.bulk_insert(documents)

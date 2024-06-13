@@ -42,7 +42,7 @@ class Settings(BaseSettings):
     QDRANT_APIKEY: str | None = None
     
     # OpenAI API
-    OPENAI_MODEL_ID: str = "gpt-4-1106-preview"
+    OPENAI_MODEL_ID: str = "gpt-3.5-turbo"
     OPENAI_API_KEY: str | None = None
     
     # CometML config
