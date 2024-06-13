@@ -1,7 +1,6 @@
 from loguru import logger
 
-from llm_engineering.domain.base import DataModel
-from llm_engineering.domain.documents import BaseDocument
+from llm_engineering.domain.base import NoSQLBaseDocument, VectorBaseDocument
 from llm_engineering.domain.types import DataCategory
 
 from .chunking_data_handlers import (
@@ -41,7 +40,7 @@ class CleaningDispatcher:
     cleaning_factory = CleaningHandlerFactory()
 
     @classmethod
-    def dispatch(cls, data_model: BaseDocument) -> DataModel:
+    def dispatch(cls, data_model: NoSQLBaseDocument) -> VectorBaseDocument:
         data_category = DataCategory(data_model.get_collection_name())
         handler = cls.cleaning_factory.create_handler(data_category)
         clean_model = handler.clean(data_model)
@@ -72,7 +71,7 @@ class ChunkingDispatcher:
     cleaning_factory = ChunkingHandlerFactory
 
     @classmethod
-    def dispatch(cls, data_model: DataModel) -> list[DataModel]:
+    def dispatch(cls, data_model: VectorBaseDocument) -> list[VectorBaseDocument]:
         data_category = data_model.get_category()
         handler = cls.cleaning_factory.create_handler(data_category)
         chunk_models = handler.chunk(data_model)
@@ -103,7 +102,7 @@ class EmbeddingDispatcher:
     cleaning_factory = EmbeddingHandlerFactory
 
     @classmethod
-    def dispatch(cls, data_model: DataModel) -> DataModel:
+    def dispatch(cls, data_model: VectorBaseDocument) -> VectorBaseDocument:
         data_category = data_model.get_category()
         handler = cls.cleaning_factory.create_handler(data_category)
         embedded_chunk_model = handler.embedd(data_model)

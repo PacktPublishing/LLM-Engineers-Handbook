@@ -1,29 +1,29 @@
+from abc import ABC
+
 from pydantic import UUID4
+
 from llm_engineering.domain.types import DataCategory
 
-from .base import VectorDBDataModel
+from .base import VectorBaseDocument
 
 
-class PostEmbeddedChunkModel(VectorDBDataModel):
+class EmbeddedChunk(VectorBaseDocument, ABC):
     content: str
     embedding: list
     platform: str
     document_id: UUID4
     author_id: str
 
+
+class PostEmbeddedChunkModel(EmbeddedChunk):
     class Config:
         name = "embedded_posts"
         category = DataCategory.POSTS
         use_vector_index = True
 
 
-class ArticleEmbeddedChunkModel(VectorDBDataModel):
-    content: str
-    embedding: list
-    platform: str
+class ArticleEmbeddedChunkModel(EmbeddedChunk):
     link: str
-    document_id: UUID4
-    author_id: str
 
     class Config:
         name = "embedded_articles"
@@ -31,13 +31,9 @@ class ArticleEmbeddedChunkModel(VectorDBDataModel):
         use_vector_index = True
 
 
-class RepositoryEmbeddedChunkModel(VectorDBDataModel):
-    content: str
-    embedding: list
+class RepositoryEmbeddedChunkModel(EmbeddedChunk):
     name: str
     link: str
-    document_id: UUID4
-    author_id: str
 
     class Config:
         name = "embedded_repositories"

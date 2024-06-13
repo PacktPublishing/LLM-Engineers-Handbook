@@ -1,39 +1,36 @@
+from abc import ABC
 from typing import Optional
 
 from pydantic import UUID4
 
-from llm_engineering.domain.base import DataModel
+from llm_engineering.domain.base import VectorBaseDocument
 from llm_engineering.domain.types import DataCategory
 
 
-class PostChunkModel(DataModel):
+class Chunk(VectorBaseDocument, ABC):
     content: str
     platform: str
     document_id: UUID4
     author_id: str
+
+
+class PostChunk(Chunk):
     image: Optional[str] = None
 
     class Config:
         category = DataCategory.POSTS
 
 
-class ArticleChunkModel(DataModel):
-    content: str
-    platform: str
+class ArticleChunk(Chunk):
     link: str
-    document_id: UUID4
-    author_id: str
 
     class Config:
         category = DataCategory.ARTICLES
 
 
-class RepositoryChunkModel(DataModel):
-    content: str
+class RepositoryChunk(Chunk):
     name: str
     link: str
-    document_id: UUID4
-    author_id: str
 
     class Config:
         category = DataCategory.REPOSITORIES

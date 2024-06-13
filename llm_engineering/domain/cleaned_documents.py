@@ -1,13 +1,17 @@
+from abc import ABC
 from typing import Optional
 
-from .base import VectorDBDataModel
+from .base import VectorBaseDocument
 from .types import DataCategory
 
 
-class PostCleanedModel(VectorDBDataModel):
+class CleanedDocument(VectorBaseDocument, ABC):
     content: str
     platform: str
     author_id: str
+
+
+class CleanedPost(CleanedDocument):
     image: Optional[str] = None
 
     class Config:
@@ -16,11 +20,8 @@ class PostCleanedModel(VectorDBDataModel):
         use_vector_index = False
 
 
-class ArticleCleanedModel(VectorDBDataModel):
-    content: str
-    platform: str
+class CleanedArticle(CleanedDocument):
     link: str
-    author_id: str
 
     class Config:
         name = "cleaned_articles"
@@ -28,11 +29,9 @@ class ArticleCleanedModel(VectorDBDataModel):
         use_vector_index = False
 
 
-class RepositoryCleanedModel(VectorDBDataModel):
-    content: str
+class RepositoryCleanedModel(CleanedDocument):
     name: str
     link: str
-    author_id: str
 
     class Config:
         name = "cleaned_repositories"

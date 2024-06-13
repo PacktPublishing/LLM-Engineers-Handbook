@@ -5,8 +5,10 @@ import tempfile
 
 from loguru import logger
 
-from .base import BaseCrawler
 from llm_engineering.domain.documents import RepositoryDocument
+
+from .base import BaseCrawler
+from .base import BaseCrawler
 
 
 class GithubCrawler(BaseCrawler):
@@ -43,7 +45,11 @@ class GithubCrawler(BaseCrawler):
                         tree[file_path] = f.read().replace(" ", "")
 
             instance = self.model(
-                name=repo_name, link=link, content=tree, owner_id=kwargs.get("user")
+                content=tree,
+                name=repo_name,
+                link=link,
+                platform="github",
+                author_id=str(kwargs.get("user").id),
             )
             instance.save()
 

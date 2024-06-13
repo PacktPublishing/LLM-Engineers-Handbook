@@ -8,9 +8,6 @@ from llm_engineering.application.steps import feature_engineering as fe_steps
 def feature_engineering(user_full_name: str) -> None:
     logger.info(f"Computing features for user: {user_full_name}")
 
-    # TODO: Recheck data models and handlers class hierachy:
-    #   - add clenaed, chunked, and embedded abstract classes
-    #   - standardize the mongo and qdrant ODMs (base vs implementations)
     # TODO: Fix passed types between steps
     # TODO: Is it ok to handle all data types and collections through the DataCategory enum?
     # TODO: Refactor the DB module

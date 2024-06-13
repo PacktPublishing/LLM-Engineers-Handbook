@@ -5,7 +5,6 @@ from zenml import step
 from llm_engineering.application import utils
 from llm_engineering.domain.documents import (
     ArticleDocument,
-    BaseDocument,
     PostDocument,
     RepositoryDocument,
     UserDocument,

@@ -5,12 +5,12 @@ from tempfile import mkdtemp
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-from llm_engineering.domain.documents import BaseDocument
+from llm_engineering.domain.documents import NoSQLBaseDocument
 from llm_engineering.settings import settings
 
 
 class BaseCrawler(ABC):
-    model: type[BaseDocument]
+    model: type[NoSQLBaseDocument]
 
     @abstractmethod
     def extract(self, link: str, **kwargs) -> None: ...
