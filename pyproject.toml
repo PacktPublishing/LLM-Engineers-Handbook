@@ -35,7 +35,8 @@ build-backend = "poetry.core.masonry.api"
 [tool.poe.tasks]
 # Pipelines
 run-digital-data-etl = "python -m llm_engineering.run --run-etl"
-run-feature_engineering-pipeline = "python -m llm_engineering.run --run-feature-engineering"
+run-feature-engineering-pipeline = "python -m llm_engineering.run --run-feature-engineering"
+run-created-dataset-pipeline = "python -m llm_engineering.run --run-create-dataset"
 
 # Local infrastructure
 

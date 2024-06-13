@@ -1,19 +1,40 @@
 from abc import ABC
+from typing import Generic, Type, TypeVar
+from uuid import UUID
 
 import numpy as np
+from loguru import logger
 from pydantic import UUID4, BaseModel
-from qdrant_client.models import PointStruct
-from qdrant_client.models import CollectionInfo
+from qdrant_client.http.models import Distance, VectorParams
+from qdrant_client.models import CollectionInfo, PointStruct, Record
 
 from llm_engineering.domain.exceptions import ImproperlyConfigured
 from llm_engineering.domain.types import DataCategory
 from llm_engineering.infrastructure.db.qdrant import connection
+from llm_engineering.settings import settings
+
+T = TypeVar("T", bound="VectorBaseDocument")
 
 
-class VectorBaseDocument(BaseModel, ABC):
+class VectorBaseDocument(BaseModel, Generic[T], ABC):
     id: UUID4
 
-    def to_point(self, **kwargs) -> PointStruct:
+    @classmethod
+    def from_point(cls: Type[T], point: Record) -> T:
+        _id = UUID(point.id, version=4)
+        payload = point.payload or {}
+        embedding = point.vector or []
+
+        attributes = {
+            "id": _id,
+            **payload,
+        }
+        if hasattr(cls, "embedding"):
+            payload["embedding"] = embedding
+
+        return cls(**attributes)
+
+    def to_point(self: T, **kwargs) -> PointStruct:
         exclude_unset = kwargs.pop("exclude_unset", False)
         by_alias = kwargs.pop("by_alias", True)
 
@@ -25,24 +46,72 @@ class VectorBaseDocument(BaseModel, ABC):
             vector = vector.tolist()
 
         return PointStruct(id=_id, vector=vector, payload=payload)
-    
+
     @classmethod
-    def get_or_create_collection(cls) -> CollectionInfo:
-        return connection.get_or_create_collection(
-            collection_name=cls.get_collection_name(),
-            use_vector_index=cls.get_use_vector_index(),
+    def get_or_create_collection(cls: Type[T]) -> CollectionInfo:
+        collection_name = cls.get_collection_name()
+        use_vector_index = cls.get_use_vector_index()
+
+        try:
+            return connection.get_collection(collection_name=collection_name)
+        except Exception:
+            collection_created = cls._create_collection(
+                collection_name=collection_name, use_vector_index=use_vector_index
+            )
+            if collection_created is False:
+                raise RuntimeError(f"Couldn't create collection {collection_name}")
+
+            return connection.get_collection(collection_name=collection_name)
+
+    @classmethod
+    def _create_collection(cls, collection_name: str, use_vector_index: bool = True):
+        if use_vector_index is True:
+            vectors_config = VectorParams(
+                size=settings.EMBEDDING_SIZE, distance=Distance.COSINE
+            )
+        else:
+            vectors_config = {}
+
+        return connection.create_collection(
+            collection_name=collection_name, vectors_config=vectors_config
         )
 
     @classmethod
-    def bulk_insert(cls, documents: list["VectorBaseDocument"]):
+    def bulk_insert(cls: Type[T], documents: list["VectorBaseDocument"]) -> bool:
         points = [doc.to_point() for doc in documents]
 
-        return connection.upsert(
-            collection_name=cls.get_collection_name(), points=points
-        )
+        try:
+            connection.upsert(collection_name=cls.get_collection_name(), points=points)
+
+            return True
+        except Exception:
+            logger.exception("Failed to insert documents.")
+
+            return False
 
     @classmethod
-    def get_category(cls) -> DataCategory:
+    def bulk_find(cls: Type[T], limit: int = 1, **kwargs) -> tuple[list[T], UUID | None]:
+        collection_name = cls.get_collection_name()
+        
+        offset = kwargs.pop("offset", None)
+        offset = str(offset) if offset else None
+
+        points, next_offset = connection.scroll(
+            collection_name=collection_name,
+            limit=limit,
+            with_payload=kwargs.pop("with_payload", True),
+            with_vectors=kwargs.pop("with_vectors", False),
+            offset=offset,
+            **kwargs,
+        )
+        documents = [cls.from_point(point) for point in points]
+        if next_offset is not None:
+            next_offset = UUID(next_offset, version=4)
+
+        return documents, next_offset
+
+    @classmethod
+    def get_category(cls: Type[T]) -> DataCategory:
         if not hasattr(cls, "Config") or not hasattr(cls.Config, "category"):
             raise ImproperlyConfigured(
                 "The class should define a Config class with"

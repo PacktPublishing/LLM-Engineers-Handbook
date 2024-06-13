@@ -3,7 +3,7 @@ from pathlib import Path
 
 import click
 
-from llm_engineering.application.pipelines import digital_data_etl, feature_engineering
+from llm_engineering.application.pipelines import create_dataset, digital_data_etl, feature_engineering
 
 
 @click.command(
@@ -53,13 +53,22 @@ Examples:
     default=False,
     help="Whether to run the FE pipeline.",
 )
+@click.option(
+    "--run-create-dataset",
+    is_flag=True,
+    default=False,
+    help="Whether to run the create dataset pipeline.",
+)
 def main(
     no_cache: bool = False,
     run_etl: bool = False,
     run_feature_engineering: bool = False,
+    run_create_dataset: bool = False,
 ) -> None:
-    assert run_etl or run_feature_engineering, "Please specify a pipeline to run."
-    
+    assert (
+        run_etl or run_feature_engineering or run_create_dataset
+    ), "Please specify a pipeline to run."
+
     pipeline_args = {
         "enable_cache": not no_cache,
     }
@@ -87,6 +96,17 @@ def main(
             f"feature_engineering_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
         )
         feature_engineering.with_options(**pipeline_args)(**run_args_fe)
+
+    if run_create_dataset:
+        run_args_cd = {}
+        pipeline_args["config_path"] = (
+            Path(__file__).resolve().parent.parent / "configs" / "create_dataset.yaml"
+        )
+        pipeline_args["run_name"] = (
+            f"create_dataset_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+        )
+        create_dataset.with_options(**pipeline_args)(**run_args_cd)
+
 
 if __name__ == "__main__":
     main()

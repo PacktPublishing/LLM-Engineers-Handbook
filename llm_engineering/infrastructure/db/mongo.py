@@ -22,10 +22,4 @@ class MongoDatabaseConnector:
         )
         return cls._instance
 
-    def close(self):
-        if self._instance:
-            self._instance.close()
-            logger.info("Connected to database has been closed.")
-
-
 connection = MongoDatabaseConnector()
