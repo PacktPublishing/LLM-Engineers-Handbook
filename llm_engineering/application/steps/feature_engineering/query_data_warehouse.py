@@ -31,7 +31,7 @@ def query_data_warehouse(
     return user_documents
 
 
-def fetch_all_data(user)-> dict[str, list[NoSQLBaseDocument]]:
+def fetch_all_data(user: UserDocument)-> dict[str, list[NoSQLBaseDocument]]:
     user_id = str(user.id)
     with ThreadPoolExecutor() as executor:
         future_to_query = {

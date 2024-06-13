@@ -1,5 +1,6 @@
 import uuid
-from typing import List, Optional
+from abc import ABC
+from typing import Generic, Type, TypeVar
 
 from loguru import logger
 from pydantic import UUID4, BaseModel, Field
@@ -12,20 +13,24 @@ from llm_engineering.settings import settings
 _database = connection.get_database(settings.DATABASE_NAME)
 
 
-class NoSQLBaseDocument(BaseModel):
+T = TypeVar("T", bound="NoSQLBaseDocument")
+
+
+class NoSQLBaseDocument(BaseModel, Generic[T], ABC):
     id: UUID4 = Field(default_factory=uuid.uuid4)
 
     @classmethod
-    def from_mongo(cls, data: dict) -> "NoSQLBaseDocument":
+    def from_mongo(cls: Type[T], data: dict) -> T:
         """Convert "_id" (str object) into "id" (UUID object)."""
 
         if not data:
             raise ValueError("Data is empty.")
 
         id = data.pop("_id", None)
+
         return cls(**dict(data, id=id))
 
-    def to_mongo(self, **kwargs) -> dict:
+    def to_mongo(self: T, **kwargs) -> dict:
         """Convert "id" (UUID object) into "_id" (str object)."""
         exclude_unset = kwargs.pop("exclude_unset", False)
         by_alias = kwargs.pop("by_alias", True)
@@ -37,17 +42,19 @@ class NoSQLBaseDocument(BaseModel):
 
         return parsed
 
-    def save(self, **kwargs):
+    def save(self: T, **kwargs) -> T | None:
         collection = _database[self.get_collection_name()]
         try:
-            result = collection.insert_one(self.to_mongo(**kwargs))
-            return result.inserted_id
-        except errors.WriteError as e:
-            logger.error(f"Failed to insert document {e}")
+            collection.insert_one(self.to_mongo(**kwargs))
+
+            return self
+        except errors.WriteError:
+            logger.exception("Failed to insert document.")
+
             return None
 
     @classmethod
-    def get_or_create(cls, **filter_options) -> "NoSQLBaseDocument":
+    def get_or_create(cls: Type[T], **filter_options) -> T:
         collection = _database[cls.get_collection_name()]
         try:
             instance = collection.find_one(filter_options)
@@ -57,7 +64,7 @@ class NoSQLBaseDocument(BaseModel):
             new_instance = cls(**filter_options)
             new_instance = new_instance.save()
 
-            return cls.from_mongo(new_instance)
+            return new_instance
         except errors.OperationFailure:
             logger.exception(
                 f"Failed to retrieve document with filter options: {filter_options}"
@@ -66,19 +73,19 @@ class NoSQLBaseDocument(BaseModel):
             raise
 
     @classmethod
-    def bulk_insert(cls, documents: List, **kwargs) -> Optional[List[str]]:
+    def bulk_insert(cls: Type[T], documents: list[T], **kwargs) -> bool:
         collection = _database[cls.get_collection_name()]
         try:
-            result = collection.insert_many(
-                [doc.to_mongo(**kwargs) for doc in documents]
-            )
-            return result.inserted_ids
+            collection.insert_many([doc.to_mongo(**kwargs) for doc in documents])
+
+            return True
         except errors.WriteError as e:
             logger.error(f"Failed to insert document {e}")
-            return None
+
+            return False
 
     @classmethod
-    def bulk_find(cls, **filter_options) -> list["NoSQLBaseDocument"]:
+    def bulk_find(cls: Type[T], **filter_options) -> list[T]:
         collection = _database[cls.get_collection_name()]
         try:
             instances = collection.find(filter_options)
