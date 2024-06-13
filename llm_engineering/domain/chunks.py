@@ -1,13 +1,15 @@
 from typing import Optional
 
+from pydantic import UUID4
+
 from llm_engineering.domain.base import DataModel
 from llm_engineering.domain.types import DataCategory
 
 
 class PostChunkModel(DataModel):
+    content: str
     platform: str
-    chunk_id: str
-    chunk_content: str
+    document_id: UUID4
     author_id: str
     image: Optional[str] = None
 
@@ -16,10 +18,10 @@ class PostChunkModel(DataModel):
 
 
 class ArticleChunkModel(DataModel):
+    content: str
     platform: str
     link: str
-    chunk_id: str
-    chunk_content: str
+    document_id: UUID4
     author_id: str
 
     class Config:
@@ -27,11 +29,11 @@ class ArticleChunkModel(DataModel):
 
 
 class RepositoryChunkModel(DataModel):
+    content: str
     name: str
     link: str
-    chunk_id: str
-    chunk_content: str
-    owner_id: str
+    document_id: UUID4
+    author_id: str
 
     class Config:
         category = DataCategory.REPOSITORIES

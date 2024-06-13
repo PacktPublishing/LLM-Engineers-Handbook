@@ -1,13 +1,14 @@
 import hashlib
 from abc import ABC, abstractmethod
+from uuid import UUID
 
 from llm_engineering.domain.base import DataModel
-from llm_engineering.domain.chunk import (
+from llm_engineering.domain.chunks import (
     ArticleChunkModel,
     PostChunkModel,
     RepositoryChunkModel,
 )
-from llm_engineering.domain.clean import (
+from llm_engineering.domain.cleaned_documents import (
     ArticleCleanedModel,
     PostCleanedModel,
     RepositoryCleanedModel,
@@ -31,15 +32,16 @@ class PostChunkingHandler(ChunkingDataHandler):
     def chunk(self, data_model: PostCleanedModel) -> list[PostChunkModel]:
         data_models_list = []
 
-        text_content = data_model.cleaned_content
-        chunks = chunk_text(text_content)
+        cleaned_content = data_model.content
+        chunks = chunk_text(cleaned_content)
 
         for chunk in chunks:
+            chunk_id = hashlib.md5(chunk.encode()).hexdigest()
             model = PostChunkModel(
-                id=data_model.id,
+                id=UUID(chunk_id, version=4),
+                content=chunk,
                 platform=data_model.platform,
-                chunk_id=hashlib.md5(chunk.encode()).hexdigest(),
-                chunk_content=chunk,
+                document_id=data_model.id,
                 author_id=data_model.author_id,
                 image=data_model.image if data_model.image else None,
             )
@@ -52,16 +54,17 @@ class ArticleChunkingHandler(ChunkingDataHandler):
     def chunk(self, data_model: ArticleCleanedModel) -> list[ArticleChunkModel]:
         data_models_list = []
 
-        text_content = data_model.cleaned_content
-        chunks = chunk_text(text_content)
+        cleaned_content = data_model.content
+        chunks = chunk_text(cleaned_content)
 
         for chunk in chunks:
+            chunk_id = hashlib.md5(chunk.encode()).hexdigest()
             model = ArticleChunkModel(
-                id=data_model.id,
+                id=UUID(chunk_id, version=4),
+                content=chunk,
                 platform=data_model.platform,
                 link=data_model.link,
-                chunk_id=hashlib.md5(chunk.encode()).hexdigest(),
-                chunk_content=chunk,
+                document_id=data_model.id,
                 author_id=data_model.author_id,
             )
             data_models_list.append(model)
@@ -73,17 +76,18 @@ class RepositoryChunkingHandler(ChunkingDataHandler):
     def chunk(self, data_model: RepositoryCleanedModel) -> list[RepositoryChunkModel]:
         data_models_list = []
 
-        text_content = data_model.cleaned_content
-        chunks = chunk_text(text_content)
+        cleaned_content = data_model.content
+        chunks = chunk_text(cleaned_content)
 
         for chunk in chunks:
+            chunk_id = hashlib.md5(chunk.encode()).hexdigest()
             model = RepositoryChunkModel(
-                id=data_model.id,
+                id=UUID(chunk_id, version=4),
+                content=chunk,
                 name=data_model.name,
                 link=data_model.link,
-                chunk_id=hashlib.md5(chunk.encode()).hexdigest(),
-                chunk_content=chunk,
-                owner_id=data_model.owner_id,
+                document_id=data_model.id,
+                author_id=data_model.author_id,
             )
             data_models_list.append(model)
 

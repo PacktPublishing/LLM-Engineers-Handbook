@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
 
 from llm_engineering.domain.base import DataModel
-from llm_engineering.domain.chunk import (
+from llm_engineering.domain.chunks import (
     ArticleChunkModel,
     PostChunkModel,
     RepositoryChunkModel,
 )
-from llm_engineering.domain.embedded_chunk import (
+from llm_engineering.domain.embedded_chunks import (
     ArticleEmbeddedChunkModel,
     PostEmbeddedChunkModel,
     RepositoryEmbeddedChunkModel,
@@ -30,10 +30,10 @@ class PostEmbeddingHandler(EmbeddingDataHandler):
     def embedd(self, data_model: PostChunkModel) -> PostEmbeddedChunkModel:
         return PostEmbeddedChunkModel(
             id=data_model.id,
+            content=data_model.content,
+            embedding=embedd_text(data_model.content).tolist(),
             platform=data_model.platform,
-            chunk_id=data_model.chunk_id,
-            chunk_content=data_model.chunk_content,
-            embedding=embedd_text(data_model.chunk_content).tolist(),
+            document_id=data_model.document_id,
             author_id=data_model.author_id,
         )
 
@@ -42,11 +42,11 @@ class ArticleEmbeddingHandler(EmbeddingDataHandler):
     def embedd(self, data_model: ArticleChunkModel) -> ArticleEmbeddedChunkModel:
         return ArticleEmbeddedChunkModel(
             id=data_model.id,
+            content=data_model.content,
+            embedding=embedd_text(data_model.content).tolist(),
             platform=data_model.platform,
             link=data_model.link,
-            chunk_content=data_model.chunk_content,
-            chunk_id=data_model.chunk_id,
-            embedding=embedd_text(data_model.chunk_content).tolist(),
+            document_id=data_model.document_id,
             author_id=data_model.author_id,
         )
 
@@ -55,10 +55,10 @@ class RepositoryEmbeddingHandler(EmbeddingDataHandler):
     def embedd(self, data_model: RepositoryChunkModel) -> RepositoryEmbeddedChunkModel:
         return RepositoryEmbeddedChunkModel(
             id=data_model.id,
+            content=data_model.content,
+            embedding=embedd_text(data_model.content).tolist(),
             name=data_model.name,
             link=data_model.link,
-            chunk_id=data_model.chunk_id,
-            chunk_content=data_model.chunk_content,
-            embedding=embedd_text(data_model.chunk_content).tolist(),
-            owner_id=data_model.owner_id,
+            document_id=data_model.document_id,
+            author_id=data_model.author_id,
         )

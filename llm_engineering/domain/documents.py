@@ -117,7 +117,7 @@ class RepositoryDocument(BaseDocument):
     name: str
     link: str
     content: dict
-    owner_id: str = Field(alias="owner_id")
+    author_id: str = Field(alias="author_id")
 
     class Settings:
         name = DataCategory.REPOSITORIES

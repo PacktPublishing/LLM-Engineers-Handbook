@@ -49,7 +49,7 @@ class CleaningDispatcher:
         logger.info(
             "Data cleaned successfully.",
             data_category=data_category,
-            cleaned_content_len=len(clean_model.cleaned_content),
+            cleaned_content_len=len(clean_model.content),
         )
 
         return clean_model

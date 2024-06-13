@@ -5,8 +5,8 @@ from .types import DataCategory
 
 
 class PostCleanedModel(VectorDBDataModel):
+    content: str
     platform: str
-    cleaned_content: str
     author_id: str
     image: Optional[str] = None
 
@@ -17,9 +17,9 @@ class PostCleanedModel(VectorDBDataModel):
 
 
 class ArticleCleanedModel(VectorDBDataModel):
+    content: str
     platform: str
     link: str
-    cleaned_content: str
     author_id: str
 
     class Config:
@@ -29,10 +29,10 @@ class ArticleCleanedModel(VectorDBDataModel):
 
 
 class RepositoryCleanedModel(VectorDBDataModel):
+    content: str
     name: str
     link: str
-    cleaned_content: str
-    owner_id: str
+    author_id: str
 
     class Config:
         name = "cleaned_repositories"

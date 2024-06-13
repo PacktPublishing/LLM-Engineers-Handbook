@@ -1,15 +1,14 @@
-import numpy as np
-
+from pydantic import UUID4
 from llm_engineering.domain.types import DataCategory
 
 from .base import VectorDBDataModel
 
 
 class PostEmbeddedChunkModel(VectorDBDataModel):
-    platform: str
-    chunk_id: str
-    chunk_content: str
+    content: str
     embedding: list
+    platform: str
+    document_id: UUID4
     author_id: str
 
     class Config:
@@ -19,11 +18,11 @@ class PostEmbeddedChunkModel(VectorDBDataModel):
 
 
 class ArticleEmbeddedChunkModel(VectorDBDataModel):
+    content: str
+    embedding: list
     platform: str
     link: str
-    chunk_id: str
-    chunk_content: str
-    embedding: list
+    document_id: UUID4
     author_id: str
 
     class Config:
@@ -33,12 +32,12 @@ class ArticleEmbeddedChunkModel(VectorDBDataModel):
 
 
 class RepositoryEmbeddedChunkModel(VectorDBDataModel):
+    content: str
+    embedding: list
     name: str
     link: str
-    chunk_id: str
-    chunk_content: str
-    embedding: list
-    owner_id: str
+    document_id: UUID4
+    author_id: str
 
     class Config:
         name = "embedded_repositories"
