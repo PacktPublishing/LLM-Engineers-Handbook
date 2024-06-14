@@ -18,7 +18,7 @@ if __name__ == "__main__":
             - how it is integrated with vector DBs and large language models (LLMs).
         """
         
-    retriever = ContextRetriever(mock=True)
+    retriever = ContextRetriever(mock=False)
     documents = retriever.search(query, k=12)
 
     for rank, document in enumerate(documents):

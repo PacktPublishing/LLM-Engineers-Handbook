@@ -3,7 +3,6 @@ from langchain_openai import ChatOpenAI
 from llm_engineering.domain.queries import Query
 from llm_engineering.settings import settings
 
-from .chain import GeneralChain
 from .prompt_templates import QueryExpansionTemplate
 
 
@@ -18,15 +17,13 @@ class QueryExpansion:
             return [query for _ in range(expand_to_n)]
 
         query_expansion_template = QueryExpansionTemplate()
-        prompt_template = query_expansion_template.create_template(expand_to_n - 1)
+        prompt = query_expansion_template.create_template(expand_to_n - 1)
         model = ChatOpenAI(model=settings.OPENAI_MODEL_ID, temperature=0)
-
-        chain = GeneralChain().get_chain(
-            llm=model, output_key="expanded_queries", template=prompt_template
-        )
+        
+        chain = prompt | model
 
         response = chain.invoke({"question": query})
-        result = response["expanded_queries"]
+        result = response.content
 
         queries_content = result.strip().split(query_expansion_template.separator)
         

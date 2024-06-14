@@ -5,7 +5,6 @@ from llm_engineering.domain.documents import UserDocument
 from llm_engineering.domain.queries import Query
 from llm_engineering.settings import settings
 
-from .chain import GeneralChain
 from .prompt_templates import SelfQueryTemplate
 
 
@@ -20,12 +19,10 @@ class SelfQuery:
         prompt = SelfQueryTemplate().create_template()
         model = ChatOpenAI(model=settings.OPENAI_MODEL_ID, temperature=0)
 
-        chain = GeneralChain().get_chain(
-            llm=model, output_key="metadata_filter_value", template=prompt
-        )
+        chain = prompt | model
 
         response = chain.invoke({"question": query})
-        username_or_id = response["metadata_filter_value"]
+        username_or_id = response.content
         username_or_id = username_or_id.strip("\n ")
 
         if username_or_id == "none":
