@@ -10,10 +10,10 @@ from qdrant_client.http import exceptions
 from qdrant_client.http.models import Distance, VectorParams
 from qdrant_client.models import CollectionInfo, PointStruct, Record
 
+from llm_engineering.application.networks.embeddings import EmbeddingModelSingleton
 from llm_engineering.domain.exceptions import ImproperlyConfigured
 from llm_engineering.domain.types import DataCategory
 from llm_engineering.infrastructure.db.qdrant import connection
-from llm_engineering.settings import settings
 
 T = TypeVar("T", bound="VectorBaseDocument")
 
@@ -177,7 +177,7 @@ class VectorBaseDocument(BaseModel, Generic[T], ABC):
     ) -> bool:
         if use_vector_index is True:
             vectors_config = VectorParams(
-                size=settings.TEXT_EMBEDDING_MODEL_SIZE, distance=Distance.COSINE
+                size=EmbeddingModelSingleton().embedding_size, distance=Distance.COSINE
             )
         else:
             vectors_config = {}

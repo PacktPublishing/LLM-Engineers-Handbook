@@ -3,8 +3,9 @@ from langchain.text_splitter import (
     SentenceTransformersTokenTextSplitter,
 )
 
-from llm_engineering.settings import settings
+from llm_engineering.application.networks import EmbeddingModelSingleton
 
+embedding_model = EmbeddingModelSingleton()
 
 def chunk_text(text: str) -> list[str]:
     character_splitter = RecursiveCharacterTextSplitter(
@@ -14,8 +15,8 @@ def chunk_text(text: str) -> list[str]:
 
     token_splitter = SentenceTransformersTokenTextSplitter(
         chunk_overlap=50,
-        tokens_per_chunk=settings.TEXT_EMBEDDING_MODEL_MAX_INPUT_LENGTH,
-        model_name=settings.TEXT_EMBEDDING_MODEL_ID,
+        tokens_per_chunk=embedding_model.max_input_length,
+        model_name=embedding_model.model_id,
     )
     chunks = []
 

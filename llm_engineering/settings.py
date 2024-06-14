@@ -21,13 +21,8 @@ class Settings(BaseSettings):
     LINKEDIN_PASSWORD: str | None = None
 
     # RAG
-    # TODO: Extract the max input length directly from the model
     TEXT_EMBEDDING_MODEL_ID: str = "sentence-transformers/all-MiniLM-L6-v2"
-    TEXT_EMBEDDING_MODEL_MAX_INPUT_LENGTH: int = 256
-    # TODO: Extract the embedding size directly from the model
-    TEXT_EMBEDDING_MODEL_SIZE: int = 384
     RERANKING_CROSS_ENCODER_MODEL_ID: str = "cross-encoder/ms-marco-MiniLM-L-4-v2"
-    
     RAG_MODEL_DEVICE: str = "cpu"
 
     # QdrantDB Vector DB

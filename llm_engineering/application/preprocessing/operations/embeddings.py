@@ -1,10 +1,7 @@
-from numpy.typing import NDArray
-from sentence_transformers.SentenceTransformer import SentenceTransformer
+from llm_engineering.application.networks import EmbeddingModelSingleton
 
-from llm_engineering.settings import settings
+embedding_model = EmbeddingModelSingleton()
 
 
-def embedd_text(text: str) -> NDArray:
-    model = SentenceTransformer(settings.TEXT_EMBEDDING_MODEL_ID, device=settings.RAG_MODEL_DEVICE)
-
-    return model.encode(text)
+def embedd_text(text: str) -> list[float]:
+    return embedding_model(text, to_list=True)

@@ -1,17 +1,11 @@
-from sentence_transformers import CrossEncoder
-
+from llm_engineering.application.networks import CrossEncoderModelSingleton
 from llm_engineering.domain.embedded_chunks import EmbeddedChunk
 from llm_engineering.domain.queries import Query
-from llm_engineering.settings import settings
 
 
 class Reranker:
     def __init__(self, mock: bool = False) -> None:
-        self._model = CrossEncoder(
-            settings.RERANKING_CROSS_ENCODER_MODEL_ID,
-            max_length=settings.TEXT_EMBEDDING_MODEL_MAX_INPUT_LENGTH,
-            device=settings.RAG_MODEL_DEVICE,
-        )
+        self._model = CrossEncoderModelSingleton()
         self._mock = mock
 
     def generate(
@@ -21,8 +15,7 @@ class Reranker:
             return chunks
 
         query_doc_tuples = [(query.content, chunk.content) for chunk in chunks]
-        scores = self._model.predict(query_doc_tuples)
-        scores = scores.tolist()
+        scores = self._model(query_doc_tuples)
 
         scored_query_doc_tuples = list(zip(scores, chunks))
         scored_query_doc_tuples.sort(key=lambda x: x[0], reverse=True)

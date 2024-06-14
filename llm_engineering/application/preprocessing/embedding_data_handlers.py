@@ -38,7 +38,7 @@ class QueryEmbeddingHandler(EmbeddingDataHandler):
             id=data_model.id,
             author_id=data_model.author_id,
             content=data_model.content,
-            embedding=embedd_text(data_model.content).tolist(),
+            embedding=embedd_text(data_model.content),
         )
 
 
@@ -47,7 +47,7 @@ class PostEmbeddingHandler(EmbeddingDataHandler):
         return EmbeddedPostChunk(
             id=data_model.id,
             content=data_model.content,
-            embedding=embedd_text(data_model.content).tolist(),
+            embedding=embedd_text(data_model.content),
             platform=data_model.platform,
             document_id=data_model.document_id,
             author_id=data_model.author_id,
@@ -59,7 +59,7 @@ class ArticleEmbeddingHandler(EmbeddingDataHandler):
         return EmbeddedArticleChunk(
             id=data_model.id,
             content=data_model.content,
-            embedding=embedd_text(data_model.content).tolist(),
+            embedding=embedd_text(data_model.content),
             platform=data_model.platform,
             link=data_model.link,
             document_id=data_model.document_id,
@@ -72,7 +72,7 @@ class RepositoryEmbeddingHandler(EmbeddingDataHandler):
         return EmbeddedRepositoryChunk(
             id=data_model.id,
             content=data_model.content,
-            embedding=embedd_text(data_model.content).tolist(),
+            embedding=embedd_text(data_model.content),
             platform=data_model.platform,
             name=data_model.name,
             link=data_model.link,
