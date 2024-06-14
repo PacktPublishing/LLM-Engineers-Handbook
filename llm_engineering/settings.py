@@ -23,29 +23,27 @@ class Settings(BaseSettings):
     # RAG
     # TODO: Extract the max input length directly from the model
     TEXT_EMBEDDING_MODEL_ID: str = "sentence-transformers/all-MiniLM-L6-v2"
-    # TODO: Also add MAX_INPUT_LENGTH for code embedding model
     TEXT_EMBEDDING_MODEL_MAX_INPUT_LENGTH: int = 256
-    CODE_EMBEDDING_MODEL_ID: str = "hkunlp/instructor-xl"
-    RERANKING_EMBEDDING_MODEL_ID: str = "cross-encoder/ms-marco-MiniLM-L-4-v2"
-    
     # TODO: Extract the embedding size directly from the model
-    EMBEDDING_SIZE: int = 384
-    EMBEDDING_MODEL_DEVICE: str = "cpu"
+    TEXT_EMBEDDING_MODEL_SIZE: int = 384
+    RERANKING_CROSS_ENCODER_MODEL_ID: str = "cross-encoder/ms-marco-MiniLM-L-4-v2"
     
+    RAG_MODEL_DEVICE: str = "cpu"
+
     # QdrantDB Vector DB
     USE_QDRANT_CLOUD: bool = False
-    
+
     QDRANT_DATABASE_HOST: str = "localhost"
     QDRANT_DATABASE_PORT: int = 6333
     QDRANT_DATABASE_URL: str = "http://localhost:6333"
 
     QDRANT_CLOUD_URL: str = "str"
     QDRANT_APIKEY: str | None = None
-    
+
     # OpenAI API
     OPENAI_MODEL_ID: str = "gpt-3.5-turbo"
     OPENAI_API_KEY: str | None = None
-    
+
     # CometML config
     COMET_API_KEY: str | None = None
     COMET_WORKSPACE: str | None = None

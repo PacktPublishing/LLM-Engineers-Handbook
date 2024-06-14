@@ -1,7 +1,7 @@
+import uuid
 from abc import ABC
 from typing import Generic, Type, TypeVar
 from uuid import UUID
-import uuid
 
 import numpy as np
 from loguru import logger
@@ -20,13 +20,13 @@ T = TypeVar("T", bound="VectorBaseDocument")
 
 class VectorBaseDocument(BaseModel, Generic[T], ABC):
     id: UUID4 = Field(default_factory=uuid.uuid4)
-    
+
     def __eq__(self, value: object) -> bool:
         if not isinstance(value, self.__class__):
             return False
-            
+
         return self.id == value.id
-    
+
     def __hash__(self) -> int:
         return hash(self.id)
 
@@ -86,7 +86,9 @@ class VectorBaseDocument(BaseModel, Generic[T], ABC):
         try:
             documents, next_offset = cls._bulk_find(limit=limit, **kwargs)
         except exceptions.UnexpectedResponse:
-            logger.exception(f"Failed to search documents in '{cls.get_collection_name()}'.")
+            logger.exception(
+                f"Failed to search documents in '{cls.get_collection_name()}'."
+            )
 
             documents, next_offset = [], None
 
@@ -120,7 +122,9 @@ class VectorBaseDocument(BaseModel, Generic[T], ABC):
         try:
             documents = cls._search(query_vector=query_vector, limit=limit, **kwargs)
         except exceptions.UnexpectedResponse:
-            logger.exception(f"Failed to search documents in '{cls.get_collection_name()}'.")
+            logger.exception(
+                f"Failed to search documents in '{cls.get_collection_name()}'."
+            )
 
             documents = []
 
@@ -173,7 +177,7 @@ class VectorBaseDocument(BaseModel, Generic[T], ABC):
     ) -> bool:
         if use_vector_index is True:
             vectors_config = VectorParams(
-                size=settings.EMBEDDING_SIZE, distance=Distance.COSINE
+                size=settings.TEXT_EMBEDDING_MODEL_SIZE, distance=Distance.COSINE
             )
         else:
             vectors_config = {}
@@ -246,9 +250,11 @@ class VectorBaseDocument(BaseModel, Generic[T], ABC):
     def _has_class_attribute(cls, attribute_name: str) -> bool:
         if attribute_name in cls.__annotations__:
             return True
-        
+
         for base in cls.__bases__:
-            if hasattr(base, "_has_class_attribute") and base._has_class_attribute(attribute_name):
+            if hasattr(base, "_has_class_attribute") and base._has_class_attribute(
+                attribute_name
+            ):
                 return True
-            
+
         return False

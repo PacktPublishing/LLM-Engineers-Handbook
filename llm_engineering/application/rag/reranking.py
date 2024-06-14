@@ -8,9 +8,9 @@ from llm_engineering.settings import settings
 class Reranker:
     def __init__(self, mock: bool = False) -> None:
         self._model = CrossEncoder(
-            settings.RERANKING_EMBEDDING_MODEL_ID,
+            settings.RERANKING_CROSS_ENCODER_MODEL_ID,
             max_length=settings.TEXT_EMBEDDING_MODEL_MAX_INPUT_LENGTH,
-            device=settings.EMBEDDING_MODEL_DEVICE,
+            device=settings.RAG_MODEL_DEVICE,
         )
         self._mock = mock
 

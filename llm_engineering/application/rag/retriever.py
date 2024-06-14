@@ -23,7 +23,7 @@ class ContextRetriever:
     def __init__(self, mock: bool = False) -> None:
         self._query_expander = QueryExpansion(mock=mock)
         self._metadata_extractor = SelfQuery(mock=mock)
-        self._reranker = Reranker(mock=mock)
+        self._reranker = Reranker(mock=False)
 
     def search(
         self,

@@ -27,7 +27,6 @@ qdrant-client = "^1.8.0"
 unstructured = "^0.12.0"
 langchain = "^0.1.13"
 sentence-transformers = "^2.6.1"
-instructorembedding = "^1.0.1"
 
 # RAG
 langchain-openai = "^0.1.3"
