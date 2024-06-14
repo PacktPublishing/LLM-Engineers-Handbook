@@ -10,11 +10,15 @@ set_verbose(True)
 
 if __name__ == "__main__":
     query = """
-        Could you please draft a LinkedIn post discussing RAG systems?
-        I'm particularly interested in how RAG works and how it is integrated with vector DBs and large language models (LLMs).
+        My name is Paul Iusztin.
+        
+        Could you draft a LinkedIn post discussing RAG systems?
+        I'm particularly interested in:
+            - how RAG works
+            - how it is integrated with vector DBs and large language models (LLMs).
         """
         
-    retriever = ContextRetriever(mock=True)
+    retriever = ContextRetriever(mock=False)
     documents = retriever.search(query, k=12)
 
     for rank, document in enumerate(documents):

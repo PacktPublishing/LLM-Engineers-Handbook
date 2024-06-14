@@ -1,5 +1,7 @@
 from langchain_openai import ChatOpenAI
 
+from llm_engineering.application import utils
+from llm_engineering.domain.documents import UserDocument
 from llm_engineering.domain.queries import Query
 from llm_engineering.settings import settings
 
@@ -23,11 +25,16 @@ class SelfQuery:
         )
 
         response = chain.invoke({"question": query})
-        author_id = response["metadata_filter_value"]
+        username_or_id = response["metadata_filter_value"]
+        username_or_id = username_or_id.strip("\n ")
 
-        if author_id == "none":
-            author_id = None
+        if username_or_id == "none":
+            username_or_id = None
+        else:
+            first_name, last_name = utils.split_user_full_name(username_or_id)
+            user = UserDocument.get_or_create(first_name=first_name, last_name=last_name)
+            username_or_id = user.id
 
-        query.author_id = author_id
+        query.author_id = username_or_id
 
         return query
