@@ -20,12 +20,13 @@ class Settings(BaseSettings):
     LINKEDIN_USERNAME: str | None = None
     LINKEDIN_PASSWORD: str | None = None
 
-    # Embedding Models
+    # RAG
     # TODO: Extract the max input length directly from the model
     TEXT_EMBEDDING_MODEL_ID: str = "sentence-transformers/all-MiniLM-L6-v2"
     # TODO: Also add MAX_INPUT_LENGTH for code embedding model
     TEXT_EMBEDDING_MODEL_MAX_INPUT_LENGTH: int = 256
     CODE_EMBEDDING_MODEL_ID: str = "hkunlp/instructor-xl"
+    RERANKING_EMBEDDING_MODEL_ID: str = "cross-encoder/ms-marco-MiniLM-L-4-v2"
     
     # TODO: Extract the embedding size directly from the model
     EMBEDDING_SIZE: int = 384

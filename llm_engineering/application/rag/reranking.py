@@ -1,39 +1,31 @@
-from langchain_openai import ChatOpenAI
+from sentence_transformers import CrossEncoder
 
+from llm_engineering.domain.embedded_chunks import EmbeddedChunk
 from llm_engineering.settings import settings
-
-from .chain import GeneralChain
-from .prompt_templates import RerankingTemplate
 
 
 class Reranker:
     def __init__(self, mock: bool = False) -> None:
-        self._mock = mock
-    
-    def generate(self, query: str, passages: list[str], keep_top_k: int) -> list[str]:
-        if self._mock:
-            return passages
-        
-        reranking_template = RerankingTemplate()
-        prompt_template = reranking_template.create_template(keep_top_k=keep_top_k)
-
-        model = ChatOpenAI(model=settings.OPENAI_MODEL_ID)
-        chain = GeneralChain().get_chain(
-            llm=model, output_key="rerank", template=prompt_template
+        self._model = CrossEncoder(
+            settings.RERANKING_EMBEDDING_MODEL_ID,
+            max_length=settings.TEXT_EMBEDDING_MODEL_MAX_INPUT_LENGTH,
         )
+        self._mock = mock
 
-        stripped_passages = [
-            stripped_item for item in passages if (stripped_item := item.strip())
-        ]
-        passages = reranking_template.separator.join(stripped_passages)
-        response = chain.invoke({"question": query, "passages": passages})
+    def generate(
+        self, query: str, chunks: list[EmbeddedChunk], keep_top_k: int
+    ) -> list[EmbeddedChunk]:
+        if self._mock:
+            return chunks
 
-        result = response["rerank"]
-        reranked_passages = result.strip().split(reranking_template.separator)
-        stripped_passages = [
-            stripped_item
-            for item in reranked_passages
-            if (stripped_item := item.strip())
-        ]
+        query_doc_tuples = [(query, chunk.content) for chunk in chunks]
+        scores = self._model.predict(query_doc_tuples)
+        scores = scores.tolist()
 
-        return stripped_passages
+        scored_query_doc_tuples = list(zip(scores, chunks))
+        scored_query_doc_tuples.sort(key=lambda x: x[0], reverse=True)
+
+        reranked_documents = scored_query_doc_tuples[:keep_top_k]
+        reranked_documents = [doc for _, doc in reranked_documents]
+
+        return reranked_documents

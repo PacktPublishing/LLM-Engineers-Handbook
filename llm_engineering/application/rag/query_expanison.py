@@ -12,7 +12,7 @@ class QueryExpansion:
 
     def generate(self, query: str, expand_to_n: int) -> list[str]:
         if self._mock:
-            return [query for _ in range(expand_to_n)]
+            return [query.strip("\n ") for _ in range(expand_to_n)]
         
         query_expansion_template = QueryExpansionTemplate()
         prompt_template = query_expansion_template.create_template(expand_to_n)

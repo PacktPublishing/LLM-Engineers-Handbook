@@ -24,14 +24,13 @@ class ContextRetriever:
         
         self._query_expander = QueryExpansion(mock=mock)
         self._metadata_extractor = SelfQuery(mock=mock)
-        self._reranker = Reranker(mock=mock)
+        self._reranker = Reranker(mock=False)
 
     def search(
         self,
         query: str,
         k: int = 3,
         expand_to_n_queries: int = 3,
-        apply_rerank: bool = True,
     ) -> list:
         n_generated_queries = self._query_expander.generate(
             query, expand_to_n=expand_to_n_queries
@@ -64,7 +63,7 @@ class ContextRetriever:
         )
 
         if len(n_k_documents) > 0:
-            k_documents = self.rerank(query, n_k_documents, k)
+            k_documents = self.rerank(query, chunks=n_k_documents, keep_top_k=k)
         else:
             k_documents = []
 
@@ -111,11 +110,10 @@ class ContextRetriever:
         return retrieved_chunks
 
     def rerank(
-        self, query: str, documents: list[EmbeddedChunk], keep_top_k: int
+        self, query: str, chunks: list[EmbeddedChunk], keep_top_k: int
     ) -> list[EmbeddedChunk]:
-        passages = [chunk.content for chunk in documents]
         reranked_documents = self._reranker.generate(
-            query=query, passages=passages, keep_top_k=keep_top_k
+            query=query, chunks=chunks, keep_top_k=keep_top_k
         )
 
         logger.info(
