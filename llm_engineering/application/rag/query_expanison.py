@@ -1,16 +1,21 @@
 from langchain_openai import ChatOpenAI
 
+from llm_engineering.settings import settings
+
 from .chain import GeneralChain
 from .prompt_templates import QueryExpansionTemplate
 
-from llm_engineering.settings import settings
-
 
 class QueryExpansion:
-    @staticmethod
-    def generate_response(query: str, to_expand_to_n: int) -> list[str]:
+    def __init__(self, mock: bool = False) -> None:
+        self._mock = mock
+
+    def generate(self, query: str, expand_to_n: int) -> list[str]:
+        if self._mock:
+            return [query for _ in range(expand_to_n)]
+        
         query_expansion_template = QueryExpansionTemplate()
-        prompt_template = query_expansion_template.create_template(to_expand_to_n)
+        prompt_template = query_expansion_template.create_template(expand_to_n)
         model = ChatOpenAI(model=settings.OPENAI_MODEL_ID, temperature=0)
 
         chain = GeneralChain().get_chain(

@@ -19,6 +19,15 @@ T = TypeVar("T", bound="VectorBaseDocument")
 
 class VectorBaseDocument(BaseModel, Generic[T], ABC):
     id: UUID4
+    
+    def __eq__(self, value: object) -> bool:
+        if not isinstance(value, self.__class__):
+            return False
+            
+        return self.id == value.id
+    
+    def __hash__(self) -> int:
+        return hash(self.id)
 
     @classmethod
     def from_record(cls: Type[T], point: Record) -> T:

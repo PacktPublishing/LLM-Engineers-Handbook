@@ -1,13 +1,19 @@
 from langchain_openai import ChatOpenAI
 
+from llm_engineering.settings import settings
+
 from .chain import GeneralChain
 from .prompt_templates import SelfQueryTemplate
-from llm_engineering.settings import settings
 
 
 class SelfQuery:
-    @staticmethod
-    def generate_response(query: str) -> str | None:
+    def __init__(self, mock: bool = False) -> None:
+        self._mock = mock
+        
+    def generate(self, query: str) -> str | None:
+        if self._mock:
+            return None
+        
         prompt = SelfQueryTemplate().create_template()
         model = ChatOpenAI(model=settings.OPENAI_MODEL_ID, temperature=0)
 
@@ -17,7 +23,7 @@ class SelfQuery:
 
         response = chain.invoke({"question": query})
         result = response["metadata_filter_value"]
-        
+
         if result == "none":
             return None
 

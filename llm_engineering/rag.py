@@ -14,7 +14,7 @@ if __name__ == "__main__":
         I'm particularly interested in how RAG works and how it is integrated with vector DBs and large language models (LLMs).
         """
         
-    retriever = ContextRetriever()
+    retriever = ContextRetriever(mock=True)
     documents = retriever.search(query, k=3)
 
     for rank, document in enumerate(documents):

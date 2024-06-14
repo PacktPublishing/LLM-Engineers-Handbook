@@ -11,7 +11,7 @@ class BasePromptTemplate(ABC, BaseModel):
 
 
 class QueryExpansionTemplate(BasePromptTemplate):
-    prompt: str = """You are an AI language model assistant. Your task is to generate {to_expand_to_n}
+    prompt: str = """You are an AI language model assistant. Your task is to generate {expand_to_n}
     different versions of the given user question to retrieve relevant documents from a vector
     database. By generating multiple perspectives on the user question, your goal is to help
     the user overcome some of the limitations of the distance-based similarity search.
@@ -22,13 +22,13 @@ class QueryExpansionTemplate(BasePromptTemplate):
     def separator(self) -> str:
         return "#next-question#"
 
-    def create_template(self, to_expand_to_n: int) -> PromptTemplate:
+    def create_template(self, expand_to_n: int) -> PromptTemplate:
         return PromptTemplate(
             template=self.prompt,
             input_variables=["question"],
             partial_variables={
                 "separator": self.separator,
-                "to_expand_to_n": to_expand_to_n,
+                "expand_to_n": expand_to_n,
             },
         )
 

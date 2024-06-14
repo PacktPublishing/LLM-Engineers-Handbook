@@ -19,6 +19,15 @@ T = TypeVar("T", bound="NoSQLBaseDocument")
 class NoSQLBaseDocument(BaseModel, Generic[T], ABC):
     id: UUID4 = Field(default_factory=uuid.uuid4)
 
+    def __eq__(self, value: object) -> bool:
+        if not isinstance(value, self.__class__):
+            return False
+
+        return self.id == value.id
+
+    def __hash__(self) -> int:
+        return hash(self.id)
+
     @classmethod
     def from_mongo(cls: Type[T], data: dict) -> T:
         """Convert "_id" (str object) into "id" (UUID object)."""

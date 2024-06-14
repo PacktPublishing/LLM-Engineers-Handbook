@@ -1,15 +1,19 @@
 from langchain_openai import ChatOpenAI
 
+from llm_engineering.settings import settings
+
 from .chain import GeneralChain
 from .prompt_templates import RerankingTemplate
-from llm_engineering.settings import settings
 
 
 class Reranker:
-    @staticmethod
-    def generate_response(
-        query: str, passages: list[str], keep_top_k: int
-    ) -> list[str]:
+    def __init__(self, mock: bool = False) -> None:
+        self._mock = mock
+    
+    def generate(self, query: str, passages: list[str], keep_top_k: int) -> list[str]:
+        if self._mock:
+            return passages
+        
         reranking_template = RerankingTemplate()
         prompt_template = reranking_template.create_template(keep_top_k=keep_top_k)
 
