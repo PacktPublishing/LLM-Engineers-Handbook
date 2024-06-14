@@ -5,13 +5,14 @@ from qdrant_client.models import FieldCondition, Filter, MatchValue
 from sentence_transformers.SentenceTransformer import SentenceTransformer
 
 from llm_engineering.application import utils
+from llm_engineering.application.preprocessing.dispatchers import EmbeddingDispatcher
 from llm_engineering.domain.embedded_chunks import (
     EmbeddedArticleChunk,
     EmbeddedChunk,
     EmbeddedPostChunk,
     EmbeddedRepositoryChunk,
 )
-from llm_engineering.settings import settings
+from llm_engineering.domain.queries import EmbeddedQuery, Query
 
 from .query_expanison import QueryExpansion
 from .reranking import Reranker
@@ -20,8 +21,6 @@ from .self_query import SelfQuery
 
 class ContextRetriever:
     def __init__(self, mock: bool = False) -> None:
-        self._embedder = SentenceTransformer(settings.TEXT_EMBEDDING_MODEL_ID)
-        
         self._query_expander = QueryExpansion(mock=mock)
         self._metadata_extractor = SelfQuery(mock=mock)
         self._reranker = Reranker(mock=False)
@@ -32,24 +31,26 @@ class ContextRetriever:
         k: int = 3,
         expand_to_n_queries: int = 3,
     ) -> list:
+        query_model = Query.from_str(query)
+        
+        query_model = self._metadata_extractor.generate(query_model)
+        logger.info(
+            "Successfully extracted the author_id from the query.",
+            author_id=query_model.author_id,
+        )
+        
         n_generated_queries = self._query_expander.generate(
-            query, expand_to_n=expand_to_n_queries
+            query_model, expand_to_n=expand_to_n_queries
         )
         logger.info(
             "Successfully generated queries for search.",
             num_queries=len(n_generated_queries),
         )
 
-        author_id = self._metadata_extractor.generate(query)
-        logger.info(
-            "Successfully extracted the author_id from the query.",
-            author_id=author_id,
-        )
-
         with concurrent.futures.ThreadPoolExecutor() as executor:
             search_tasks = [
-                executor.submit(self._search_single_query, query, author_id, k)
-                for query in n_generated_queries
+                executor.submit(self._search, _query_model, k)
+                for _query_model in n_generated_queries
             ]
 
             n_k_documents = [
@@ -69,21 +70,21 @@ class ContextRetriever:
 
         return k_documents
 
-    def _search_single_query(
-        self, generated_query: str, author_id: str | None = None, k: int = 3
+    def _search(
+        self, query: Query, k: int = 3
     ) -> list[EmbeddedChunk]:
         assert k >= 3, "k should be >= 3"
 
         def _search_data_category(
-            data_category_odm: type[EmbeddedChunk], query_vector: list
+            data_category_odm: type[EmbeddedChunk], embedded_query: EmbeddedQuery
         ) -> list[EmbeddedChunk]:
-            if author_id:
+            if embedded_query.author_id:
                 query_filter = Filter(
                     must=[
                         FieldCondition(
                             key="author_id",
                             match=MatchValue(
-                                value=author_id,
+                                value=str(embedded_query.author_id),
                             ),
                         )
                     ]
@@ -92,17 +93,17 @@ class ContextRetriever:
                 query_filter = None
 
             return data_category_odm.search(
-                query_vector=query_vector,
+                query_vector=embedded_query.embedding,
                 limit=k // 3,
                 query_filter=query_filter,
             )
 
-        query_vector = self._embedder.encode(generated_query).tolist()
+        embedded_query: EmbeddedQuery = EmbeddingDispatcher.dispatch(query)
 
-        post_chunks = _search_data_category(EmbeddedPostChunk, query_vector)
-        articles_chunks = _search_data_category(EmbeddedArticleChunk, query_vector)
+        post_chunks = _search_data_category(EmbeddedPostChunk, embedded_query)
+        articles_chunks = _search_data_category(EmbeddedArticleChunk, embedded_query)
         repositories_chunks = _search_data_category(
-            EmbeddedRepositoryChunk, query_vector
+            EmbeddedRepositoryChunk, embedded_query
         )
 
         retrieved_chunks = post_chunks + articles_chunks + repositories_chunks
@@ -110,8 +111,11 @@ class ContextRetriever:
         return retrieved_chunks
 
     def rerank(
-        self, query: str, chunks: list[EmbeddedChunk], keep_top_k: int
+        self, query: str | Query, chunks: list[EmbeddedChunk], keep_top_k: int
     ) -> list[EmbeddedChunk]:
+        if isinstance(query, str):
+            query = Query.from_str(query)
+            
         reranked_documents = self._reranker.generate(
             query=query, chunks=chunks, keep_top_k=keep_top_k
         )

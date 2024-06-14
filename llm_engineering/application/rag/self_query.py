@@ -1,5 +1,6 @@
 from langchain_openai import ChatOpenAI
 
+from llm_engineering.domain.queries import Query
 from llm_engineering.settings import settings
 
 from .chain import GeneralChain
@@ -10,9 +11,9 @@ class SelfQuery:
     def __init__(self, mock: bool = False) -> None:
         self._mock = mock
         
-    def generate(self, query: str) -> str | None:
+    def generate(self, query: Query) -> Query:
         if self._mock:
-            return None
+            return query
         
         prompt = SelfQueryTemplate().create_template()
         model = ChatOpenAI(model=settings.OPENAI_MODEL_ID, temperature=0)
@@ -22,9 +23,11 @@ class SelfQuery:
         )
 
         response = chain.invoke({"question": query})
-        result = response["metadata_filter_value"]
+        author_id = response["metadata_filter_value"]
 
-        if result == "none":
-            return None
+        if author_id == "none":
+            author_id = None
 
-        return result
+        query.author_id = author_id
+
+        return query

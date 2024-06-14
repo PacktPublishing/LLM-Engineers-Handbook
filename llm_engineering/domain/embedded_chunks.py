@@ -9,10 +9,10 @@ from .base import VectorBaseDocument
 
 class EmbeddedChunk(VectorBaseDocument, ABC):
     content: str
-    embedding: list | None
+    embedding: list[float] | None
     platform: str
     document_id: UUID4
-    author_id: str
+    author_id: UUID4
 
 
 class EmbeddedPostChunk(EmbeddedChunk):

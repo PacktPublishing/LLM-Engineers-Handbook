@@ -49,7 +49,7 @@ class GithubCrawler(BaseCrawler):
                 name=repo_name,
                 link=link,
                 platform="github",
-                author_id=str(kwargs.get("user").id),
+                author_id=kwargs["user"].id,
             )
             instance.save()
 

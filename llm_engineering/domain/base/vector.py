@@ -1,10 +1,11 @@
 from abc import ABC
 from typing import Generic, Type, TypeVar
 from uuid import UUID
+import uuid
 
 import numpy as np
 from loguru import logger
-from pydantic import UUID4, BaseModel
+from pydantic import UUID4, BaseModel, Field
 from qdrant_client.http import exceptions
 from qdrant_client.http.models import Distance, VectorParams
 from qdrant_client.models import CollectionInfo, PointStruct, Record
@@ -18,7 +19,7 @@ T = TypeVar("T", bound="VectorBaseDocument")
 
 
 class VectorBaseDocument(BaseModel, Generic[T], ABC):
-    id: UUID4
+    id: UUID4 = Field(default_factory=uuid.uuid4)
     
     def __eq__(self, value: object) -> bool:
         if not isinstance(value, self.__class__):

@@ -36,7 +36,7 @@ class MediumCrawler(BaseAbstractCrawler):
             platform="medium",
             content=data,
             link=link,
-            author_id=str(kwargs.get("user").id),
+            author_id=kwargs["user"].id,
         )
         instance.save()
 

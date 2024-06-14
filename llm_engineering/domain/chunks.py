@@ -11,7 +11,7 @@ class Chunk(VectorBaseDocument, ABC):
     content: str
     platform: str
     document_id: UUID4
-    author_id: str
+    author_id: UUID4
 
 
 class PostChunk(Chunk):

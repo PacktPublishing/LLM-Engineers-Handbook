@@ -35,7 +35,8 @@ class NoSQLBaseDocument(BaseModel, Generic[T], ABC):
         if not data:
             raise ValueError("Data is empty.")
 
-        id = data.pop("_id", None)
+        id = data.pop("_id")
+        id = uuid.UUID(id, version=4)
 
         return cls(**dict(data, id=id))
 

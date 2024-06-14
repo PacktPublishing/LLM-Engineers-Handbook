@@ -1,6 +1,8 @@
 from abc import ABC
 from typing import Optional
 
+from pydantic import UUID4
+
 from .base import VectorBaseDocument
 from .types import DataCategory
 
@@ -8,7 +10,7 @@ from .types import DataCategory
 class CleanedDocument(VectorBaseDocument, ABC):
     content: str
     platform: str
-    author_id: str
+    author_id: UUID4
 
 
 class CleanedPostDocument(CleanedDocument):

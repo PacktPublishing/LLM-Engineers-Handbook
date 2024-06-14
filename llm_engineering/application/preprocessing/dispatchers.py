@@ -16,6 +16,7 @@ from .cleaning_data_handlers import (
     RepositoryCleaningHandler,
 )
 from .embedding_data_handlers import (
+    QueryEmbeddingHandler,
     ArticleEmbeddingHandler,
     EmbeddingDataHandler,
     PostEmbeddingHandler,
@@ -88,6 +89,8 @@ class ChunkingDispatcher:
 class EmbeddingHandlerFactory:
     @staticmethod
     def create_handler(data_category: DataCategory) -> EmbeddingDataHandler:
+        if data_category == DataCategory.QUERIES:
+            return QueryEmbeddingHandler()
         if data_category == DataCategory.POSTS:
             return PostEmbeddingHandler()
         elif data_category == DataCategory.ARTICLES:
@@ -105,10 +108,10 @@ class EmbeddingDispatcher:
     def dispatch(cls, data_model: VectorBaseDocument) -> VectorBaseDocument:
         data_category = data_model.get_category()
         handler = cls.cleaning_factory.create_handler(data_category)
-        embedded_chunk_model = handler.embedd(data_model)
+        embedded_chunk_model = handler.embed(data_model)
 
         logger.info(
-            "Chunk embedded successfully.",
+            "Data embedded successfully.",
             data_category=data_category,
             embedding_len=len(embedded_chunk_model.embedding),
         )
