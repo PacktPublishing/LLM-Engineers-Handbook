@@ -3,7 +3,11 @@ from pathlib import Path
 
 import click
 
-from llm_engineering.application.pipelines import create_dataset, digital_data_etl, feature_engineering
+from llm_engineering.interfaces.orchestrator.pipelines import (
+    digital_data_etl,
+    feature_engineering,
+    generate_instruct_datasets
+)
 
 
 @click.command(
@@ -72,11 +76,12 @@ def main(
     pipeline_args = {
         "enable_cache": not no_cache,
     }
+    root_dir = Path(__file__).resolve().parent.parent.parent.parent
 
     if run_etl:
         run_args_etl = {}
         pipeline_args["config_path"] = (
-            Path(__file__).resolve().parent.parent
+            root_dir
             / "configs"
             / "digital_data_etl_paul_iusztin.yaml"
         )
@@ -88,7 +93,7 @@ def main(
     if run_feature_engineering:
         run_args_fe = {}
         pipeline_args["config_path"] = (
-            Path(__file__).resolve().parent.parent
+            root_dir
             / "configs"
             / "feature_engineering.yaml"
         )
@@ -100,12 +105,14 @@ def main(
     if run_create_dataset:
         run_args_cd = {}
         pipeline_args["config_path"] = (
-            Path(__file__).resolve().parent.parent / "configs" / "create_dataset.yaml"
+            root_dir 
+            / "configs" 
+            / "generate_instruct_datasets.yaml"
         )
         pipeline_args["run_name"] = (
-            f"create_dataset_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+            f"generate_instruct_datasets_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
         )
-        create_dataset.with_options(**pipeline_args)(**run_args_cd)
+        generate_instruct_datasets.with_options(**pipeline_args)(**run_args_cd)
 
 
 if __name__ == "__main__":

@@ -1,3 +1,3 @@
-from . import create_dataset, etl, feature_engineering
+from . import generate_instruct_datasets, etl, feature_engineering
 
-__all__ = ["create_dataset", "etl", "feature_engineering"]
+__all__ = ["generate_instruct_datasets", "etl", "feature_engineering"]

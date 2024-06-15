@@ -1,6 +1,6 @@
 import uuid
 from abc import ABC
-from typing import Generic, Type, TypeVar
+from typing import Any, Callable, Generic, Type, TypeVar
 from uuid import UUID
 
 import numpy as np
@@ -197,7 +197,7 @@ class VectorBaseDocument(BaseModel, Generic[T], ABC):
         return cls.Config.category
 
     @classmethod
-    def get_collection_name(cls) -> str:
+    def get_collection_name(cls: Type[T]) -> str:
         if not hasattr(cls, "Config") or not hasattr(cls.Config, "name"):
             raise ImproperlyConfigured(
                 "The class should define a Config class with"
@@ -207,30 +207,45 @@ class VectorBaseDocument(BaseModel, Generic[T], ABC):
         return cls.Config.name
 
     @classmethod
-    def get_use_vector_index(cls) -> bool:
+    def get_use_vector_index(cls: Type[T]) -> bool:
         if not hasattr(cls, "Config") or not hasattr(cls.Config, "use_vector_index"):
             return True
 
         return cls.Config.use_vector_index
 
     @classmethod
-    def group_by_collection(
-        cls, documents: list["VectorBaseDocument"]
+    def group_by_class(
+        cls: Type["VectorBaseDocument"], documents: list["VectorBaseDocument"]
     ) -> dict["VectorBaseDocument", list["VectorBaseDocument"]]:
+        return cls._group_by(
+            documents, selector=lambda doc: doc.__class__
+            )
+        
+    @classmethod
+    def group_by_category(
+        cls: Type[T], documents: list[T]
+    ) -> dict[DataCategory, list[T]]:
+        return cls._group_by(
+            documents, selector=lambda doc: doc.get_category()
+            )
+
+    @classmethod
+    def _group_by(
+        cls: Type[T], documents: list[T], selector: Callable[[T], Any]
+    ) -> dict[Any, list[T]]:
         grouped = {}
         for doc in documents:
-            collection_name = doc.get_collection_name()
-            data_model_class = cls.collection_name_to_class(collection_name)
+            key = selector(doc)
 
-            if data_model_class not in grouped:
-                grouped[data_model_class] = []
-            grouped[data_model_class].append(doc)
+            if key not in grouped:
+                grouped[key] = []
+            grouped[key].append(doc)
 
         return grouped
 
     @classmethod
     def collection_name_to_class(
-        cls, collection_name: str
+        cls: Type["VectorBaseDocument"], collection_name: str
     ) -> type["VectorBaseDocument"]:
         for subclass in cls.__subclasses__():
             try:
@@ -247,7 +262,7 @@ class VectorBaseDocument(BaseModel, Generic[T], ABC):
         raise ValueError(f"No subclass found for collection name: {collection_name}")
 
     @classmethod
-    def _has_class_attribute(cls, attribute_name: str) -> bool:
+    def _has_class_attribute(cls: Type[T], attribute_name: str) -> bool:
         if attribute_name in cls.__annotations__:
             return True
 
