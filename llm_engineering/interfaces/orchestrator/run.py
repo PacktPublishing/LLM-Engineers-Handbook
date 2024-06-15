@@ -6,7 +6,8 @@ import click
 from llm_engineering.interfaces.orchestrator.pipelines import (
     digital_data_etl,
     feature_engineering,
-    generate_instruct_datasets
+    generate_instruct_datasets,
+    training,
 )
 
 
@@ -58,19 +59,29 @@ Examples:
     help="Whether to run the FE pipeline.",
 )
 @click.option(
-    "--run-create-dataset",
+    "--run-generate-instruct-datasets",
     is_flag=True,
     default=False,
-    help="Whether to run the create dataset pipeline.",
+    help="Whether to run the instruct dataset generation pipeline.",
+)
+@click.option(
+    "--run-training",
+    is_flag=True,
+    default=False,
+    help="Whether to run the training pipeline.",
 )
 def main(
     no_cache: bool = False,
     run_etl: bool = False,
     run_feature_engineering: bool = False,
-    run_create_dataset: bool = False,
+    run_generate_instruct_datasets: bool = False,
+    run_training: bool = False,
 ) -> None:
     assert (
-        run_etl or run_feature_engineering or run_create_dataset
+        run_etl
+        or run_feature_engineering
+        or run_generate_instruct_datasets
+        or run_training
     ), "Please specify a pipeline to run."
 
     pipeline_args = {
@@ -81,9 +92,7 @@ def main(
     if run_etl:
         run_args_etl = {}
         pipeline_args["config_path"] = (
-            root_dir
-            / "configs"
-            / "digital_data_etl_paul_iusztin.yaml"
+            root_dir / "configs" / "digital_data_etl_paul_iusztin.yaml"
         )
         pipeline_args["run_name"] = (
             f"digital_data_etl_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
@@ -92,27 +101,29 @@ def main(
 
     if run_feature_engineering:
         run_args_fe = {}
-        pipeline_args["config_path"] = (
-            root_dir
-            / "configs"
-            / "feature_engineering.yaml"
-        )
+        pipeline_args["config_path"] = root_dir / "configs" / "feature_engineering.yaml"
         pipeline_args["run_name"] = (
             f"feature_engineering_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
         )
         feature_engineering.with_options(**pipeline_args)(**run_args_fe)
 
-    if run_create_dataset:
+    if run_generate_instruct_datasets:
         run_args_cd = {}
         pipeline_args["config_path"] = (
-            root_dir 
-            / "configs" 
-            / "generate_instruct_datasets.yaml"
+            root_dir / "configs" / "generate_instruct_datasets.yaml"
         )
         pipeline_args["run_name"] = (
             f"generate_instruct_datasets_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
         )
         generate_instruct_datasets.with_options(**pipeline_args)(**run_args_cd)
+
+    if run_training:
+        run_args_cd = {}
+        pipeline_args["config_path"] = root_dir / "configs" / "training.yaml"
+        pipeline_args["run_name"] = (
+            f"training_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+        )
+        training.with_options(**pipeline_args)(**run_args_cd)
 
 
 if __name__ == "__main__":

@@ -42,12 +42,11 @@ build-backend = "poetry.core.masonry.api"
 run-digital-data-etl = "python -m llm_engineering.interfaces.orchestrator.run --run-etl"
 run-feature-engineering-pipeline = "python -m llm_engineering.interfaces.orchestrator.run --run-feature-engineering"
 run-created-dataset-pipeline = "python -m llm_engineering.interfaces.orchestrator.run --run-create-dataset"
+run-training-pipeline = "python -m llm_engineering.interfaces.orchestrator.run --run-training"
 
 # Local infrastructure
-
 start-local-infrastructure = "docker-compose up -d"
 stop-local-infrastructure = "docker-compose stop"
-
 close-local-zenml-server="poetry run zenml down"
 # start-local-zenml-server="docker run -it -d --platform linux/amd64 -p 8080:8080 zenmldocker/zenml-server"
 
