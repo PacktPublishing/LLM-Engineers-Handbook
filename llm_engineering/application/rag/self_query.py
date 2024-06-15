@@ -22,8 +22,7 @@ class SelfQuery:
         chain = prompt | model
 
         response = chain.invoke({"question": query})
-        username_or_id = response.content
-        username_or_id = username_or_id.strip("\n ")
+        username_or_id = response.content.strip("\n ")
 
         if username_or_id == "none":
             username_or_id = None

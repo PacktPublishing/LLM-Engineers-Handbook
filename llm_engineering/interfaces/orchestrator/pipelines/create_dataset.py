@@ -1,7 +1,7 @@
 from loguru import logger
 from zenml import pipeline
 
-from llm_engineering.application.steps import create_dataset as cd_steps
+from llm_engineering.interfaces.orchestrator.steps import create_dataset as cd_steps
 
 
 @pipeline
