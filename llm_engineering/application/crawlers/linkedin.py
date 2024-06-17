@@ -26,7 +26,7 @@ class LinkedInCrawler(BaseAbstractCrawler):
 
         soup = self._get_page_content(link)
 
-        data = { # noqa: F841
+        data = {  # noqa
             "Name": self._scrape_section(soup, "h1", class_="text-heading-xlarge"),
             "About": self._scrape_section(soup, "div", class_="display-flex ph5 pv3"),
             "Main Page": self._scrape_section(soup, "div", {"id": "main-content"}),
