@@ -30,7 +30,7 @@ class MediumCrawler(BaseAbstractCrawler):
         }
 
         self.driver.close()
-        
+
         instance = self.model(
             platform="medium",
             content=data,
@@ -38,7 +38,7 @@ class MediumCrawler(BaseAbstractCrawler):
             author_id=kwargs["user"].id,
         )
         instance.save()
-        
+
         logger.info(f"Successfully scraped and saved article: {link}")
 
     def login(self):

@@ -13,7 +13,7 @@ from llm_engineering.domain.embedded_chunks import (
     EmbeddedPostChunk,
     EmbeddedRepositoryChunk,
 )
-from llm_engineering.domain.queries import Query, EmbeddedQuery
+from llm_engineering.domain.queries import EmbeddedQuery, Query
 
 from .operations import embedd_text
 
@@ -30,7 +30,7 @@ class EmbeddingDataHandler(ABC, Generic[ChunkT, EmbeddedChunkT]):
     @abstractmethod
     def embed(self, data_model: ChunkT) -> EmbeddedChunkT:
         pass
-    
+
 
 class QueryEmbeddingHandler(EmbeddingDataHandler):
     def embed(self, data_model: Query) -> EmbeddedQuery:

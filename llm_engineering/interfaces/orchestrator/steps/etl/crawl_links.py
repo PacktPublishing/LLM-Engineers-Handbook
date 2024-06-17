@@ -7,12 +7,7 @@ from llm_engineering.domain.documents import UserDocument
 
 @step
 def crawl_links(user: UserDocument, links: list[str]):
-    dispatcher = (
-        CrawlerDispatcher.build()
-        .register_linkedin()
-        .register_medium()
-        .register_github()
-    )
+    dispatcher = CrawlerDispatcher.build().register_linkedin().register_medium().register_github()
 
     logger.info(f"Starting to crawl {len(links)} links.")
 
@@ -31,6 +26,6 @@ def _crawl_link(dispatcher: CrawlerDispatcher, link: str, user: UserDocument) ->
 
         return True
     except Exception as e:
-        logger.error(f"An error occurred while crowling: {str(e)}")
+        logger.error(f"An error occurred while crowling: {e!s}")
 
         return False

@@ -48,7 +48,7 @@ class NoSQLBaseDocument(BaseModel, Generic[T], ABC):
 
         if "_id" not in parsed and "id" in parsed:
             parsed["_id"] = str(parsed.pop("id"))
-            
+
         for key, value in parsed.items():
             if isinstance(value, uuid.UUID):
                 parsed[key] = str(value)
@@ -79,9 +79,7 @@ class NoSQLBaseDocument(BaseModel, Generic[T], ABC):
 
             return new_instance
         except errors.OperationFailure:
-            logger.exception(
-                f"Failed to retrieve document with filter options: {filter_options}"
-            )
+            logger.exception(f"Failed to retrieve document with filter options: {filter_options}")
 
             raise
 
@@ -102,11 +100,7 @@ class NoSQLBaseDocument(BaseModel, Generic[T], ABC):
         collection = _database[cls.get_collection_name()]
         try:
             instances = collection.find(filter_options)
-            return [
-                document
-                for instance in instances
-                if (document := cls.from_mongo(instance)) is not None
-            ]
+            return [document for instance in instances if (document := cls.from_mongo(instance)) is not None]
         except errors.OperationFailure as e:
             logger.error(f"Failed to retrieve document: {e}")
 

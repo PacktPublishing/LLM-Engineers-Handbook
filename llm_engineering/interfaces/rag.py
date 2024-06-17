@@ -1,7 +1,5 @@
-from dotenv import load_dotenv
-from loguru import logger
-
 from langchain.globals import set_verbose
+from loguru import logger
 
 from llm_engineering.application.rag.retriever import ContextRetriever
 
@@ -17,7 +15,7 @@ if __name__ == "__main__":
             - how RAG works
             - how it is integrated with vector DBs and large language models (LLMs).
         """
-        
+
     retriever = ContextRetriever(mock=False)
     documents = retriever.search(query, k=12)
 

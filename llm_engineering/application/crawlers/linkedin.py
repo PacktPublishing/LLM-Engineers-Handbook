@@ -6,10 +6,11 @@ from bs4.element import Tag
 from loguru import logger
 from selenium.webdriver.common.by import By
 
-from .base import BaseAbstractCrawler
 from llm_engineering.domain.documents import PostDocument
-from llm_engineering.settings import settings
 from llm_engineering.domain.exceptions import ImproperlyConfigured
+from llm_engineering.settings import settings
+
+from .base import BaseAbstractCrawler
 
 
 class LinkedInCrawler(BaseAbstractCrawler):
@@ -25,7 +26,7 @@ class LinkedInCrawler(BaseAbstractCrawler):
 
         soup = self._get_page_content(link)
 
-        data = {
+        data = { # noqa: F841
             "Name": self._scrape_section(soup, "h1", class_="text-heading-xlarge"),
             "About": self._scrape_section(soup, "div", class_="display-flex ph5 pv3"),
             "Main Page": self._scrape_section(soup, "div", {"id": "main-content"}),
@@ -36,8 +37,7 @@ class LinkedInCrawler(BaseAbstractCrawler):
         self.driver.get(link)
         time.sleep(5)
         button = self.driver.find_element(
-            By.CSS_SELECTOR,
-            ".app-aware-link.profile-creator-shared-content-view__footer-action"
+            By.CSS_SELECTOR, ".app-aware-link.profile-creator-shared-content-view__footer-action"
         )
         button.click()
 

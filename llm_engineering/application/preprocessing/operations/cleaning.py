@@ -9,17 +9,17 @@ from unstructured.cleaners.core import (
 
 def unbold_text(text):
     # Mapping of bold numbers to their regular equivalents
-    bold_numbers = {
-        "𝟬": "0",
-        "𝟭": "1",
-        "𝟮": "2",
-        "𝟯": "3",
-        "𝟰": "4",
-        "𝟱": "5",
-        "𝟲": "6",
-        "𝟳": "7",
-        "𝟴": "8",
-        "𝟵": "9",
+    bold_numbers = {  
+        "𝟬": "0", # noqa: RUF001
+        "𝟭": "1", # noqa: RUF001
+        "𝟮": "2", # noqa: RUF001
+        "𝟯": "3", # noqa: RUF001
+        "𝟰": "4", # noqa: RUF001
+        "𝟱": "5", # noqa: RUF001
+        "𝟲": "6", # noqa: RUF001
+        "𝟳": "7", # noqa: RUF001
+        "𝟴": "8", # noqa: RUF001
+        "𝟵": "9", # noqa: RUF001
     }
 
     # Function to convert bold characters (letters and numbers)
@@ -38,9 +38,7 @@ def unbold_text(text):
             return char  # Return the character unchanged if it's not a bold number or letter
 
     # Regex for bold characters (numbers, uppercase, and lowercase letters)
-    bold_pattern = re.compile(
-        r"[\U0001D5D4-\U0001D5ED\U0001D5EE-\U0001D607\U0001D7CE-\U0001D7FF]"
-    )
+    bold_pattern = re.compile(r"[\U0001D5D4-\U0001D5ED\U0001D5EE-\U0001D607\U0001D7CE-\U0001D7FF]")
     text = bold_pattern.sub(convert_bold_char, text)
 
     return text

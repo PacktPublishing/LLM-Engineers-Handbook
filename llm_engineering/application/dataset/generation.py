@@ -44,16 +44,12 @@ Content number {{ doc.index }}:
         )
 
     @classmethod
-    def get_prompts(
-        cls, documents: list[CleanedDocument]
-    ) -> dict[DataCategory, list[GenerateDatasetSamplesPrompt]]:
+    def get_prompts(cls, documents: list[CleanedDocument]) -> dict[DataCategory, list[GenerateDatasetSamplesPrompt]]:
         grouped_prompts = {}
         grouped_cleaned_documents = CleanedDocument.group_by_category(documents)
         for category, documents in grouped_cleaned_documents.items():
             batched_documents_generator = cls._batch_by_category(category, documents)
-            category_prompts = [
-                cls.get_prompt(batch) for batch in batched_documents_generator
-            ]
+            category_prompts = [cls.get_prompt(batch) for batch in batched_documents_generator]
             grouped_prompts[category] = category_prompts
 
         return grouped_prompts
@@ -73,9 +69,7 @@ Content number {{ doc.index }}:
                 raise ValueError(f"Unsupported category: {category}")
 
     @classmethod
-    def get_prompt(
-        cls, documents: list[CleanedDocument]
-    ) -> GenerateDatasetSamplesPrompt:
+    def get_prompt(cls, documents: list[CleanedDocument]) -> GenerateDatasetSamplesPrompt:
         assert len(documents) > 0, "At least one document is required"
 
         data_category = documents[0].get_category()
@@ -90,9 +84,7 @@ Content number {{ doc.index }}:
         input_variables = {
             "data_category": data_category,
             "len_documents": len(documents),
-            "documents": [
-                {"index": i, "content": doc.content} for i, doc in enumerate(documents)
-            ],
+            "documents": [{"index": i, "content": doc.content} for i, doc in enumerate(documents)],
         }
         prompt = prompt_template.format(**input_variables)
         prompt_tokens = cls.tokenizer.encode(prompt)
@@ -126,42 +118,37 @@ Content number {{ doc.index }}:
             ]
 
             return messages
+
         if mock:
             llm = FakeListLLM(
                 responses=[
-                    '```json\n[{"instruction": "mock instruction"}, {"instruction": "mock instruction"}, {"instruction": "mock instruction"}]\n```'  # noqa
+                    '```json\n[{"instruction": "mock instruction"}, {"instruction": "mock instruction"}, {"instruction": "mock instruction"}]\n```'
                 ]
             )
         else:
             llm = ChatOpenAI(model=settings.OPENAI_MODEL_ID, temperature=0)
-        parser = ListPydanticOutputParser(
-            pydantic_object=domain.dataset.InstructDatasetSample
-        )
+        parser = ListPydanticOutputParser(pydantic_object=domain.dataset.InstructDatasetSample)
 
         chain = llm | parser
 
         datasets = {}
         for category, category_prompts in prompts.items():
-            langchain_category_prompts = [
-                _batch_to_langchain_prompt(batch) for batch in category_prompts
-            ]
+            langchain_category_prompts = [_batch_to_langchain_prompt(batch) for batch in category_prompts]
             batched_instruct_dataset_samples = chain.batch(langchain_category_prompts)
 
             flattened_instruct_dataset_samples = []
             for prompt, per_prompt_instruct_dataset_samples in zip(
-                category_prompts, batched_instruct_dataset_samples
+                category_prompts, batched_instruct_dataset_samples, strict=False
             ):
                 prompt_documents_as_response = prompt.documents
                 for document_as_response, instruct_dataset_sample in zip(
-                    prompt_documents_as_response, per_prompt_instruct_dataset_samples
+                    prompt_documents_as_response, per_prompt_instruct_dataset_samples, strict=False
                 ):
                     instruct_dataset_sample.response = document_as_response.content
 
                     flattened_instruct_dataset_samples.append(instruct_dataset_sample)
 
-            dataset = domain.dataset.InstructDataset(
-                category=category, samples=flattened_instruct_dataset_samples
-            )
+            dataset = domain.dataset.InstructDataset(category=category, samples=flattened_instruct_dataset_samples)
             datasets[category] = dataset
 
         return datasets

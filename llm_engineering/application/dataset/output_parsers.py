@@ -1,5 +1,6 @@
 from langchain.output_parsers import PydanticOutputParser
 
+
 class ListPydanticOutputParser(PydanticOutputParser):
     def _parse_obj(self, obj: dict | list):
         if isinstance(obj, list):

@@ -1,7 +1,6 @@
+from loguru import logger
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
-from loguru import logger
-
 
 from llm_engineering.settings import settings
 
@@ -14,12 +13,11 @@ class MongoDatabaseConnector:
             try:
                 cls._instance = MongoClient(settings.DATABASE_HOST)
             except ConnectionFailure as e:
-                logger.error(f"Couldn't connect to the database: {str(e)}")
+                logger.error(f"Couldn't connect to the database: {e!s}")
                 raise
 
-        logger.info(
-            f"Connection to MongoDB with URI successful: {settings.DATABASE_HOST}"
-        )
+        logger.info(f"Connection to MongoDB with URI successful: {settings.DATABASE_HOST}")
         return cls._instance
+
 
 connection = MongoDatabaseConnector()

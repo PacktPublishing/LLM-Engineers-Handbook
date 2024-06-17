@@ -11,11 +11,11 @@ from .prompt_templates import SelfQueryTemplate
 class SelfQuery:
     def __init__(self, mock: bool = False) -> None:
         self._mock = mock
-        
+
     def generate(self, query: Query) -> Query:
         if self._mock:
             return query
-        
+
         prompt = SelfQueryTemplate().create_template()
         model = ChatOpenAI(model=settings.OPENAI_MODEL_ID, temperature=0)
 

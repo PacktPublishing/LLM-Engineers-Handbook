@@ -13,22 +13,22 @@ class CrawlerDispatcher:
     @classmethod
     def build(cls) -> "CrawlerDispatcher":
         dispatcher = cls()
-        
+
         return dispatcher
 
     def register_medium(self) -> "CrawlerDispatcher":
         self.register("medium", MediumCrawler)
-        
+
         return self
 
     def register_linkedin(self) -> "CrawlerDispatcher":
         self.register("linkedin", LinkedInCrawler)
-        
+
         return self
 
     def register_github(self) -> "CrawlerDispatcher":
         self.register("github", GithubCrawler)
-        
+
         return self
 
     def register(self, domain: str, crawler: type[BaseCrawler]) -> None:

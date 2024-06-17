@@ -20,9 +20,7 @@ def query_feature_store() -> Annotated[list, "cleaned_documents"]:
 
     results = fetch_all_data()
 
-    cleaned_documents = [
-        doc for query_result in results.values() for doc in query_result
-    ]
+    cleaned_documents = [doc for query_result in results.values() for doc in query_result]
 
     return cleaned_documents
 
@@ -71,11 +69,9 @@ def __fetch(cleaned_document_type: type[CleanedDocument], limit: int = 1) -> lis
         cleaned_documents, next_offset = cleaned_document_type.bulk_find(limit=limit)
     except exceptions.UnexpectedResponse:
         return []
-    
+
     while next_offset:
-        documents, next_offset = cleaned_document_type.bulk_find(
-            limit=limit, offset=next_offset
-        )
+        documents, next_offset = cleaned_document_type.bulk_find(limit=limit, offset=next_offset)
         cleaned_documents.extend(documents)
 
     return cleaned_documents

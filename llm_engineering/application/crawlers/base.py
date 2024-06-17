@@ -57,14 +57,10 @@ class BaseAbstractCrawler(BaseCrawler, ABC):
         current_scroll = 0
         last_height = self.driver.execute_script("return document.body.scrollHeight")
         while True:
-            self.driver.execute_script(
-                "window.scrollTo(0, document.body.scrollHeight);"
-            )
+            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             time.sleep(5)
             new_height = self.driver.execute_script("return document.body.scrollHeight")
-            if new_height == last_height or (
-                self.scroll_limit and current_scroll >= self.scroll_limit
-            ):
+            if new_height == last_height or (self.scroll_limit and current_scroll >= self.scroll_limit):
                 break
             last_height = new_height
             current_scroll += 1

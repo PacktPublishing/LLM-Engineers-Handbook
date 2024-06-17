@@ -8,16 +8,14 @@ class Reranker:
         self._model = CrossEncoderModelSingleton()
         self._mock = mock
 
-    def generate(
-        self, query: Query, chunks: list[EmbeddedChunk], keep_top_k: int
-    ) -> list[EmbeddedChunk]:
+    def generate(self, query: Query, chunks: list[EmbeddedChunk], keep_top_k: int) -> list[EmbeddedChunk]:
         if self._mock:
             return chunks
 
         query_doc_tuples = [(query.content, chunk.content) for chunk in chunks]
         scores = self._model(query_doc_tuples)
 
-        scored_query_doc_tuples = list(zip(scores, chunks))
+        scored_query_doc_tuples = list(zip(scores, chunks, strict=False))
         scored_query_doc_tuples.sort(key=lambda x: x[0], reverse=True)
 
         reranked_documents = scored_query_doc_tuples[:keep_top_k]

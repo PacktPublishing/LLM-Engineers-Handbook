@@ -8,7 +8,6 @@ from loguru import logger
 from llm_engineering.domain.documents import RepositoryDocument
 
 from .base import BaseCrawler
-from .base import BaseCrawler
 
 
 class GithubCrawler(BaseCrawler):
@@ -29,10 +28,10 @@ class GithubCrawler(BaseCrawler):
             os.chdir(local_temp)
             subprocess.run(["git", "clone", link])
 
-            repo_path = os.path.join(local_temp, os.listdir(local_temp)[0])
+            repo_path = os.path.join(local_temp, os.listdir(local_temp)[0]) # noqa: PTH118
 
             tree = {}
-            for root, dirs, files in os.walk(repo_path):
+            for root, _, files in os.walk(repo_path):
                 dir = root.replace(repo_path, "").lstrip("/")
                 if dir.startswith(self._ignore):
                     continue
@@ -40,8 +39,8 @@ class GithubCrawler(BaseCrawler):
                 for file in files:
                     if file.endswith(self._ignore):
                         continue
-                    file_path = os.path.join(dir, file)
-                    with open(os.path.join(root, file), "r", errors="ignore") as f:
+                    file_path = os.path.join(dir, file) # noqa: PTH118
+                    with open(os.path.join(root, file), "r", errors="ignore") as f: # noqa: PTH123, PTH118
                         tree[file_path] = f.read().replace(" ", "")
 
             instance = self.model(

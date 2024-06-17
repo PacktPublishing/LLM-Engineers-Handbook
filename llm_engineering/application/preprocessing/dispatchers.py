@@ -16,10 +16,10 @@ from .cleaning_data_handlers import (
     RepositoryCleaningHandler,
 )
 from .embedding_data_handlers import (
-    QueryEmbeddingHandler,
     ArticleEmbeddingHandler,
     EmbeddingDataHandler,
     PostEmbeddingHandler,
+    QueryEmbeddingHandler,
     RepositoryEmbeddingHandler,
 )
 
