@@ -16,3 +16,7 @@ class InstructDataset(VectorBaseDocument):
 
     class Config:
         category = DataCategory.INSTRUCT_DATASET_SAMPLES
+        
+    @property
+    def num_samples(self) -> int:
+        return len(self.samples)

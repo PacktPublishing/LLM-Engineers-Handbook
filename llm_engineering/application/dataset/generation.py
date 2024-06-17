@@ -1,6 +1,7 @@
 from typing import Generator
 
 import tiktoken
+from langchain_core.language_models.fake import FakeListLLM
 from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
@@ -18,13 +19,13 @@ from .output_parsers import ListPydanticOutputParser
 class DatasetGenerator:
     tokenizer = tiktoken.encoding_for_model(settings.OPENAI_MODEL_ID)
 
-    system_prompt_template: str = "You are a technical writer handing someone's account to post about AI and MLOps."
+    system_prompt_template: str = "You are a technical writer creating posts and articles about AI and MLOps."
     prompt_template_str: str = """I will give you batches of contents of {{ data_category }}. Generate me exactly 1 instruction for each of them. The {{ data_category }} text
 for which you have to generate the instructions is under 'Content number' x lines. 
 
 Structure the answer in JSON format, ready to be loaded in Python by json.loads(), a list of objects only with fields called instruction and content.
-Do not add any extra characters and make sure it is a list with objects in valid json format folling the next strucutre!\n
-[{"instruction": <generated instruction here>}, {"instruction": <generated instruction here>}, ...]
+Do not add any extra characters and make sure it is a list with objects in valid json format following exactly the next structure:\n
+'```json\n[{"instruction": "<generated instruction>"}, {"instruction": "<generated instruction here>"}, ...]\n```'
 
 You must generate exactly a list of {{ len_documents }} json objects, using the contents provided under CONTENTS FOR GENERATION\n
 
@@ -114,6 +115,7 @@ Content number {{ doc.index }}:
     def generate(
         cls,
         prompts: dict[DataCategory, list[GenerateDatasetSamplesPrompt]],
+        mock: bool = False,
     ) -> dict[DataCategory, domain.dataset.InstructDataset]:
         def _batch_to_langchain_prompt(
             prompt: GenerateDatasetSamplesPrompt,
@@ -124,8 +126,14 @@ Content number {{ doc.index }}:
             ]
 
             return messages
-
-        llm = ChatOpenAI(model=settings.OPENAI_MODEL_ID, temperature=0)
+        if mock:
+            llm = FakeListLLM(
+                responses=[
+                    '```json\n[{"instruction": "mock instruction"}, {"instruction": "mock instruction"}, {"instruction": "mock instruction"}]\n```'  # noqa
+                ]
+            )
+        else:
+            llm = ChatOpenAI(model=settings.OPENAI_MODEL_ID, temperature=0)
         parser = ListPydanticOutputParser(
             pydantic_object=domain.dataset.InstructDatasetSample
         )
@@ -140,12 +148,14 @@ Content number {{ doc.index }}:
             batched_instruct_dataset_samples = chain.batch(langchain_category_prompts)
 
             flattened_instruct_dataset_samples = []
-            for prompt, instruct_dataset_samples_batch in zip(
+            for prompt, per_prompt_instruct_dataset_samples in zip(
                 category_prompts, batched_instruct_dataset_samples
             ):
-                responses = prompt.documents
-                for response, instruct_dataset_sample in zip(responses, instruct_dataset_samples_batch):
-                    instruct_dataset_sample.response = response.content
+                prompt_documents_as_response = prompt.documents
+                for document_as_response, instruct_dataset_sample in zip(
+                    prompt_documents_as_response, per_prompt_instruct_dataset_samples
+                ):
+                    instruct_dataset_sample.response = document_as_response.content
 
                     flattened_instruct_dataset_samples.append(instruct_dataset_sample)
 

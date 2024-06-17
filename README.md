@@ -31,12 +31,12 @@ poetry self add 'poethepoet[poetry_plugin]'
 
 Start the local ZenML server:
 ```shell
-poetry poe start-local-zenml-server
+poetry poe local-zenml-server-up
 ```
 
 Stop the local ZenML server:
 ```shell
-poetry poe stop-local-infrastructure
+poetry poe local-zenml-server-down
 ```
 
 > [!WARNING]  
@@ -48,12 +48,12 @@ poetry poe stop-local-infrastructure
 
 Start the local infrastructure using Docker:
 ```shell
-poetry poe start-local-infrastructure
+poetry poe local-infrastructure-up
 ```
 
 Stop the local infrastructure
 ```shell
-poetry poe stop-local-infrastructure
+poetry poe local-infrastructure-down
 ```
 
 #### Qdrant

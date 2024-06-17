@@ -60,24 +60,26 @@ class VectorBaseDocument(BaseModel, Generic[T], ABC):
     @classmethod
     def bulk_insert(cls: Type[T], documents: list["VectorBaseDocument"]) -> bool:
         try:
-            return cls._bulk_insert(documents)
+            cls._bulk_insert(documents)
         except exceptions.UnexpectedResponse:
+            logger.info(f"Collection '{cls.get_collection_name()}' does not exist. Trying to create the collection and reinsert the documents.")
+            
             cls.create_collection()
 
-            return cls._bulk_insert(documents)
+            try:
+                cls._bulk_insert(documents)
+            except exceptions.UnexpectedResponse:
+                logger.error(f"Failed to insert documents in '{cls.get_collection_name()}'.")
+                
+                return False
+        
+        return True
 
     @classmethod
-    def _bulk_insert(cls: Type[T], documents: list["VectorBaseDocument"]) -> bool:
+    def _bulk_insert(cls: Type[T], documents: list["VectorBaseDocument"]) -> None:
         points = [doc.to_point() for doc in documents]
 
-        try:
-            connection.upsert(collection_name=cls.get_collection_name(), points=points)
-
-            return True
-        except exceptions.UnexpectedResponse:
-            logger.exception("Failed to insert documents.")
-
-            return False
+        connection.upsert(collection_name=cls.get_collection_name(), points=points)
 
     @classmethod
     def bulk_find(
@@ -86,7 +88,7 @@ class VectorBaseDocument(BaseModel, Generic[T], ABC):
         try:
             documents, next_offset = cls._bulk_find(limit=limit, **kwargs)
         except exceptions.UnexpectedResponse:
-            logger.exception(
+            logger.error(
                 f"Failed to search documents in '{cls.get_collection_name()}'."
             )
 
@@ -122,7 +124,7 @@ class VectorBaseDocument(BaseModel, Generic[T], ABC):
         try:
             documents = cls._search(query_vector=query_vector, limit=limit, **kwargs)
         except exceptions.UnexpectedResponse:
-            logger.exception(
+            logger.error(
                 f"Failed to search documents in '{cls.get_collection_name()}'."
             )
 

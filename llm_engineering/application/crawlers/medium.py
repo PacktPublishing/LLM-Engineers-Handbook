@@ -29,7 +29,6 @@ class MediumCrawler(BaseAbstractCrawler):
             "Content": soup.get_text(),
         }
 
-        logger.info(f"Successfully scraped and saved article: {link}")
         self.driver.close()
         
         instance = self.model(
@@ -39,6 +38,8 @@ class MediumCrawler(BaseAbstractCrawler):
             author_id=kwargs["user"].id,
         )
         instance.save()
+        
+        logger.info(f"Successfully scraped and saved article: {link}")
 
     def login(self):
         """Log in to Medium with Google"""

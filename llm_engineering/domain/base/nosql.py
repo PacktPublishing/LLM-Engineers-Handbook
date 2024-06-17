@@ -36,7 +36,6 @@ class NoSQLBaseDocument(BaseModel, Generic[T], ABC):
             raise ValueError("Data is empty.")
 
         id = data.pop("_id")
-        id = uuid.UUID(id, version=4)
 
         return cls(**dict(data, id=id))
 
@@ -49,6 +48,10 @@ class NoSQLBaseDocument(BaseModel, Generic[T], ABC):
 
         if "_id" not in parsed and "id" in parsed:
             parsed["_id"] = str(parsed.pop("id"))
+            
+        for key, value in parsed.items():
+            if isinstance(value, uuid.UUID):
+                parsed[key] = str(value)
 
         return parsed
 

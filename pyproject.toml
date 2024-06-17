@@ -45,19 +45,19 @@ run-created-dataset-pipeline = "python -m llm_engineering.interfaces.orchestrato
 run-training-pipeline = "python -m llm_engineering.interfaces.orchestrator.run --run-training"
 
 # Local infrastructure
-start-local-infrastructure = "docker-compose up -d"
-stop-local-infrastructure = "docker-compose stop"
-close-local-zenml-server="poetry run zenml down"
+local-infrastructure-up = "docker-compose up -d"
+local-infrastructure-down = "docker-compose stop"
+local-zenml-server-down="poetry run zenml down"
 # start-local-zenml-server="docker run -it -d --platform linux/amd64 -p 8080:8080 zenmldocker/zenml-server"
 
 
-[tool.poe.tasks.start-local-zenml-server]
+[tool.poe.tasks.local-zenml-server-up]
 control.expr = "sys.platform"
 
-  [[tool.poe.tasks.start-local-zenml-server.switch]]
+  [[tool.poe.tasks.local-zenml-server-up.switch]]
   case = "darwin"
   env = { OBJC_DISABLE_INITIALIZE_FORK_SAFETY = "YES" }
   cmd  = "poetry run zenml up"
 
-  [[tool.poe.tasks.start-local-zenml-server.switch]]
+  [[tool.poe.tasks.local-zenml-server-up.switch]]
   cmd  = "poetry run zenml up"
