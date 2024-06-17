@@ -1,0 +1,23 @@
+line-length = 120
+target-version = "py311"
+extend-exclude = [
+    ".github",
+    "graphql_client",
+    "graphql_schemas"
+]
+
+[lint]
+extend-select = [
+  "I",
+  "B",
+  "G",
+  "T20",
+  "PTH",
+  "RUF"
+]
+
+[lint.isort]
+case-sensitive = true
+
+[lint.pydocstyle]
+convention = "google"

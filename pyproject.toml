@@ -8,7 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "~3.11"
-zenml = {version = "0.58.1", extras = ["server"]}
+zenml = { version = "0.58.1", extras = ["server"] }
 pymongo = "^4.6.2"
 pydantic = "^1.9.0"
 click = "^8.0.1"
@@ -33,9 +33,17 @@ langchain-openai = "^0.1.3"
 jinja2 = "^3.1.4"
 tiktoken = "^0.7.0"
 
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.4.9"
+pre-commit = "^3.7.1"
+pytest = "^8.2.2"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+# Poe the Poet Tasks
 
 [tool.poe.tasks]
 # Pipelines
@@ -47,17 +55,28 @@ run-training-pipeline = "python -m llm_engineering.interfaces.orchestrator.run -
 # Local infrastructure
 local-infrastructure-up = "docker-compose up -d"
 local-infrastructure-down = "docker-compose stop"
-local-zenml-server-down="poetry run zenml down"
+local-zenml-server-down = "poetry run zenml down"
 # start-local-zenml-server="docker run -it -d --platform linux/amd64 -p 8080:8080 zenmldocker/zenml-server"
 
+# QA
+lint-check = "poetry run ruff check ."
+format-check = "poetry run ruff format --check ."
+lint-check-docker = "sh -c 'docker run --rm -i hadolint/hadolint < Dockerfile'"
+gitleaks-check = "docker run -v .:/src zricethezav/gitleaks:latest detect -v --source=/src"
+lint-fix = "poetry run ruff check --fix ."
+format-fix = "poetry run ruff format ."
 
 [tool.poe.tasks.local-zenml-server-up]
 control.expr = "sys.platform"
 
-  [[tool.poe.tasks.local-zenml-server-up.switch]]
-  case = "darwin"
-  env = { OBJC_DISABLE_INITIALIZE_FORK_SAFETY = "YES" }
-  cmd  = "poetry run zenml up"
+[[tool.poe.tasks.local-zenml-server-up.switch]]
+case = "darwin"
+env = { OBJC_DISABLE_INITIALIZE_FORK_SAFETY = "YES" }
+cmd = "poetry run zenml up"
 
-  [[tool.poe.tasks.local-zenml-server-up.switch]]
-  cmd  = "poetry run zenml up"
+[[tool.poe.tasks.local-zenml-server-up.switch]]
+cmd = "poetry run zenml up"
+
+[tool.poe.tasks.test]
+cmd = "pytest tests/"
+env = { ENV_FILE = ".env.testing" }

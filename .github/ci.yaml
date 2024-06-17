@@ -1,0 +1,72 @@
+name: ci
+
+# on:
+#   pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qa:
+    name: QA
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.11"
+
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: 1.8.3
+
+      - name: Install packages
+        run: |
+          poetry install --only dev
+          poetry self add 'poethepoet[poetry_plugin]'
+
+      - name: gitleaks check
+        run: poetry poe gitleaks-check
+
+      - name: Lint check [Python]
+        run: poetry poe lint-check
+
+      - name: Format check [Python]
+        run: poetry poe format-check
+
+      # - name: Lint check [Dockerfile]
+      #   run: poetry poe lint-check-docker
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.11"
+
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: 1.8.3
+
+      - name: Install packages
+        run: |
+          poetry install
+          poetry self add 'poethepoet[poetry_plugin]'
+
+      - name: Run tests
+        run: |
+          echo "Running tests..."
+          poetry poe test
