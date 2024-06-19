@@ -2,9 +2,8 @@ version: '3.8'
 
 services:
   mongo:
-    image: mongo
+    image: mongo:latest
     container_name: "llm_engineering_mongo"
-    platform: linux/amd64
     logging:
       options:
         max-size: 1g
@@ -12,7 +11,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: "decodingml"
       MONGO_INITDB_ROOT_PASSWORD: "decodingml"
     ports:
-      - '27017:27017'
+      - 27017:27017
     volumes:
       - mongo_data:/data/db
     networks:
@@ -22,7 +21,6 @@ services:
   qdrant:
     image: qdrant/qdrant:latest
     container_name: "llm_engineering_qdrant"
-    platform: linux/amd64
     ports:
       - 6333:6333
       - 6334:6334

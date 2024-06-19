@@ -53,10 +53,11 @@ run-created-dataset-pipeline = "python -m llm_engineering.interfaces.orchestrato
 run-training-pipeline = "python -m llm_engineering.interfaces.orchestrator.run --run-training"
 
 # Local infrastructure
-local-infrastructure-up = "docker-compose up -d"
-local-infrastructure-down = "docker-compose stop"
+local-docker-infrastructure-up = "docker-compose up -d"
+local-docker-infrastructure-down = "docker-compose stop"
 local-zenml-server-down = "poetry run zenml down"
-# start-local-zenml-server="docker run -it -d --platform linux/amd64 -p 8080:8080 zenmldocker/zenml-server"
+local-infrastructure-up = ["local-docker-infrastructure-up", "local-zenml-server-down", "local-zenml-server-up"]
+local-infrastructure-down = ["local-docker-infrastructure-down", "local-zenml-server-down"]
 
 # QA
 lint-check = "poetry run ruff check ."

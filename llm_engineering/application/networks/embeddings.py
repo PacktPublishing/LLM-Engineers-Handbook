@@ -81,7 +81,9 @@ class EmbeddingModelSingleton(metaclass=SingletonMeta):
 
         return self._model.tokenizer
 
-    def __call__(self, input_text: str, to_list: bool = True) -> NDArray[np.float32] | list[float]:
+    def __call__(
+        self, input_text: str | list[str], to_list: bool = True
+    ) -> NDArray[np.float32] | list[float] | list[list[float]]:
         """
         Generates embeddings for the input text using the pre-trained transformer model.
 

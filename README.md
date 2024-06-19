@@ -11,6 +11,7 @@
 ```shell
 poetry install
 poetry self add 'poethepoet[poetry_plugin]'
+pre-commit install
 ```
 
 ### How to install drivers for Selenium
