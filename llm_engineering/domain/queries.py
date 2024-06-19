@@ -1,4 +1,4 @@
-from pydantic import UUID4
+from pydantic import UUID4, Field
 
 from llm_engineering.domain.base import VectorBaseDocument
 from llm_engineering.domain.types import DataCategory
@@ -7,6 +7,7 @@ from llm_engineering.domain.types import DataCategory
 class Query(VectorBaseDocument):
     content: str
     author_id: UUID4 | None = None
+    metadata: dict = Field(default_factory=dict)
 
     class Config:
         category = DataCategory.QUERIES

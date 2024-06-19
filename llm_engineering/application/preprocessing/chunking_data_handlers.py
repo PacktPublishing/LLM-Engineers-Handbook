@@ -28,12 +28,26 @@ class ChunkingDataHandler(ABC, Generic[CleanedDocumentT, ChunkT]):
     All data transformations logic for the chunking step is done here
     """
 
+    @property
+    def chunk_size(self) -> int:
+        return 500
+
+    @property
+    def chunk_overlap(self) -> int:
+        return 50
+
     @abstractmethod
     def chunk(self, data_model: CleanedDocumentT) -> list[ChunkT]:
         pass
 
 
 class PostChunkingHandler(ChunkingDataHandler):
+    def chunk_size(self) -> int:
+        return 250
+
+    def chunk_overlap(self) -> int:
+        return 25
+
     def chunk(self, data_model: CleanedPostDocument) -> list[PostChunk]:
         data_models_list = []
 
@@ -49,6 +63,10 @@ class PostChunkingHandler(ChunkingDataHandler):
                 document_id=data_model.id,
                 author_id=data_model.author_id,
                 image=data_model.image if data_model.image else None,
+                metadata={
+                    "chunk_size": self.chunk_size,
+                    "chunk_overlap": self.chunk_overlap,
+                },
             )
             data_models_list.append(model)
 
@@ -71,6 +89,10 @@ class ArticleChunkingHandler(ChunkingDataHandler):
                 link=data_model.link,
                 document_id=data_model.id,
                 author_id=data_model.author_id,
+                metadata={
+                    "chunk_size": self.chunk_size,
+                    "chunk_overlap": self.chunk_overlap,
+                },
             )
             data_models_list.append(model)
 
@@ -78,6 +100,12 @@ class ArticleChunkingHandler(ChunkingDataHandler):
 
 
 class RepositoryChunkingHandler(ChunkingDataHandler):
+    def chunk_size(self) -> int:
+        return 750
+
+    def chunk_overlap(self) -> int:
+        return 75
+
     def chunk(self, data_model: CleanedRepositoryDocument) -> list[RepositoryChunk]:
         data_models_list = []
 
@@ -94,6 +122,10 @@ class RepositoryChunkingHandler(ChunkingDataHandler):
                 link=data_model.link,
                 document_id=data_model.id,
                 author_id=data_model.author_id,
+                metadata={
+                    "chunk_size": self.chunk_size,
+                    "chunk_overlap": self.chunk_overlap,
+                },
             )
             data_models_list.append(model)
 

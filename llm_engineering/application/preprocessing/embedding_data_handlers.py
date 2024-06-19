@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Generic, TypeVar, cast
 
+from llm_engineering.application.networks import EmbeddingModelSingleton
 from llm_engineering.domain.chunks import ArticleChunk, Chunk, PostChunk, RepositoryChunk
 from llm_engineering.domain.embedded_chunks import (
     EmbeddedArticleChunk,
@@ -10,10 +11,10 @@ from llm_engineering.domain.embedded_chunks import (
 )
 from llm_engineering.domain.queries import EmbeddedQuery, Query
 
-from .operations import embedd_text
-
 ChunkT = TypeVar("ChunkT", bound=Chunk)
 EmbeddedChunkT = TypeVar("EmbeddedChunkT", bound=EmbeddedChunk)
+
+embedding_model = EmbeddingModelSingleton()
 
 
 class EmbeddingDataHandler(ABC, Generic[ChunkT, EmbeddedChunkT]):
@@ -27,7 +28,7 @@ class EmbeddingDataHandler(ABC, Generic[ChunkT, EmbeddedChunkT]):
 
     def embed_batch(self, data_model: list[ChunkT]) -> list[EmbeddedChunkT]:
         embedding_model_input = [data_model.content for data_model in data_model]
-        embeddings = embedd_text(embedding_model_input)
+        embeddings = embedding_model(embedding_model_input, to_list=True)
 
         embedded_chunk = [
             self.map_model(data_model, cast(list[float], embedding))
@@ -48,6 +49,11 @@ class QueryEmbeddingHandler(EmbeddingDataHandler):
             author_id=data_model.author_id,
             content=data_model.content,
             embedding=embedding,
+            metadata={
+                "embedding_model_id": embedding_model.model_id,
+                "embedding_size": embedding_model.embedding_size,
+                "max_input_length": embedding_model.max_input_length,
+            },
         )
 
 
@@ -60,6 +66,11 @@ class PostEmbeddingHandler(EmbeddingDataHandler):
             platform=data_model.platform,
             document_id=data_model.document_id,
             author_id=data_model.author_id,
+            metadata={
+                "embedding_model_id": embedding_model.model_id,
+                "embedding_size": embedding_model.embedding_size,
+                "max_input_length": embedding_model.max_input_length,
+            },
         )
 
 
@@ -73,6 +84,11 @@ class ArticleEmbeddingHandler(EmbeddingDataHandler):
             link=data_model.link,
             document_id=data_model.document_id,
             author_id=data_model.author_id,
+            metadata={
+                "embedding_model_id": embedding_model.model_id,
+                "embedding_size": embedding_model.embedding_size,
+                "max_input_length": embedding_model.max_input_length,
+            },
         )
 
 
@@ -87,4 +103,9 @@ class RepositoryEmbeddingHandler(EmbeddingDataHandler):
             link=data_model.link,
             document_id=data_model.document_id,
             author_id=data_model.author_id,
+            metadata={
+                "embedding_model_id": embedding_model.model_id,
+                "embedding_size": embedding_model.embedding_size,
+                "max_input_length": embedding_model.max_input_length,
+            },
         )

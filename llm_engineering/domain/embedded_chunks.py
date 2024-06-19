@@ -1,6 +1,6 @@
 from abc import ABC
 
-from pydantic import UUID4
+from pydantic import UUID4, Field
 
 from llm_engineering.domain.types import DataCategory
 
@@ -13,6 +13,7 @@ class EmbeddedChunk(VectorBaseDocument, ABC):
     platform: str
     document_id: UUID4
     author_id: UUID4
+    metadata: dict = Field(default_factory=dict)
 
 
 class EmbeddedPostChunk(EmbeddedChunk):
