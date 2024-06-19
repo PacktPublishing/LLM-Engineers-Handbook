@@ -9,6 +9,7 @@ from .medium import MediumCrawler
 class CrawlerDispatcher:
     def __init__(self) -> None:
         self._crawlers = {}
+        self._class_to_domain = {}
 
     @classmethod
     def build(cls) -> "CrawlerDispatcher":
@@ -33,6 +34,7 @@ class CrawlerDispatcher:
 
     def register(self, domain: str, crawler: type[BaseCrawler]) -> None:
         self._crawlers[r"https://(www\.)?{}.com/*".format(re.escape(domain))] = crawler
+        self._class_to_domain[crawler] = domain
 
     def get_crawler(self, url: str) -> BaseCrawler:
         for pattern, crawler in self._crawlers.items():
@@ -40,3 +42,6 @@ class CrawlerDispatcher:
                 return crawler()
         else:
             raise ValueError(f"No crawler found for the provided link: {url}")
+
+    def get_domain(self, crawler: BaseCrawler) -> str:
+        return self._class_to_domain[crawler.__class__]
