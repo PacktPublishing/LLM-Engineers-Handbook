@@ -14,10 +14,10 @@ poetry self add 'poethepoet[poetry_plugin]'
 pre-commit install
 ```
 
-We use [Poe the Poet](https://poethepoet.natn.io/index.html) to run all the scripts. You don't have to do anything else than installing it to poetry as a plugin.
+We run all the scripts using [Poe the Poet](https://poethepoet.natn.io/index.html). You don't have to do anything else but install it as a Poetry plugin.
 
 ### Configure sensitive information
-After you have installed all the dependencies, you have to fill an `.env` file.
+After you have installed all the dependencies, you have to fill a `.env` file.
 
 First, copy our example:
 ```shell
@@ -28,12 +28,12 @@ Now, let's understand how to fill it.
 
 ### Selenium Drivers
 
-To run the data collection pipeline, you have to download the Selenium Chrome driver. To proceed, use the links below:
+You must download the Selenium Chrome driver to run the data collection pipeline. To proceed, use the links below:
 * https://www.selenium.dev/documentation/webdriver/troubleshooting/errors/driver_location/
 * https://googlechromelabs.github.io/chrome-for-testing/#stable
 
 > [!WARNING]
-> For MacOS users, after downloading the driver run the following command to give permissions for the driver to be accesible: `xattr -d com.apple.quarantine /path/to/your/driver/chromedriver`
+> For MacOS users, after downloading the driver, run the following command to give permissions for the driver to be accessible: `xattr -d com.apple.quarantine /path/to/your/driver/chromedriver`
 
 The last step is to add the path to the downloaded driver in your `.env` file:
 ```
@@ -83,7 +83,7 @@ poetry poe local-infrastructure-down
 ```
 
 > [!WARNING]  
-> When running on MacOS, before starting the server export the following environment variable:
+> When running on MacOS, before starting the server, export the following environment variable:
 > `export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES`
 > Otherwise, the connection between the local server and pipeline will break. 🔗 More details in [this issue](https://github.com/zenml-io/zenml/issues/2369).
 
@@ -95,7 +95,7 @@ Default credentials:
     - username: default
     - password: 
 
-**NOTE:** [More on ZenML](https://docs.zenml.io/)
+🔗 [More on ZenML](https://docs.zenml.io/)
 
 #### Qdrant is now accessible at:
 
@@ -103,7 +103,7 @@ REST API: localhost:6333
 Web UI: localhost:6333/dashboard
 GRPC API: localhost:6334
 
-**NOTE:** [More on Qdrant](https://qdrant.tech/documentation/quick-start/)
+🔗 [More on Qdrant](https://qdrant.tech/documentation/quick-start/)
 
 #### MongoDB is now accessible at:
 
