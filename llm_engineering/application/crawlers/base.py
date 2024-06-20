@@ -21,6 +21,7 @@ class BaseSeleniumCrawler(BaseCrawler, ABC):
         options = webdriver.ChromeOptions()
         if settings.SELENIUM_BROWSER_BINARY_PATH:
             options.binary_location = settings.SELENIUM_BROWSER_BINARY_PATH
+            # TODO: Enable this when running it inside Docker.
             # options.binary_location = "/opt/chrome/chrome"
         options.add_argument("--no-sandbox")
         options.add_argument("--headless=new")

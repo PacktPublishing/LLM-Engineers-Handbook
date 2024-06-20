@@ -14,30 +14,66 @@ poetry self add 'poethepoet[poetry_plugin]'
 pre-commit install
 ```
 
-### How to install drivers for Selenium
+### Configure sensitive information
+After you have installed all the dependencies, you have to fill an `.env` file.
 
-... Explain based on docs below
+First, copy our example:
+```shell
+cp .env.example .env
+```
 
-* https://www.selenium.dev/documentation/webdriver/troubleshooting/errors/driver_location/
+Now, let's understand how to fill it.
+
+### Selenium Drivers
+
+To run the data collection pipeline, you have to download the Selenium Chrome driver. To proceed, use the links below:
 * https://www.selenium.dev/documentation/webdriver/troubleshooting/errors/driver_location/
 * https://googlechromelabs.github.io/chrome-for-testing/#stable
 
 > [!WARNING]
 > For MacOS users, after downloading the driver run the following command to give permissions for the driver to be accesible: `xattr -d com.apple.quarantine /path/to/your/driver/chromedriver`
 
+The last step is to add the path to the downloaded driver in your `.env` file:
+```
+SELENIUM_BROWSER_DRIVER_PATH = "str"
+```
+
+### LinkedIn Crawling
+
+For crawling LinkedIn, you have to fill in your username and password:
+```shell
+LINKEDIN_USERNAME = "str"
+LINKEDIN_PASSWORD = "str"
+```
+
+For this to work, you also have to:
+- disable 2FA
+- disable suspicious activity
+
+We also recommend to:
+- create a dummy profile for crawling
+- crawl only your data
+
+### OpenAI
+
+You also have to configure the standard `OPENAI_API_KEY`.
+
 
 ## Run Locally 
 
-### ZenML Server
+### Local Infrastructure
 
-Start the local ZenML server:
+> [!WARNING]
+> You need Docker installed.
+
+Start:
 ```shell
-poetry poe local-zenml-server-up
+poetry poe local-infrastructure-up
 ```
 
-Stop the local ZenML server:
+Stop:
 ```shell
-poetry poe local-zenml-server-down
+poetry poe local-infrastructure-down
 ```
 
 > [!WARNING]  
@@ -45,21 +81,19 @@ poetry poe local-zenml-server-down
 > `export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES`
 > Otherwise, the connection between the local server and pipeline will break. 🔗 More details in [this issue](https://github.com/zenml-io/zenml/issues/2369).
 
-### Local Infrastructure
+#### ZenML
 
-Start the local infrastructure using Docker:
-```shell
-poetry poe local-infrastructure-up
-```
+**ZenML is now accessible:**
 
-Stop the local infrastructure
-```shell
-poetry poe local-infrastructure-down
-```
+Web UI: localhost:8237
+
+Default credentials:
+    - username: default
+    - password: 
+
+**NOTE:** [More on ZenML](https://docs.zenml.io/)
 
 #### Qdrant
-
-Under the default configuration all data will be stored in the ./qdrant_storage directory. This will also be the only directory that both the Container and the host machine can both see.
 
 **Qdrant is now accessible:**
 
@@ -68,3 +102,59 @@ Web UI: localhost:6333/dashboard
 GRPC API: localhost:6334
 
 **NOTE:** [More on Qdrant](https://qdrant.tech/documentation/quick-start/)
+
+### Run Pipelines
+
+All the pipelines will be orchestrated behind the scenes by ZenML.
+
+To see the pipelines running and their results & metadata:
+- go to your ZenML dashboard
+- go to the `Pipelines` section
+- click on a specific pipeline (e.g., `feature_engineering`)
+- click on a specific run (e.g., `feature_engineering_run_2024_06_20_18_40_24`)
+- click on a specific step or artifact to find more details about the run
+
+#### Data Preprocessing
+
+Run the data collection ETL:
+```shell
+poetry poe run-digital-data-etl
+```
+
+> [!IMPORTANT]
+> To add additional links to collect, go to `configs_digital_data_etl_[your_name].yaml` and add them to the `links` field. Also, you can create a completely new file and specify it at run time, like this: `python -m llm_engineering.interfaces.orchestrator.run --run-etl --etl-config-filename configs_digital_data_etl_[your_name].yaml`
+
+Run the feature engineering pipeline:
+```shell
+poetry poe run-feature-engineering-pipeline
+```
+
+Run the dataset generation pipeline:
+```shell
+poetry poe run-generate-instruct-datasets-pipeline
+```
+
+Run all of the above:
+```shell
+poetry poe run-preprocessing-pipeline
+```
+
+#### Training
+
+```shell
+poetry poe run-training-pipeline
+```
+
+#### QA
+
+Check and fix your linting issues:
+```shell
+poetry poe lint-check
+poetry poe lint-fix
+```
+
+Check and fix your formatting issues:
+```shell
+poetry poe format-check
+poetry poe format-fix
+```
