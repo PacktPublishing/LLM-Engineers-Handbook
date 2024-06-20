@@ -8,6 +8,3 @@ class ImproperlyConfigured(LLMTwinException):
 
 class JSONDecodeError(LLMTwinException):
     pass
-
-
-# TODO: Add custom exceptions in the code where needed.
