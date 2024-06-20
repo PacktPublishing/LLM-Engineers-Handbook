@@ -53,6 +53,11 @@ Examples:
     help="Whether to run the ETL pipeline.",
 )
 @click.option(
+    "--etl-config-filename",
+    default="digital_data_etl_paul_iusztin.yaml",
+    help="Filename of the ETL config file.",
+)
+@click.option(
     "--run-feature-engineering",
     is_flag=True,
     default=False,
@@ -73,6 +78,7 @@ Examples:
 def main(
     no_cache: bool = False,
     run_etl: bool = False,
+    etl_config_filename: str = "digital_data_etl_paul_iusztin.yaml",
     run_feature_engineering: bool = False,
     run_generate_instruct_datasets: bool = False,
     run_training: bool = False,
@@ -88,7 +94,8 @@ def main(
 
     if run_etl:
         run_args_etl = {}
-        pipeline_args["config_path"] = root_dir / "configs" / "digital_data_etl_paul_iusztin.yaml"
+        pipeline_args["config_path"] = root_dir / "configs" / etl_config_filename
+        assert pipeline_args["config_path"].exists(), f"Config file not found: {pipeline_args['config_path']}"
         pipeline_args["run_name"] = f"digital_data_etl_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
         digital_data_etl.with_options(**pipeline_args)(**run_args_etl)
 

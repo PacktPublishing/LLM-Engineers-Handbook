@@ -10,16 +10,23 @@ from llm_engineering.domain.documents import PostDocument
 from llm_engineering.domain.exceptions import ImproperlyConfigured
 from llm_engineering.settings import settings
 
-from .base import BaseAbstractCrawler
+from .base import BaseSeleniumCrawler
 
 
-class LinkedInCrawler(BaseAbstractCrawler):
+class LinkedInCrawler(BaseSeleniumCrawler):
     model = PostDocument
 
     def set_extra_driver_options(self, options) -> None:
         options.add_experimental_option("detach", True)
 
-    def extract(self, link: str, **kwargs):
+    def extract(self, link: str, **kwargs) -> None:
+        if self.model.link is not None:
+            old_model = self.model.find(link=link)
+            if old_model is not None:
+                logger.info(f"Post already exists in the database: {link}")
+
+                return
+
         logger.info(f"Starting scrapping data for profile: {link}")
 
         self.login()
@@ -131,8 +138,10 @@ class LinkedInCrawler(BaseAbstractCrawler):
     def login(self):
         """Log in to LinkedIn."""
         self.driver.get("https://www.linkedin.com/login")
-        if not settings.LINKEDIN_USERNAME and not settings.LINKEDIN_PASSWORD:
-            raise ImproperlyConfigured("LinkedIn scraper requires an valid account to perform extraction")
+        if not settings.LINKEDIN_USERNAME or not settings.LINKEDIN_PASSWORD:
+            raise ImproperlyConfigured(
+                "LinkedIn scraper requires the {LINKEDIN_USERNAME} and {LINKEDIN_PASSWORD} settings."
+            )
 
         self.driver.find_element(By.ID, "username").send_keys(settings.LINKEDIN_USERNAME)
         self.driver.find_element(By.ID, "password").send_keys(settings.LINKEDIN_PASSWORD)

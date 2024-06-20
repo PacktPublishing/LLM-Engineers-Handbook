@@ -1,0 +1,9 @@
+parameters:
+  user_full_name: Maxime Labonne # [First Name(s)] [Last Name]
+  links:
+    # Medium (only articles that are not under the paid wall work)
+    - https://medium.com/@mlabonne/uncensor-any-llm-with-abliteration-d30148b7d43e
+    # Substack
+    - https://maximelabonne.substack.com/p/fine-tune-a-mistral-7b-model-with-direct-preference-optimization-708042745aac
+    # Blog
+    - https://mlabonne.github.io/blog/posts/2024-04-19_Fine_tune_Llama_3_with_ORPO.html

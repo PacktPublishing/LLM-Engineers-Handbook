@@ -1,19 +1,24 @@
 from bs4 import BeautifulSoup
 from loguru import logger
-from selenium.webdriver.common.by import By
 
 from llm_engineering.domain.documents import ArticleDocument
 
-from .base import BaseAbstractCrawler
+from .base import BaseSeleniumCrawler
 
 
-class MediumCrawler(BaseAbstractCrawler):
+class MediumCrawler(BaseSeleniumCrawler):
     model = ArticleDocument
 
     def set_extra_driver_options(self, options) -> None:
         options.add_argument(r"--profile-directory=Profile 2")
 
     def extract(self, link: str, **kwargs) -> None:
+        old_model = self.model.find(link=link)
+        if old_model is not None:
+            logger.info(f"Article already exists in the database: {link}")
+
+            return
+
         logger.info(f"Starting scrapping Medium article: {link}")
 
         self.driver.get(link)
@@ -40,8 +45,3 @@ class MediumCrawler(BaseAbstractCrawler):
         instance.save()
 
         logger.info(f"Successfully scraped and saved article: {link}")
-
-    def login(self):
-        """Log in to Medium with Google"""
-        self.driver.get("https://medium.com/m/signin")
-        self.driver.find_element(By.TAG_NAME, "a").click()

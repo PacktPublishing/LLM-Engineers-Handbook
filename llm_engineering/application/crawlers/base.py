@@ -16,7 +16,7 @@ class BaseCrawler(ABC):
     def extract(self, link: str, **kwargs) -> None: ...
 
 
-class BaseAbstractCrawler(BaseCrawler, ABC):
+class BaseSeleniumCrawler(BaseCrawler, ABC):
     def __init__(self, scroll_limit: int = 5) -> None:
         options = webdriver.ChromeOptions()
         if settings.SELENIUM_BROWSER_BINARY_PATH:
@@ -36,7 +36,7 @@ class BaseAbstractCrawler(BaseCrawler, ABC):
         options.add_argument(f"--user-data-dir={mkdtemp()}")
         options.add_argument(f"--data-path={mkdtemp()}")
         options.add_argument(f"--disk-cache-dir={mkdtemp()}")
-        options.add_argument("--remote-debugging-port=9224")
+        options.add_argument("--remote-debugging-port=9225")
 
         self.set_extra_driver_options(options)
 

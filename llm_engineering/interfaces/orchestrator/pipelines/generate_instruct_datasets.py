@@ -1,8 +1,6 @@
 from zenml import pipeline
 
-from llm_engineering.interfaces.orchestrator.steps import (
-    generate_instruct_datasets as cd_steps,
-)
+from llm_engineering.interfaces.orchestrator.steps import generate_instruct_datasets as cd_steps
 
 
 @pipeline

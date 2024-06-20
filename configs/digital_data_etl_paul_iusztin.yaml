@@ -1,4 +1,46 @@
 parameters:
   user_full_name: Paul Iusztin # [First Name(s)] [Last Name]
   links:
+    # Medium (only articles that are not under the paid wall work)
+    - https://medium.com/decodingml/an-end-to-end-framework-for-production-ready-llm-systems-by-building-your-llm-twin-2cc6bb01141f
+    - https://medium.com/decodingml/a-real-time-retrieval-system-for-rag-on-social-media-data-9cc01d50a2a0
+    - https://medium.com/decodingml/sota-python-streaming-pipelines-for-fine-tuning-llms-and-rag-in-real-time-82eb07795b87
+    - https://medium.com/decodingml/the-4-advanced-rag-algorithms-you-must-know-to-implement-5d0c7f1199d2
     - https://medium.com/decodingml/architect-scalable-and-cost-effective-llm-rag-inference-pipelines-73b94ef82a99
+    # Substack
+    - https://decodingml.substack.com/p/a-blueprint-for-designing-production?r=1ttoeh
+    - https://decodingml.substack.com/p/the-difference-between-development?r=1ttoeh
+    - https://decodingml.substack.com/p/architect-scalable-and-cost-effective?r=1ttoeh
+    - https://decodingml.substack.com/p/7-tips-to-reduce-your-vram-when-training?r=1ttoeh
+    - https://decodingml.substack.com/p/using-this-python-package-you-can?r=1ttoeh
+    - https://decodingml.substack.com/p/the-4-advanced-rag-algorithms-you?r=1ttoeh
+    - https://decodingml.substack.com/p/problems-deploying-your-ml-models?r=1ttoeh
+    - https://decodingml.substack.com/p/sota-python-streaming-pipelines-for?r=1ttoeh
+    - https://decodingml.substack.com/p/ready-for-production-ml-here-are?r=1ttoeh
+    - https://decodingml.substack.com/p/ready-for-production-ml-here-are?r=1ttoeh
+    - https://decodingml.substack.com/p/my-ml-monthly-learning-resource-recommendations?r=1ttoeh
+    - https://decodingml.substack.com/p/an-end-to-end-framework-for-production?r=1ttoeh
+    - https://decodingml.substack.com/p/upskill-your-llm-knowledge-base-with?r=1ttoeh
+    - https://decodingml.substack.com/p/want-to-learn-an-end-to-end-framework?r=1ttoeh
+    - https://decodingml.substack.com/p/my-favorite-way-to-implement-a-configuration?r=1ttoeh
+    - https://decodingml.substack.com/p/a-real-time-retrieval-system-for?r=1ttoeh
+    - https://decodingml.substack.com/p/4-key-decoding-strategies-for-llms?r=1ttoeh
+    - https://decodingml.substack.com/p/dml-new-year-the-new-and-improved?r=1ttoeh
+    - https://decodingml.substack.com/p/dml-8-types-of-mlops-tools-that-must?r=1ttoeh
+    - https://decodingml.substack.com/p/dml-this-is-what-you-need-to-build?r=1ttoeh
+    - https://decodingml.substack.com/p/dml-7-steps-on-how-to-fine-tune-an?r=1ttoeh
+    - https://decodingml.substack.com/p/dml-how-do-you-generate-a-q-and-a?r=1ttoeh
+    - https://decodingml.substack.com/p/dml-what-do-you-need-to-fine-tune?r=1ttoeh
+    - https://decodingml.substack.com/p/dml-why-and-when-do-you-need-to-fine?r=1ttoeh
+    - https://decodingml.substack.com/p/dml-how-to-implement-a-streaming?r=1ttoeh
+    - https://decodingml.substack.com/p/dml-why-and-what-do-you-need-a-streaming?r=1ttoeh
+    - https://decodingml.substack.com/p/dml-unwrapping-the-3-pipeline-design?r=1ttoeh
+    - https://decodingml.substack.com/p/dml-how-to-design-an-llm-system-for?r=1ttoeh
+    - https://decodingml.substack.com/p/dml-synced-vector-dbs-a-guide-to?r=1ttoeh
+    - https://decodingml.substack.com/p/dml-what-is-the-difference-between?r=1ttoeh
+    - https://decodingml.substack.com/p/dml-7-steps-to-build-a-production?r=1ttoeh
+    - https://decodingml.substack.com/p/dml-chain-of-thought-reasoning-write?r=1ttoeh
+    - https://decodingml.substack.com/p/dml-build-and-serve-a-production?r=1ttoeh
+    - https://decodingml.substack.com/p/dml-4-key-ideas-you-must-know-to?r=1ttoeh
+    - https://decodingml.substack.com/p/dml-how-to-add-real-time-monitoring?r=1ttoeh
+    - https://decodingml.substack.com/p/dml-top-6-ml-platform-features-you?r=1ttoeh

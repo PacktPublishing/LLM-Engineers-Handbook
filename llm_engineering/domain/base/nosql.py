@@ -96,6 +96,20 @@ class NoSQLBaseDocument(BaseModel, Generic[T], ABC):
             return False
 
     @classmethod
+    def find(cls: Type[T], **filter_options) -> T | None:
+        collection = _database[cls.get_collection_name()]
+        try:
+            instance = collection.find_one(filter_options)
+            if instance:
+                return cls.from_mongo(instance)
+
+            return None
+        except errors.OperationFailure as e:
+            logger.error(f"Failed to retrieve document: {e}")
+
+            return None
+
+    @classmethod
     def bulk_find(cls: Type[T], **filter_options) -> list[T]:
         collection = _database[cls.get_collection_name()]
         try:

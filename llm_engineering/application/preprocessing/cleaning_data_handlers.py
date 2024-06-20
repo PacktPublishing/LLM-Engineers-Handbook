@@ -44,9 +44,11 @@ class PostCleaningHandler(CleaningDataHandler):
 
 class ArticleCleaningHandler(CleaningDataHandler):
     def clean(self, data_model: ArticleDocument) -> CleanedArticleDocument:
+        valid_content = [content for content in data_model.content.values() if content]
+
         return CleanedArticleDocument(
             id=data_model.id,
-            content=clean_text("".join(data_model.content.values())),
+            content=clean_text("".join(valid_content)),
             platform=data_model.platform,
             link=data_model.link,
             author_id=data_model.author_id,

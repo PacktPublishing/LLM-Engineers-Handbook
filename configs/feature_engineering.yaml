@@ -1,2 +1,5 @@
 parameters:
-  user_full_name: Paul Iusztin
+  user_full_names:
+    - Alex Vesa
+    - Maxime Labonne
+    - Paul Iusztin
