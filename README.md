@@ -14,6 +14,8 @@ poetry self add 'poethepoet[poetry_plugin]'
 pre-commit install
 ```
 
+We use [Poe the Poet](https://poethepoet.natn.io/index.html) to run all the scripts. You don't have to do anything else than installing it to poetry as a plugin.
+
 ### Configure sensitive information
 After you have installed all the dependencies, you have to fill an `.env` file.
 
@@ -59,6 +61,10 @@ We also recommend to:
 You also have to configure the standard `OPENAI_API_KEY`.
 
 
+> [!IMPORTANT]
+> Find more configuration options in the [settings.py](https://github.com/PacktPublishing/LLM-Engineering/blob/main/llm_engineering/settings.py) file.
+
+
 ## Run Locally 
 
 ### Local Infrastructure
@@ -81,9 +87,7 @@ poetry poe local-infrastructure-down
 > `export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES`
 > Otherwise, the connection between the local server and pipeline will break. 🔗 More details in [this issue](https://github.com/zenml-io/zenml/issues/2369).
 
-#### ZenML
-
-**ZenML is now accessible:**
+#### ZenML is now accessible at:
 
 Web UI: localhost:8237
 
@@ -93,15 +97,18 @@ Default credentials:
 
 **NOTE:** [More on ZenML](https://docs.zenml.io/)
 
-#### Qdrant
-
-**Qdrant is now accessible:**
+#### Qdrant is now accessible at:
 
 REST API: localhost:6333
 Web UI: localhost:6333/dashboard
 GRPC API: localhost:6334
 
 **NOTE:** [More on Qdrant](https://qdrant.tech/documentation/quick-start/)
+
+#### MongoDB is now accessible at:
+
+database URI: mongodb://decodingml:decodingml@127.0.0.1:27017
+database name: twin
 
 ### Run Pipelines
 
