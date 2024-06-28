@@ -1,6 +1,6 @@
 import uuid
 from abc import ABC
-from typing import Any, Callable, Generic, Type, TypeVar
+from typing import Any, Callable, Dict, Generic, Type, TypeVar
 from uuid import UUID
 
 import numpy as np
@@ -56,6 +56,15 @@ class VectorBaseDocument(BaseModel, Generic[T], ABC):
             vector = vector.tolist()
 
         return PointStruct(id=_id, vector=vector, payload=payload)
+
+    def dict(self: T, **kwargs) -> dict:
+        dict_ = super().dict(**kwargs)
+
+        for key, value in dict_.items():
+            if isinstance(value, UUID):
+                dict_[key] = str(value)
+
+        return dict_
 
     @classmethod
     def bulk_insert(cls: Type[T], documents: list["VectorBaseDocument"]) -> bool:
@@ -203,15 +212,15 @@ class VectorBaseDocument(BaseModel, Generic[T], ABC):
     @classmethod
     def group_by_class(
         cls: Type["VectorBaseDocument"], documents: list["VectorBaseDocument"]
-    ) -> dict["VectorBaseDocument", list["VectorBaseDocument"]]:
+    ) -> Dict["VectorBaseDocument", list["VectorBaseDocument"]]:
         return cls._group_by(documents, selector=lambda doc: doc.__class__)
 
     @classmethod
-    def group_by_category(cls: Type[T], documents: list[T]) -> dict[DataCategory, list[T]]:
+    def group_by_category(cls: Type[T], documents: list[T]) -> Dict[DataCategory, list[T]]:
         return cls._group_by(documents, selector=lambda doc: doc.get_category())
 
     @classmethod
-    def _group_by(cls: Type[T], documents: list[T], selector: Callable[[T], Any]) -> dict[Any, list[T]]:
+    def _group_by(cls: Type[T], documents: list[T], selector: Callable[[T], Any]) -> Dict[Any, list[T]]:
         grouped = {}
         for doc in documents:
             key = selector(doc)

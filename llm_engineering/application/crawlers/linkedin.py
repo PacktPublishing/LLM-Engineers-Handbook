@@ -63,8 +63,12 @@ class LinkedInCrawler(BaseSeleniumCrawler):
 
         self.driver.close()
 
+        user = kwargs["user"]
         self.model.bulk_insert(
-            [PostDocument(platform="linkedin", content=post, author_id=kwargs["user"].id) for post in posts]
+            [
+                PostDocument(platform="linkedin", content=post, author_id=user.id, author_full_name=user.full_name)
+                for post in posts
+            ]
         )
 
         logger.info(f"Finished scrapping data for profile: {link}")

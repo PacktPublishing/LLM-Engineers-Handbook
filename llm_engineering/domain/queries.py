@@ -7,6 +7,7 @@ from llm_engineering.domain.types import DataCategory
 class Query(VectorBaseDocument):
     content: str
     author_id: UUID4 | None = None
+    author_full_name: str | None = None
     metadata: dict = Field(default_factory=dict)
 
     class Config:
@@ -17,7 +18,13 @@ class Query(VectorBaseDocument):
         return Query(content=query.strip("\n "))
 
     def replace_content(self, new_content: str) -> "Query":
-        return Query(id=self.id, content=new_content, author_id=self.author_id)
+        return Query(
+            id=self.id,
+            content=new_content,
+            author_id=self.author_id,
+            author_full_name=self.author_full_name,
+            metadata=self.metadata,
+        )
 
 
 class EmbeddedQuery(Query):

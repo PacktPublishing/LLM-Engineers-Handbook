@@ -8,11 +8,11 @@ from llm_engineering.infrastructure.files_io import JsonFileManager
 
 @step
 def to_json(
-    data: dict,
-    file: Annotated[str, "file"],
-) -> Annotated[Path, "output_file_path"]:
+    data: Annotated[dict, "serialized_artifact"],
+    to_file: Annotated[Path, "to_file"],
+) -> Annotated[Path, "exported_file_path"]:
     absolute_file_path = JsonFileManager.write(
-        filename=file,
+        filename=to_file,
         data=data,
     )
 

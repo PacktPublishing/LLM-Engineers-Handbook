@@ -50,10 +50,11 @@ build-backend = "poetry.core.masonry.api"
 # Pipelines
 run-digital-data-etl-alex = "python -m llm_engineering.interfaces.orchestrator.run --run-etl --etl-config-filename digital_data_etl_alex_vesa.yaml"
 run-digital-data-etl-maxime = "python -m llm_engineering.interfaces.orchestrator.run --run-etl --etl-config-filename digital_data_etl_maxime_labonne.yaml"
-run-digital-data-etl-paul = "python -m llm_engineering.interfaces.orchestrator.run --run-etl --etl-config-filename digital_data_etl_paul_iusztin.yaml"
+run-digital-data-etl-paul = "python -m llm_engineering.interfaces.orchestrator.run --run-etl --no-cache --etl-config-filename digital_data_etl_paul_iusztin.yaml"
 run-digital-data-etl = ["run-digital-data-etl-alex", "run-digital-data-etl-maxime", "run-digital-data-etl-paul"]
+run-export-artifact-to-json-pipeline = "python -m llm_engineering.interfaces.orchestrator.run --run-export-artifact-to-json"
 
-run-feature-engineering-pipeline = "python -m llm_engineering.interfaces.orchestrator.run --run-feature-engineering"
+run-feature-engineering-pipeline = "python -m llm_engineering.interfaces.orchestrator.run --no-cache --run-feature-engineering"
 run-generate-instruct-datasets-pipeline = "python -m llm_engineering.interfaces.orchestrator.run --run-generate-instruct-datasets"
 run-preprocessing-pipeline = ["run-digital-data-etl", "run-feature-engineering-pipeline", "run-generate-instruct-datasets-pipeline"]
 

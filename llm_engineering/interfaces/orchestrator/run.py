@@ -5,6 +5,7 @@ import click
 
 from llm_engineering.interfaces.orchestrator.pipelines import (
     digital_data_etl,
+    export_artifact_to_json,
     feature_engineering,
     generate_instruct_datasets,
     training,
@@ -53,6 +54,12 @@ Examples:
     help="Whether to run the ETL pipeline.",
 )
 @click.option(
+    "--run-export-artifact-to-json",
+    is_flag=True,
+    default=False,
+    help="Whether to run the Artifact -> JSON pipeline",
+)
+@click.option(
     "--etl-config-filename",
     default="digital_data_etl_paul_iusztin.yaml",
     help="Filename of the ETL config file.",
@@ -79,12 +86,17 @@ def main(
     no_cache: bool = False,
     run_etl: bool = False,
     etl_config_filename: str = "digital_data_etl_paul_iusztin.yaml",
+    run_export_artifact_to_json: bool = False,
     run_feature_engineering: bool = False,
     run_generate_instruct_datasets: bool = False,
     run_training: bool = False,
 ) -> None:
     assert (
-        run_etl or run_feature_engineering or run_generate_instruct_datasets or run_training
+        run_etl
+        or run_export_artifact_to_json
+        or run_feature_engineering
+        or run_generate_instruct_datasets
+        or run_training
     ), "Please specify a pipeline to run."
 
     pipeline_args = {
@@ -98,6 +110,13 @@ def main(
         assert pipeline_args["config_path"].exists(), f"Config file not found: {pipeline_args['config_path']}"
         pipeline_args["run_name"] = f"digital_data_etl_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
         digital_data_etl.with_options(**pipeline_args)(**run_args_etl)
+
+    if run_export_artifact_to_json:
+        run_args_etl = {}
+        pipeline_args["config_path"] = root_dir / "configs" / "export_artifact_to_json.yaml"
+        assert pipeline_args["config_path"].exists(), f"Config file not found: {pipeline_args['config_path']}"
+        pipeline_args["run_name"] = f"export_artifact_to_json_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+        export_artifact_to_json.with_options(**pipeline_args)(**run_args_etl)
 
     if run_feature_engineering:
         run_args_fe = {}

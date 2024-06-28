@@ -47,6 +47,7 @@ class QueryEmbeddingHandler(EmbeddingDataHandler):
         return EmbeddedQuery(
             id=data_model.id,
             author_id=data_model.author_id,
+            author_full_name=data_model.author_full_name,
             content=data_model.content,
             embedding=embedding,
             metadata={
@@ -66,6 +67,7 @@ class PostEmbeddingHandler(EmbeddingDataHandler):
             platform=data_model.platform,
             document_id=data_model.document_id,
             author_id=data_model.author_id,
+            author_full_name=data_model.author_full_name,
             metadata={
                 "embedding_model_id": embedding_model.model_id,
                 "embedding_size": embedding_model.embedding_size,
@@ -84,6 +86,7 @@ class ArticleEmbeddingHandler(EmbeddingDataHandler):
             link=data_model.link,
             document_id=data_model.document_id,
             author_id=data_model.author_id,
+            author_full_name=data_model.author_full_name,
             metadata={
                 "embedding_model_id": embedding_model.model_id,
                 "embedding_size": embedding_model.embedding_size,
@@ -103,6 +106,7 @@ class RepositoryEmbeddingHandler(EmbeddingDataHandler):
             link=data_model.link,
             document_id=data_model.document_id,
             author_id=data_model.author_id,
+            author_full_name=data_model.author_full_name,
             metadata={
                 "embedding_model_id": embedding_model.model_id,
                 "embedding_size": embedding_model.embedding_size,

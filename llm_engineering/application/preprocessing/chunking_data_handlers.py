@@ -62,6 +62,7 @@ class PostChunkingHandler(ChunkingDataHandler):
                 platform=data_model.platform,
                 document_id=data_model.id,
                 author_id=data_model.author_id,
+                author_full_name=data_model.author_full_name,
                 image=data_model.image if data_model.image else None,
                 metadata={
                     "chunk_size": self.chunk_size,
@@ -89,6 +90,7 @@ class ArticleChunkingHandler(ChunkingDataHandler):
                 link=data_model.link,
                 document_id=data_model.id,
                 author_id=data_model.author_id,
+                author_full_name=data_model.author_full_name,
                 metadata={
                     "chunk_size": self.chunk_size,
                     "chunk_overlap": self.chunk_overlap,
@@ -122,6 +124,7 @@ class RepositoryChunkingHandler(ChunkingDataHandler):
                 link=data_model.link,
                 document_id=data_model.id,
                 author_id=data_model.author_id,
+                author_full_name=data_model.author_full_name,
                 metadata={
                     "chunk_size": self.chunk_size,
                     "chunk_overlap": self.chunk_overlap,

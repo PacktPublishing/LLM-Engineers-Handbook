@@ -8,7 +8,7 @@ from llm_engineering.domain.types import DataCategory
 
 @step
 def create_prompts(
-    documents: Annotated[list, "cleaned_documents"],
+    documents: Annotated[list, "queried_cleaned_documents"],
 ) -> Annotated[dict[DataCategory, list[GenerateDatasetSamplesPrompt]], "prompts"]:
     grouped_prompts = generation.DatasetGenerator.get_prompts(documents)
 

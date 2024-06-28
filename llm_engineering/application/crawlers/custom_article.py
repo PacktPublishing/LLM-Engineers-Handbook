@@ -41,11 +41,13 @@ class CustomArticleCrawler(BaseCrawler):
         parsed_url = urlparse(link)
         platform = parsed_url.netloc
 
+        user = kwargs["user"]
         instance = self.model(
             content=content,
             link=link,
             platform=platform,
-            author_id=kwargs["user"].id,
+            author_id=user.id,
+            author_full_name=user.full_name,
         )
         instance.save()
 

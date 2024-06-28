@@ -25,12 +25,12 @@ class SelfQuery:
         username_or_id = response.content.strip("\n ")
 
         if username_or_id == "none":
-            username_or_id = None
-        else:
-            first_name, last_name = utils.split_user_full_name(username_or_id)
-            user = UserDocument.get_or_create(first_name=first_name, last_name=last_name)
-            username_or_id = user.id
+            return query
+
+        first_name, last_name = utils.split_user_full_name(username_or_id)
+        user = UserDocument.get_or_create(first_name=first_name, last_name=last_name)
 
         query.author_id = username_or_id
+        query.author_full_name = user.full_name
 
         return query

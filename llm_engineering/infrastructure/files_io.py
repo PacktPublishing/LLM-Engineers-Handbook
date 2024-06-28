@@ -23,8 +23,9 @@ class JsonFileManager:
     def write(cls, filename: str | Path, data: list | dict) -> Path:
         file_path: Path = Path(filename)
         file_path = file_path.resolve().absolute()
+        file_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with file_path.open("r") as file:
+        with file_path.open("w") as file:
             json.dump(data, file, indent=4)
 
         return file_path

@@ -15,7 +15,7 @@ from llm_engineering.domain.cleaned_documents import (
 
 
 @step
-def query_feature_store() -> Annotated[list, "cleaned_documents"]:
+def query_feature_store() -> Annotated[list, "queried_cleaned_documents"]:
     logger.info("Querying feature store.")
 
     results = fetch_all_data()

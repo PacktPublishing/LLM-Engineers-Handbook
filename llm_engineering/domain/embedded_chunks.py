@@ -13,6 +13,7 @@ class EmbeddedChunk(VectorBaseDocument, ABC):
     platform: str
     document_id: UUID4
     author_id: UUID4
+    author_full_name: str
     metadata: dict = Field(default_factory=dict)
 
 

@@ -38,6 +38,7 @@ class PostCleaningHandler(CleaningDataHandler):
             content=clean_text("".join(data_model.content.values())),
             platform=data_model.platform,
             author_id=data_model.author_id,
+            author_full_name=data_model.author_full_name,
             image=data_model.image if data_model.image else None,
         )
 
@@ -52,6 +53,7 @@ class ArticleCleaningHandler(CleaningDataHandler):
             platform=data_model.platform,
             link=data_model.link,
             author_id=data_model.author_id,
+            author_full_name=data_model.author_full_name,
         )
 
 
@@ -64,4 +66,5 @@ class RepositoryCleaningHandler(CleaningDataHandler):
             name=data_model.name,
             link=data_model.link,
             author_id=data_model.author_id,
+            author_full_name=data_model.author_full_name,
         )
