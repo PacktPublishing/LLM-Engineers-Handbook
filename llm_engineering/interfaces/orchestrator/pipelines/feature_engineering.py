@@ -4,8 +4,8 @@ from llm_engineering.interfaces.orchestrator.steps import feature_engineering as
 
 
 @pipeline
-def feature_engineering(user_full_names: list[str]) -> None:
-    raw_documents = fe_steps.query_data_warehouse(user_full_names)
+def feature_engineering(author_full_names: list[str]) -> None:
+    raw_documents = fe_steps.query_data_warehouse(author_full_names)
 
     cleaned_documents = fe_steps.clean_documents(raw_documents)
     fe_steps.load_to_vector_db(cleaned_documents)

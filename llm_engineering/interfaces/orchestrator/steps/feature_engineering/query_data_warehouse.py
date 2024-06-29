@@ -11,15 +11,17 @@ from llm_engineering.domain.documents import ArticleDocument, Document, PostDocu
 
 @step
 def query_data_warehouse(
-    user_full_names: list[str],
+    author_full_names: list[str],
 ) -> Annotated[list, "raw_documents"]:
     documents = []
-    for user_full_name in user_full_names:
-        logger.info(f"Querying data warehouse for user: {user_full_name}")
+    authors = []
+    for author_full_name in author_full_names:
+        logger.info(f"Querying data warehouse for user: {author_full_name}")
 
-        first_name, last_name = utils.split_user_full_name(user_full_name)
+        first_name, last_name = utils.split_user_full_name(author_full_name)
         logger.info(f"First name: {first_name}, Last name: {last_name}")
         user = UserDocument.get_or_create(first_name=first_name, last_name=last_name)
+        authors.append(user)
 
         results = fetch_all_data(user)
         user_documents = [doc for query_result in results.values() for doc in query_result]
@@ -66,12 +68,22 @@ def __fetch_repositories(user_id) -> list[NoSQLBaseDocument]:
     return RepositoryDocument.bulk_find(author_id=user_id)
 
 
-def _get_metadata(cleaned_documents: list[Document]) -> dict:
-    metadata = {"num_documents": len(cleaned_documents)}
-    for document in cleaned_documents:
+def _get_metadata(documents: list[Document]) -> dict:
+    metadata = {
+        "num_documents": len(documents),
+    }
+    for document in documents:
         collection = document.get_collection_name()
         if collection not in metadata:
             metadata[collection] = {}
+        if "authors" not in metadata[collection]:
+            metadata[collection]["authors"] = list()
+
         metadata[collection]["num_documents"] = metadata[collection].get("num_documents", 0) + 1
+        metadata[collection]["authors"].append(document.author_full_name)
+
+    for value in metadata.values():
+        if isinstance(value, dict) and "authors" in value:
+            value["authors"] = list(set(value["authors"]))
 
     return metadata
