@@ -1,2 +1,4 @@
 parameters:
-  artifact_name: cleaned_documents
+  artifact_names: 
+  - raw_documents
+  - cleaned_documents

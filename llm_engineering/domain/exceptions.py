@@ -4,7 +4,3 @@ class LLMTwinException(Exception):
 
 class ImproperlyConfigured(LLMTwinException):
     pass
-
-
-class JSONDecodeError(LLMTwinException):
-    pass

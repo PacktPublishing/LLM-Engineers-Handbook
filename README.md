@@ -121,6 +121,13 @@ To see the pipelines running and their results & metadata:
 - click on a specific run (e.g., `feature_engineering_run_2024_06_20_18_40_24`)
 - click on a specific step or artifact to find more details about the run
 
+#### General Utilities
+
+Export ZenML artifacts to JSON:
+```shell
+poetry poe run-export-artifact-to-json-pipeline
+```
+
 #### Data Preprocessing
 
 Run the data collection ETL:

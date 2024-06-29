@@ -35,7 +35,7 @@ class PostCleaningHandler(CleaningDataHandler):
     def clean(self, data_model: PostDocument) -> CleanedPostDocument:
         return CleanedPostDocument(
             id=data_model.id,
-            content=clean_text("".join(data_model.content.values())),
+            content=clean_text(" #### ".join(data_model.content.values())),
             platform=data_model.platform,
             author_id=data_model.author_id,
             author_full_name=data_model.author_full_name,
@@ -49,7 +49,7 @@ class ArticleCleaningHandler(CleaningDataHandler):
 
         return CleanedArticleDocument(
             id=data_model.id,
-            content=clean_text("".join(valid_content)),
+            content=clean_text(" #### ".join(valid_content)),
             platform=data_model.platform,
             link=data_model.link,
             author_id=data_model.author_id,
@@ -61,7 +61,7 @@ class RepositoryCleaningHandler(CleaningDataHandler):
     def clean(self, data_model: RepositoryDocument) -> CleanedRepositoryDocument:
         return CleanedRepositoryDocument(
             id=data_model.id,
-            content=clean_text("".join(data_model.content.values())),
+            content=clean_text(" #### ".join(data_model.content.values())),
             platform=data_model.platform,
             name=data_model.name,
             link=data_model.link,

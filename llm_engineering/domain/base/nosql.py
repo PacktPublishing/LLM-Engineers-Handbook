@@ -55,6 +55,15 @@ class NoSQLBaseDocument(BaseModel, Generic[T], ABC):
 
         return parsed
 
+    def dict(self: T, **kwargs) -> dict:
+        dict_ = super().dict(**kwargs)
+
+        for key, value in dict_.items():
+            if isinstance(value, uuid.UUID):
+                dict_[key] = str(value)
+
+        return dict_
+
     def save(self: T, **kwargs) -> T | None:
         collection = _database[self.get_collection_name()]
         try:
