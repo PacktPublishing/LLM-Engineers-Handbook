@@ -38,7 +38,7 @@ Content number {{ doc.index }}:
     @classmethod
     def get_system_prompt(cls) -> Prompt:
         return Prompt(
-            template=PromptTemplate.from_template(cls.system_prompt_template),
+            template=cls.system_prompt_template,
             input_variables={},
             content=cls.system_prompt_template,
         )
@@ -93,7 +93,7 @@ Content number {{ doc.index }}:
             prompt = cls.tokenizer.decode(prompt_tokens)
 
         prompt = GenerateDatasetSamplesPrompt(
-            template=prompt_template,
+            template=prompt_template.template,
             input_variables=input_variables,
             content=prompt,
             num_tokens=len(prompt_tokens),
