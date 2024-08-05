@@ -4,11 +4,58 @@ This repository contains scripts for creating and managing AWS IAM roles and use
 
 ## Contents
 
-1. [SageMaker User Creation Script](#sagemaker-user-creation-script)
-2. [SageMaker Execution Role Creation Script](#sagemaker-execution-role-creation-script)
-3. [Understanding the Difference](#understanding-the-difference)
-4. [Deploying a Hugging Face Inference Endpoint](#deploying-a-hugging-face-inference-endpoint)
-5. [Testing Inference on the Deployed Endpoint](#testing-inference-on-the-deployed-endpoint)
+1. [AWS Configuration](#aws-configuration)
+2. [SageMaker User Creation Script](#sagemaker-user-creation-script)
+3. [SageMaker Execution Role Creation Script](#sagemaker-execution-role-creation-script)
+4. [Understanding the Difference](#understanding-the-difference)
+5. [Deploying a Hugging Face Inference Endpoint](#deploying-a-hugging-face-inference-endpoint)
+6. [Testing Inference on the Deployed Endpoint](#testing-inference-on-the-deployed-endpoint)
+
+## AWS Configuration
+
+Before you can use the scripts in this repository, you need to set up your AWS environment. This involves creating an IAM user, installing the AWS CLI, and configuring your AWS profile.
+
+### Creating an IAM User
+
+1. Sign in to the AWS Management Console and open the IAM console at https://console.aws.amazon.com/iam/
+2. In the navigation pane, choose Users and then choose Add user.
+3. Type the user name for the new user.
+4. Select Programmatic access as the AWS access type.
+5. Choose Next: Permissions.
+6. Set permissions for the user. For this project, you may want to attach the AmazonSageMakerFullAccess policy. However, for production environments, it's recommended to create a custom policy with only the necessary permissions.
+7. Choose Next: Tags (optional to add tags).
+8. Choose Next: Review to see all of the choices you made up to this point.
+9. Choose Create user.
+10. Download or copy the access key ID and secret access key. You will need these to configure the AWS CLI.
+
+### Installing the AWS CLI
+
+1. Follow the official AWS documentation to install the AWS CLI for your operating system:
+   https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html
+
+### Configuring Your AWS Profile
+
+1. Open a terminal or command prompt.
+2. Run the following command:
+   ```
+   aws configure
+   ```
+3. You will be prompted to enter your AWS Access Key ID, AWS Secret Access Key, default region name, and default output format. Enter the information you obtained when creating the IAM user.
+
+Example:
+```
+AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
+AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+Default region name [None]: us-west-2
+Default output format [None]: json
+```
+
+4. This creates a default profile. If you want to create a named profile, use:
+   ```
+   aws configure --profile profilename
+   ```
+
+Now your AWS environment is set up and ready to use with the scripts in this repository.
 
 ## SageMaker User Creation Script
 
@@ -194,8 +241,5 @@ This script sets up an `InferenceExecutor` class that handles the interaction wi
 - The inference process may take a few seconds depending on the model size and input complexity.
 - Monitor the console output for the generated text and any potential errors.
 
-
 ## Note
 Ensure you have the necessary permissions in your AWS account to create IAM users and roles, deploy SageMaker endpoints, and perform inference before running these scripts.
-
-#
