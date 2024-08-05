@@ -44,7 +44,7 @@ class NoSQLBaseDocument(BaseModel, Generic[T], ABC):
         exclude_unset = kwargs.pop("exclude_unset", False)
         by_alias = kwargs.pop("by_alias", True)
 
-        parsed = self.model_dump(exclude_unset=exclude_unset, by_alias=by_alias, **kwargs)
+        parsed = self.dict(exclude_unset=exclude_unset, by_alias=by_alias, **kwargs)
 
         if "_id" not in parsed and "id" in parsed:
             parsed["_id"] = str(parsed.pop("id"))
@@ -55,8 +55,8 @@ class NoSQLBaseDocument(BaseModel, Generic[T], ABC):
 
         return parsed
 
-    def model_dump(self: T, **kwargs) -> dict:
-        dict_ = super().model_dump(**kwargs)
+    def dict(self: T, **kwargs) -> dict:
+        dict_ = super().dict(**kwargs)
 
         for key, value in dict_.items():
             if isinstance(value, uuid.UUID):

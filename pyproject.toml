@@ -8,10 +8,10 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "~3.11"
-zenml = { version = "0.63.0", extras = ["server"] }
+setuptools = "58.0.0"
+sqlalchemy = "^2.0.31"
+zenml = { version = "0.62.0", extras = ["server"] }
 pymongo = "^4.6.2"
-pydantic = "^2.7.0"
-pydantic-settings = "^2.2.1"
 click = "^8.0.1"
 loguru = "^0.7.2"
 rich = "^13.7.1"
@@ -26,14 +26,16 @@ jmespath = "^1.0.1"
 # Feature engineering
 qdrant-client = "^1.8.0"
 unstructured = "^0.12.0"
-langchain = "^0.2.11"
+langchain = "^0.1.13"
 sentence-transformers = "^2.6.1"
 
 # RAG
-langchain-openai = "^0.1.19"
+langchain-openai = "^0.1.3"
 jinja2 = "^3.1.4"
 tiktoken = "^0.7.0"
 fake-useragent = "^1.5.1"
+sagemaker-huggingface-inference-toolkit = "^2.4.0"
+sagemaker = "^2.226.1"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.4.9"
@@ -52,36 +54,21 @@ build-backend = "poetry.core.masonry.api"
 run-digital-data-etl-alex = "python -m llm_engineering.interfaces.orchestrator.run --run-etl --no-cache --etl-config-filename digital_data_etl_alex_vesa.yaml"
 run-digital-data-etl-maxime = "python -m llm_engineering.interfaces.orchestrator.run --run-etl --no-cache --etl-config-filename digital_data_etl_maxime_labonne.yaml"
 run-digital-data-etl-paul = "python -m llm_engineering.interfaces.orchestrator.run --run-etl --no-cache --etl-config-filename digital_data_etl_paul_iusztin.yaml"
-run-digital-data-etl = [
-    "run-digital-data-etl-alex",
-    "run-digital-data-etl-maxime",
-    "run-digital-data-etl-paul",
-]
+run-digital-data-etl = ["run-digital-data-etl-alex", "run-digital-data-etl-maxime", "run-digital-data-etl-paul"]
 
 run-feature-engineering-pipeline = "python -m llm_engineering.interfaces.orchestrator.run --no-cache --run-feature-engineering"
 run-generate-instruct-datasets-pipeline = "python -m llm_engineering.interfaces.orchestrator.run --no-cache --run-generate-instruct-datasets"
-run-preprocessing-pipeline = [
-    "run-digital-data-etl",
-    "run-feature-engineering-pipeline",
-    "run-generate-instruct-datasets-pipeline",
-]
+run-preprocessing-pipeline = ["run-digital-data-etl", "run-feature-engineering-pipeline", "run-generate-instruct-datasets-pipeline"]
 run-export-artifact-to-json-pipeline = "python -m llm_engineering.interfaces.orchestrator.run --no-cache --run-export-artifact-to-json"
 
 run-training-pipeline = "python -m llm_engineering.interfaces.orchestrator.run --no-cache --run-training"
 
 # Local infrastructure
-local-docker-infrastructure-up = "docker compose up -d"
-local-docker-infrastructure-down = "docker compose stop"
+local-docker-infrastructure-up = "docker-compose up -d"
+local-docker-infrastructure-down = "docker-compose stop"
 local-zenml-server-down = "poetry run zenml down"
-local-infrastructure-up = [
-    "local-docker-infrastructure-up",
-    "local-zenml-server-down",
-    "local-zenml-server-up",
-]
-local-infrastructure-down = [
-    "local-docker-infrastructure-down",
-    "local-zenml-server-down",
-]
+local-infrastructure-up = ["local-docker-infrastructure-up", "local-zenml-server-down", "local-zenml-server-up"]
+local-infrastructure-down = ["local-docker-infrastructure-down", "local-zenml-server-down"]
 
 # QA
 lint-check = "poetry run ruff check ."

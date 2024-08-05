@@ -3,7 +3,12 @@ from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 from uuid import UUID
 
-from llm_engineering.domain.chunks import ArticleChunk, Chunk, PostChunk, RepositoryChunk
+from llm_engineering.domain.chunks import (
+    ArticleChunk,
+    Chunk,
+    PostChunk,
+    RepositoryChunk,
+)
 from llm_engineering.domain.cleaned_documents import (
     CleanedArticleDocument,
     CleanedDocument,
@@ -37,11 +42,9 @@ class ChunkingDataHandler(ABC, Generic[CleanedDocumentT, ChunkT]):
 
 
 class PostChunkingHandler(ChunkingDataHandler):
-    @property
     def chunk_size(self) -> int:
         return 250
 
-    @property
     def chunk_overlap(self) -> int:
         return 25
 
@@ -49,7 +52,7 @@ class PostChunkingHandler(ChunkingDataHandler):
         data_models_list = []
 
         cleaned_content = data_model.content
-        chunks = chunk_text(cleaned_content, chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap)
+        chunks = chunk_text(cleaned_content)
 
         for chunk in chunks:
             chunk_id = hashlib.md5(chunk.encode()).hexdigest()
@@ -76,7 +79,7 @@ class ArticleChunkingHandler(ChunkingDataHandler):
         data_models_list = []
 
         cleaned_content = data_model.content
-        chunks = chunk_text(cleaned_content, chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap)
+        chunks = chunk_text(cleaned_content)
 
         for chunk in chunks:
             chunk_id = hashlib.md5(chunk.encode()).hexdigest()
@@ -99,11 +102,9 @@ class ArticleChunkingHandler(ChunkingDataHandler):
 
 
 class RepositoryChunkingHandler(ChunkingDataHandler):
-    @property
     def chunk_size(self) -> int:
         return 750
 
-    @property
     def chunk_overlap(self) -> int:
         return 75
 
@@ -111,7 +112,7 @@ class RepositoryChunkingHandler(ChunkingDataHandler):
         data_models_list = []
 
         cleaned_content = data_model.content
-        chunks = chunk_text(cleaned_content, chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap)
+        chunks = chunk_text(cleaned_content)
 
         for chunk in chunks:
             chunk_id = hashlib.md5(chunk.encode()).hexdigest()

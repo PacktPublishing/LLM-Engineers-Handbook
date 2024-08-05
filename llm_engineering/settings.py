@@ -42,6 +42,31 @@ class Settings(BaseSettings):
     COMET_WORKSPACE: str | None = None
     COMET_PROJECT: str | None = None
 
+    ARN_ROLE: str
+    HUGGING_FACE_HUB_TOKEN: str
+
+    HF_MODEL_ID: str = "test"
+    GPU_INSTANCE_TYPE: str = "test"
+    SM_NUM_GPUS: int = 1
+    MAX_INPUT_LENGTH: int = 20000
+    MAX_TOTAL_TOKENS: int = 32000
+    MAX_BATCH_TOTAL_TOKENS: int = 12000
+    COPIES: int = 4  # Number of replicas
+    GPUS: int = 1  # Number of GPUs
+    CPUS: int = 8  # Number of CPU cores  96 // num_replica - more for management
+    RETURN_FULL_TEXT: bool = False
+
+    SAGEMAKER_ENDPOINT_CONFIG_INFERENCE: str = "test"
+    SAGEMAKER_INFERENCE_COMPONENT_INFERENCE: str = "test"
+    SAGEMAKER_ENDPOINT_INFERENCE: str = "test"
+    SAGEMAKER_MODEL_INFERENCE: str = "test"
+    TEMPERATURE_INFERENCE: float = 0.01
+    TOP_P_INFERENCE: float = 0.9
+    MAX_NEW_TOKENS_INFERENCE: int = 150
+
+    AWS_ACCESS_KEY: str | None = None
+    AWS_SECRET_KEY: str | None = None
+
     @property
     def OPENAI_MAX_TOKEN_WINDOW(self) -> int:
         official_max_token_window = {"gpt-3.5-turbo": 16385, "gpt-4-turbo": 128000, "gpt-4o": 128000}[
