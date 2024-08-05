@@ -46,7 +46,7 @@ huggingface_estimator = HuggingFace(
         "use_qlora": True,
         "max_seq_length": 512,
     },
-    requirements_file=requirements_path,  # Specify the requirements file
+    requirements_file=requirements_path,
 )
 
 # Start the training job

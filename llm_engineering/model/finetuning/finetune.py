@@ -20,9 +20,14 @@ def setup_torch_config():
         torch_dtype = torch.bfloat16
         try:
             import flash_attn
+            from packaging import version
 
-            attn_implementation = "flash_attention_2"
-            print("Using FlashAttention")
+            if version.parse(flash_attn.__version__) >= version.parse("2.1.0"):
+                attn_implementation = "flash_attention_2"
+                print("Using FlashAttention 2")
+            else:
+                attn_implementation = "eager"
+                print(f"FlashAttention version {flash_attn.__version__} is not compatible. Using eager implementation.")
         except ImportError:
             warnings.warn("FlashAttention not installed. Defaulting to eager attention.")
             attn_implementation = "eager"
