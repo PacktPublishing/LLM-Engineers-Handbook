@@ -10,6 +10,7 @@ This repository contains scripts for creating and managing AWS IAM roles and use
 4. [Understanding the Difference](#understanding-the-difference)
 5. [Deploying a Hugging Face Inference Endpoint](#deploying-a-hugging-face-inference-endpoint)
 6. [Testing Inference on the Deployed Endpoint](#testing-inference-on-the-deployed-endpoint)
+7. [Using the Makefile](#using-the-makefile)
 
 ## AWS Configuration
 
@@ -59,7 +60,7 @@ Now your AWS environment is set up and ready to use with the scripts in this rep
 
 ## SageMaker User Creation Script
 
-File: `create_sagemaker_user.py`
+File: `llm_engineering/core/aws/create_sagemaker_role.py`
 
 This script creates an IAM user with permissions to interact with SageMaker and other necessary AWS services.
 
@@ -70,13 +71,13 @@ This script creates an IAM user with permissions to interact with SageMaker and 
 - Saves the access keys to a JSON file
 
 ### Usage:
-```python
-python create_sagemaker_user.py
+```
+make create-sagemaker-role
 ```
 
 ## SageMaker Execution Role Creation Script
 
-File: `create_sagemaker_execution_role.py`
+File: `llm_engineering/core/aws/create_sagemaker_execution_role.py`
 
 This script creates an IAM role that SageMaker can assume to access other AWS resources on your behalf.
 
@@ -86,8 +87,8 @@ This script creates an IAM role that SageMaker can assume to access other AWS re
 - Outputs and saves the role ARN to a JSON file
 
 ### Usage:
-```python
-python create_sagemaker_execution_role.py
+```
+make create-sagemaker-execution-role
 ```
 
 ## Understanding the Difference
@@ -112,7 +113,7 @@ python create_sagemaker_execution_role.py
 
 After setting up the necessary AWS resources (user and execution role), you can deploy a Hugging Face model as a SageMaker inference endpoint.
 
-File: `deploy_huggingface_endpoint.py`
+File: `llm_engineering/model/deploy/huggingface/run.py`
 
 This script creates a SageMaker endpoint for inference using a Hugging Face model.
 
@@ -131,39 +132,9 @@ This script creates a SageMaker endpoint for inference using a Hugging Face mode
   - `ARN_ROLE` (the ARN of your SageMaker execution role)
 
 ### Usage:
-```python
-python deploy_huggingface_endpoint.py
 ```
-
-### Code Overview:
-```python
-from sagemaker.enums import EndpointType
-from sagemaker.huggingface import get_huggingface_llm_image_uri
-from llm_engineering.model.deploy.huggingface.config import (
-    hugging_face_deploy_config,
-    model_resource_config,
-)
-from llm_engineering.model.deploy.huggingface.sagemaker_huggingface import (
-    DeploymentService,
-    SagemakerHuggingfaceStrategy,
-)
-from llm_engineering.model.utils import ResourceManager
-from llm_engineering.settings import settings
-
-def create_huggingface_endpoint(task_name, endpoint_type=EndpointType.INFERENCE_COMPONENT_BASED):
-    # ... [function implementation] ...
-
-if __name__ == "__main__":
-    task_name = "inference"
-    create_huggingface_endpoint(task_name, endpoint_type=EndpointType.MODEL_BASED)
+make deploy-inference-endpoint
 ```
-
-This script sets up and deploys a Hugging Face model as a SageMaker endpoint. It uses the SageMaker execution role you created earlier to give the endpoint the necessary permissions to access AWS resources.
-
-### Note:
-- Ensure all required dependencies are installed and AWS credentials are properly configured.
-- The deployment process may take some time depending on the size of the model and the selected instance type.
-- Monitor the AWS console or CloudWatch logs for deployment progress and any potential issues.
 
 ## Testing Inference on the Deployed Endpoint
 
@@ -191,55 +162,70 @@ This script demonstrates how to use the deployed endpoint for inference tasks.
 python test.py
 ```
 
-### Code Overview:
-```python
-from __future__ import annotations
-import logging
-from llm_engineering.core.interfaces import Inference
-from llm_engineering.model.inference.inference import LLMInferenceSagemakerEndpoint
-from llm_engineering.settings import settings
+## Using the Makefile
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+This project includes a Makefile to automate common tasks and streamline the workflow. The Makefile provides several targets that correspond to the main operations in the project.
 
-class InferenceExecutor:
-    def __init__(self, llm: Inference, text: str, prompt: str):
-        self.llm = llm
-        self.text = text
-        self.prompt = prompt
+### Makefile Configuration
 
-    def execute(self) -> str:
-        """Extracts entities from a text."""
-        self.llm.set_payload(
-            inputs=self.prompt.format(TEXT=self.text),
-            parameters={
-                "max_new_tokens": settings.MAX_NEW_TOKENS_INFERENCE,
-                "repetition_penalty": 1.1,
-                "temperature": settings.TEMPERATURE_INFERENCE,
-            },
-        )
-        extraction = self.llm.inference()[0]["generated_text"]
-        return extraction
+The Makefile sets the AWS profile to use:
 
-if __name__ == "__main__":
-    text = "The weather in Berlin is nice today."
-    prompt = 'Continue the following text: "{TEXT}"'
-    llm = LLMInferenceSagemakerEndpoint(
-        endpoint_name=settings.SAGEMAKER_ENDPOINT_INFERENCE, inference_component_name=None
-    )
-    result = InferenceExecutor(llm, text, prompt).execute()
-    print(f"Generated text: {result}")
+```makefile
+export AWS_PROFILE=decodingml
 ```
 
-This script sets up an `InferenceExecutor` class that handles the interaction with the SageMaker endpoint. It takes an input text and a prompt, sends them to the endpoint, and returns the generated text.
+Ensure that you have this profile configured in your AWS CLI settings, or modify this line to match your desired AWS profile.
 
-### Customization:
-- You can modify the `text` and `prompt` variables in the `__main__` section to test different inputs.
-- Adjust the parameters in `set_payload()` method to fine-tune the inference process.
+### Makefile Targets
 
-### Note:
-- Ensure all required dependencies are installed and AWS credentials are properly configured.
-- The inference process may take a few seconds depending on the model size and input complexity.
-- Monitor the console output for the generated text and any potential errors.
+- `help`: Displays a list of available commands with brief descriptions.
+- `create-sagemaker-role`: Creates the SageMaker role.
+- `create-sagemaker-execution-role`: Creates the SageMaker execution role.
+- `deploy-inference-endpoint`: Deploys the inference endpoint.
+- `delete-inference-endpoint`: Deletes the inference endpoint and its configuration.
+
+### Usage
+
+To use the Makefile, ensure you have `make` installed on your system. Then, you can run the following commands:
+
+1. To see available commands:
+   ```
+   make help
+   ```
+
+2. To create a SageMaker role:
+   ```
+   make create-sagemaker-role
+   ```
+
+3. To create a SageMaker execution role:
+   ```
+   make create-sagemaker-execution-role
+   ```
+
+4. To deploy the inference endpoint:
+   ```
+   make deploy-inference-endpoint
+   ```
+
+5. To delete the inference endpoint:
+   ```
+   make delete-inference-endpoint ENDPOINT_NAME=<your-endpoint-name>
+   ```
+   Note: You must provide the ENDPOINT_NAME parameter when deleting an endpoint.
+
+### Poetry Integration
+
+This Makefile uses Poetry to manage Python dependencies and run scripts. Ensure you have Poetry installed and have run `poetry install` to set up your project environment.
+
+### Note
+
+- Ensure you have Python and Poetry installed on your system.
+- The Makefile uses Poetry to run Python scripts, ensuring all dependencies are correctly managed.
+- Make sure you have properly configured the AWS CLI and have the necessary permissions to perform these operations.
+- When deleting an endpoint, you must provide the endpoint name as an environment variable.
+
+By using this Makefile, you can easily manage the entire lifecycle of your SageMaker project, from setting up roles to deploying and managing your inference endpoints.
 
 ## Note
 Ensure you have the necessary permissions in your AWS account to create IAM users and roles, deploy SageMaker endpoints, and perform inference before running these scripts.
