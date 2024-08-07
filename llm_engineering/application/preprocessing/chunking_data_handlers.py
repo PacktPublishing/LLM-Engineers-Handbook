@@ -11,7 +11,7 @@ from llm_engineering.domain.cleaned_documents import (
     CleanedRepositoryDocument,
 )
 
-from .operations import chunk_text
+from .operations import chunk_article, chunk_text
 
 CleanedDocumentT = TypeVar("CleanedDocumentT", bound=CleanedDocument)
 ChunkT = TypeVar("ChunkT", bound=Chunk)
@@ -24,12 +24,11 @@ class ChunkingDataHandler(ABC, Generic[CleanedDocumentT, ChunkT]):
     """
 
     @property
-    def chunk_size(self) -> int:
-        return 500
-
-    @property
-    def chunk_overlap(self) -> int:
-        return 50
+    def metadata(self) -> dict:
+        return {
+            "chunk_size": 500,
+            "chunk_overlap": 50,
+        }
 
     @abstractmethod
     def chunk(self, data_model: CleanedDocumentT) -> list[ChunkT]:
@@ -38,18 +37,19 @@ class ChunkingDataHandler(ABC, Generic[CleanedDocumentT, ChunkT]):
 
 class PostChunkingHandler(ChunkingDataHandler):
     @property
-    def chunk_size(self) -> int:
-        return 250
-
-    @property
-    def chunk_overlap(self) -> int:
-        return 25
+    def metadata(self) -> dict:
+        return {
+            "chunk_size": 250,
+            "chunk_overlap": 25,
+        }
 
     def chunk(self, data_model: CleanedPostDocument) -> list[PostChunk]:
         data_models_list = []
 
         cleaned_content = data_model.content
-        chunks = chunk_text(cleaned_content, chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap)
+        chunks = chunk_text(
+            cleaned_content, chunk_size=self.metadata["chunk_size"], chunk_overlap=self.metadata["chunk_overlap"]
+        )
 
         for chunk in chunks:
             chunk_id = hashlib.md5(chunk.encode()).hexdigest()
@@ -61,10 +61,7 @@ class PostChunkingHandler(ChunkingDataHandler):
                 author_id=data_model.author_id,
                 author_full_name=data_model.author_full_name,
                 image=data_model.image if data_model.image else None,
-                metadata={
-                    "chunk_size": self.chunk_size,
-                    "chunk_overlap": self.chunk_overlap,
-                },
+                metadata=self.metadata,
             )
             data_models_list.append(model)
 
@@ -72,11 +69,20 @@ class PostChunkingHandler(ChunkingDataHandler):
 
 
 class ArticleChunkingHandler(ChunkingDataHandler):
+    @property
+    def metadata(self) -> dict:
+        return {
+            "min_length": 1000,
+            "max_length": 1000,
+        }
+
     def chunk(self, data_model: CleanedArticleDocument) -> list[ArticleChunk]:
         data_models_list = []
 
         cleaned_content = data_model.content
-        chunks = chunk_text(cleaned_content, chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap)
+        chunks = chunk_article(
+            cleaned_content, min_length=self.metadata["min_length"], max_length=self.metadata["max_length"]
+        )
 
         for chunk in chunks:
             chunk_id = hashlib.md5(chunk.encode()).hexdigest()
@@ -88,10 +94,7 @@ class ArticleChunkingHandler(ChunkingDataHandler):
                 document_id=data_model.id,
                 author_id=data_model.author_id,
                 author_full_name=data_model.author_full_name,
-                metadata={
-                    "chunk_size": self.chunk_size,
-                    "chunk_overlap": self.chunk_overlap,
-                },
+                metadata=self.metadata,
             )
             data_models_list.append(model)
 
@@ -100,18 +103,19 @@ class ArticleChunkingHandler(ChunkingDataHandler):
 
 class RepositoryChunkingHandler(ChunkingDataHandler):
     @property
-    def chunk_size(self) -> int:
-        return 750
-
-    @property
-    def chunk_overlap(self) -> int:
-        return 75
+    def metadata(self) -> dict:
+        return {
+            "chunk_size": 1500,
+            "chunk_overlap": 100,
+        }
 
     def chunk(self, data_model: CleanedRepositoryDocument) -> list[RepositoryChunk]:
         data_models_list = []
 
         cleaned_content = data_model.content
-        chunks = chunk_text(cleaned_content, chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap)
+        chunks = chunk_text(
+            cleaned_content, chunk_size=self.metadata["chunk_size"], chunk_overlap=self.metadata["chunk_overlap"]
+        )
 
         for chunk in chunks:
             chunk_id = hashlib.md5(chunk.encode()).hexdigest()
@@ -124,10 +128,7 @@ class RepositoryChunkingHandler(ChunkingDataHandler):
                 document_id=data_model.id,
                 author_id=data_model.author_id,
                 author_full_name=data_model.author_full_name,
-                metadata={
-                    "chunk_size": self.chunk_size,
-                    "chunk_overlap": self.chunk_overlap,
-                },
+                metadata=self.metadata,
             )
             data_models_list.append(model)
 

@@ -25,9 +25,9 @@ jmespath = "^1.0.1"
 
 # Feature engineering
 qdrant-client = "^1.8.0"
-unstructured = "^0.12.0"
 langchain = "^0.2.11"
 sentence-transformers = "^2.6.1"
+datasets = "2.20.0"
 
 # RAG
 langchain-openai = "^0.1.19"
