@@ -16,4 +16,4 @@ class Prompt(VectorBaseDocument):
 
 class GenerateDatasetSamplesPrompt(Prompt):
     data_category: DataCategory
-    documents: list[CleanedDocument]
+    document: CleanedDocument

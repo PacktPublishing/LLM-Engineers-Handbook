@@ -1,2 +1,5 @@
 parameters:
-  
+  test_split_size: 0.1
+  push_to_huggingface: true
+  dataset_id: pauliusztin/llmtwin
+  mock: false
