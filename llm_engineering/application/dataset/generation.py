@@ -1,5 +1,3 @@
-from typing import Generator
-
 import tiktoken
 from langchain_core.exceptions import OutputParserException
 from langchain_core.language_models.fake import FakeListLLM
@@ -66,20 +64,6 @@ Output JSON format. Make sure that you generate exactly three instruction-answer
             grouped_prompts[category] = category_prompts
 
         return grouped_prompts
-
-    @classmethod
-    def _batch_by_category(
-        cls, category: DataCategory, documents: list[CleanedDocument]
-    ) -> Generator[list, None, None]:
-        match category:
-            case DataCategory.ARTICLES:
-                return splits.misc.batch(documents, size=1)
-            case DataCategory.POSTS:
-                return splits.misc.batch(documents, size=5)
-            case DataCategory.REPOSITORIES:
-                return splits.misc.batch(documents, size=1)
-            case _:
-                raise ValueError(f"Unsupported category: {category}")
 
     @classmethod
     def get_prompt(cls, document: CleanedDocument) -> GenerateDatasetSamplesPrompt:
