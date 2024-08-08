@@ -2,11 +2,16 @@ import time
 from abc import ABC, abstractmethod
 from tempfile import mkdtemp
 
+import chromedriver_autoinstaller
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
 from llm_engineering.domain.documents import NoSQLBaseDocument
-from llm_engineering.settings import settings
+
+# Check if the current version of chromedriver exists
+# and if it doesn't exist, download it automatically,
+# then add chromedriver to path
+chromedriver_autoinstaller.install()
 
 
 class BaseCrawler(ABC):
@@ -19,10 +24,7 @@ class BaseCrawler(ABC):
 class BaseSeleniumCrawler(BaseCrawler, ABC):
     def __init__(self, scroll_limit: int = 5) -> None:
         options = webdriver.ChromeOptions()
-        if settings.SELENIUM_BROWSER_BINARY_PATH:
-            options.binary_location = settings.SELENIUM_BROWSER_BINARY_PATH
-            # TODO: Enable this when running it inside Docker.
-            # options.binary_location = "/opt/chrome/chrome"
+
         options.add_argument("--no-sandbox")
         options.add_argument("--headless=new")
         options.add_argument("--single-process")
@@ -32,6 +34,9 @@ class BaseSeleniumCrawler(BaseCrawler, ABC):
         options.add_argument("--disable-popup-blocking")
         options.add_argument("--disable-notifications")
         options.add_argument("--disable-dev-tools")
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-software-rasterizer")
+        options.add_argument("--disable-background-networking")
         options.add_argument("--ignore-certificate-errors")
         options.add_argument("--no-zygote")
         options.add_argument(f"--user-data-dir={mkdtemp()}")
@@ -43,7 +48,6 @@ class BaseSeleniumCrawler(BaseCrawler, ABC):
 
         self.scroll_limit = scroll_limit
         self.driver = webdriver.Chrome(
-            service=webdriver.ChromeService(settings.SELENIUM_BROWSER_DRIVER_PATH),
             options=options,
         )
 

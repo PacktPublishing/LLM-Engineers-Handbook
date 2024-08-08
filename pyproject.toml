@@ -34,6 +34,8 @@ langchain-openai = "^0.1.19"
 jinja2 = "^3.1.4"
 tiktoken = "^0.7.0"
 fake-useragent = "^1.5.1"
+langchain-community = "^0.2.11"
+chromedriver-autoinstaller = "^0.6.4"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.4.9"
@@ -82,6 +84,11 @@ local-infrastructure-down = [
     "local-docker-infrastructure-down",
     "local-zenml-server-down",
 ]
+
+# Docker
+build-docker-image = "docker buildx build --platform linux/amd64 -t llmtwin -f Dockerfile ."
+run-docker-digital-data-etl = "docker run --rm --network host --shm-size=2g --env-file .env llmtwin poetry poe run-digital-data-etl"
+bash-docker-container = "docker run --rm -it --network host --env-file .env llmtwin bash"
 
 # QA
 lint-check = "poetry run ruff check ."

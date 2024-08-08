@@ -10,10 +10,6 @@ class Settings(BaseSettings):
     DATABASE_HOST: str = "mongodb://decodingml:decodingml@llm_engineering_mongo:27017"
     DATABASE_NAME: str = "twin"
 
-    # Selenium Drivers
-    SELENIUM_BROWSER_BINARY_PATH: str | None = None
-    SELENIUM_BROWSER_DRIVER_PATH: str
-
     # LinkedIn Credentials
     LINKEDIN_USERNAME: str | None = None
     LINKEDIN_PASSWORD: str | None = None
