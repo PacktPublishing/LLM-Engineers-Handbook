@@ -95,4 +95,3 @@ class Settings(BaseSettings):
 
 
 settings = load_settings()
-print(settings)  # noqa

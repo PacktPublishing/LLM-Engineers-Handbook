@@ -1,3 +1,8 @@
+settings:
+  docker:
+    parent_image: 992382797823.dkr.ecr.eu-central-1.amazonaws.com/zenml-voplyj:latest
+    skip_build: True
+
 parameters:
   user_full_name: Maxime Labonne # [First Name(s)] [Last Name]
   links:

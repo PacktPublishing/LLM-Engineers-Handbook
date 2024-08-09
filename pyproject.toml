@@ -61,27 +61,28 @@ build-backend = "poetry.core.masonry.api"
 [tool.poe.tasks]
 # Setup
 export-settings-to-zenml = "python run.py --export-settings"
+delete-settings-zenml = "zenml secret delete settings"
 
 # Pipelines
 run-digital-data-etl-alex = "python run.py --run-etl --no-cache --etl-config-filename digital_data_etl_alex_vesa.yaml"
-run-digital-data-etl-maxime = "python -m llm_engineering.interfaces.orchestrator.run --run-etl --no-cache --etl-config-filename digital_data_etl_maxime_labonne.yaml"
-run-digital-data-etl-paul = "python -m llm_engineering.interfaces.orchestrator.run --run-etl --no-cache --etl-config-filename digital_data_etl_paul_iusztin.yaml"
+run-digital-data-etl-maxime = "python run.py --run-etl --no-cache --etl-config-filename digital_data_etl_maxime_labonne.yaml"
+run-digital-data-etl-paul = "python run.py --run-etl --no-cache --etl-config-filename digital_data_etl_paul_iusztin.yaml"
 run-digital-data-etl = [
     "run-digital-data-etl-alex",
     "run-digital-data-etl-maxime",
     "run-digital-data-etl-paul",
 ]
 
-run-feature-engineering-pipeline = "python -m llm_engineering.interfaces.orchestrator.run --no-cache --run-feature-engineering"
-run-generate-instruct-datasets-pipeline = "python -m llm_engineering.interfaces.orchestrator.run --no-cache --run-generate-instruct-datasets"
+run-feature-engineering-pipeline = "python run.py --no-cache --run-feature-engineering"
+run-generate-instruct-datasets-pipeline = "python run.py --no-cache --run-generate-instruct-datasets"
 run-preprocessing-pipeline = [
     "run-digital-data-etl",
     "run-feature-engineering-pipeline",
     "run-generate-instruct-datasets-pipeline",
 ]
-run-export-artifact-to-json-pipeline = "python -m llm_engineering.interfaces.orchestrator.run --no-cache --run-export-artifact-to-json"
+run-export-artifact-to-json-pipeline = "python run.py --no-cache --run-export-artifact-to-json"
 
-run-training-pipeline = "python -m llm_engineering.interfaces.orchestrator.run --no-cache --run-training"
+run-training-pipeline = "python run.py --no-cache --run-training"
 
 # Local infrastructure
 local-docker-infrastructure-up = "docker compose up -d"
