@@ -90,7 +90,7 @@ class VectorBaseDocument(BaseModel, Generic[T], ABC):
     def _bulk_insert(cls: Type[T], documents: list["VectorBaseDocument"]) -> None:
         points = [doc.to_point() for doc in documents]
 
-        connection.upsert(collection_name=cls.get_collection_name(), points=points, wait=False)
+        connection.upsert(collection_name=cls.get_collection_name(), points=points)
 
     @classmethod
     def bulk_find(cls: Type[T], limit: int = 10, **kwargs) -> tuple[list[T], UUID | None]:

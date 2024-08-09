@@ -2,9 +2,11 @@ settings:
   docker:
     parent_image: 992382797823.dkr.ecr.eu-central-1.amazonaws.com/zenml-voplyj:latest
     skip_build: True
-
+  orchestrator.aws-stack-skgh:
+    synchronous: false
+    
 parameters:
   test_split_size: 0.1
   push_to_huggingface: false
   dataset_id: pauliusztin/llmtwin
-  mock: false
+  mock: true

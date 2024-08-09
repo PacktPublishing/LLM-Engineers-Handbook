@@ -7,6 +7,7 @@ from loguru import logger
 from llm_engineering import settings
 from pipelines import (
     digital_data_etl,
+    end_to_end_data,
     export_artifact_to_json,
     feature_engineering,
     generate_instruct_datasets,
@@ -48,6 +49,12 @@ Examples:
     is_flag=True,
     default=False,
     help="Disable caching for the pipeline run.",
+)
+@click.option(
+    "--run-end-to-end-data",
+    is_flag=True,
+    default=False,
+    help="Whether to run all the data pipelines in one go.",
 )
 @click.option(
     "--run-etl",
@@ -92,6 +99,7 @@ Examples:
 )
 def main(
     no_cache: bool = False,
+    run_end_to_end_data: bool = False,
     run_etl: bool = False,
     etl_config_filename: str = "digital_data_etl_paul_iusztin.yaml",
     run_export_artifact_to_json: bool = False,
@@ -101,7 +109,8 @@ def main(
     export_settings: bool = False,
 ) -> None:
     assert (
-        run_etl
+        run_end_to_end_data
+        or run_etl
         or run_export_artifact_to_json
         or run_feature_engineering
         or run_generate_instruct_datasets
@@ -117,6 +126,13 @@ def main(
         "enable_cache": not no_cache,
     }
     root_dir = Path(__file__).resolve().parent
+
+    if run_end_to_end_data:
+        run_args_end_to_end = {}
+        pipeline_args["config_path"] = root_dir / "configs" / "end_to_end_data.yaml"
+        assert pipeline_args["config_path"].exists(), f"Config file not found: {pipeline_args['config_path']}"
+        pipeline_args["run_name"] = f"end_to_end_data_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+        end_to_end_data.with_options(**pipeline_args)(**run_args_end_to_end)
 
     if run_etl:
         run_args_etl = {}

@@ -80,6 +80,7 @@ run-preprocessing-pipeline = [
     "run-feature-engineering-pipeline",
     "run-generate-instruct-datasets-pipeline",
 ]
+run-end-to-end-data-pipeline = "python run.py --no-cache --run-end-to-end-data"
 run-export-artifact-to-json-pipeline = "python run.py --no-cache --run-export-artifact-to-json"
 
 run-training-pipeline = "python run.py --no-cache --run-training"
