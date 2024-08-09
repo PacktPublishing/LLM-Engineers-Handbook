@@ -9,7 +9,7 @@
 ## Install
 
 ```shell
-poetry install
+poetry install --without aws
 poetry self add 'poethepoet[poetry_plugin]'
 pre-commit install
 ```

@@ -1,4 +1,10 @@
-from datasets import Dataset, DatasetDict, concatenate_datasets
+from loguru import logger
+
+try:
+    from datasets import Dataset, DatasetDict, concatenate_datasets
+except ImportError:
+    logger.warning("Huggingface datasets not installed. Install with `pip install datasets`")
+
 from pydantic import BaseModel
 
 from llm_engineering.domain.base import VectorBaseDocument
@@ -24,7 +30,7 @@ class InstructDataset(VectorBaseDocument):
     def num_samples(self) -> int:
         return len(self.samples)
 
-    def to_huggingface(self) -> Dataset:
+    def to_huggingface(self) -> "Dataset":
         data = [sample.model_dump() for sample in self.samples]
 
         return Dataset.from_dict(
@@ -37,7 +43,7 @@ class TrainTestSplit(BaseModel):
     test: dict[DataCategory, InstructDataset]
     test_split_size: float
 
-    def to_huggingface(self, flatten: bool = False) -> DatasetDict:
+    def to_huggingface(self, flatten: bool = False) -> "DatasetDict":
         train_datasets = {category.value: dataset.to_huggingface() for category, dataset in self.train.items()}
         test_datasets = {category.value: dataset.to_huggingface() for category, dataset in self.test.items()}
 
