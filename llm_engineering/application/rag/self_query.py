@@ -17,7 +17,7 @@ class SelfQuery:
             return query
 
         prompt = SelfQueryTemplate().create_template()
-        model = ChatOpenAI(model=settings.OPENAI_MODEL_ID, temperature=0)
+        model = ChatOpenAI(model=settings.OPENAI_MODEL_ID, api_key=settings.OPENAI_API_KEY, temperature=0)
 
         chain = prompt | model
 

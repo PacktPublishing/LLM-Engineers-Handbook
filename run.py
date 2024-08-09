@@ -4,6 +4,7 @@ from pathlib import Path
 import click
 from loguru import logger
 
+from llm_engineering import settings
 from pipelines import (
     digital_data_etl,
     export_artifact_to_json,
@@ -109,10 +110,8 @@ def main(
     ), "Please specify an action to run."
 
     if export_settings:
-        from llm_engineering.settings import export_settings_to_zenml_secrets
-
         logger.info("Exporting settings to ZenML secrets.")
-        export_settings_to_zenml_secrets()
+        settings.export()
 
     pipeline_args = {
         "enable_cache": not no_cache,

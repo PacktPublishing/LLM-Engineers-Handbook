@@ -5,6 +5,6 @@ settings:
 
 parameters:
   test_split_size: 0.1
-  push_to_huggingface: true
+  push_to_huggingface: false
   dataset_id: pauliusztin/llmtwin
   mock: false

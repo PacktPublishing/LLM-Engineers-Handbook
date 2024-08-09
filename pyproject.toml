@@ -84,7 +84,7 @@ run-export-artifact-to-json-pipeline = "python run.py --no-cache --run-export-ar
 
 run-training-pipeline = "python run.py --no-cache --run-training"
 
-# Local infrastructure
+# Infrastructure
 local-docker-infrastructure-up = "docker compose up -d"
 local-docker-infrastructure-down = "docker compose stop"
 local-zenml-server-down = "poetry run zenml down"
@@ -97,8 +97,6 @@ local-infrastructure-down = [
     "local-docker-infrastructure-down",
     "local-zenml-server-down",
 ]
-
-# ZenML
 set-local-stack = "zenml stack set default"
 set-aws-stack = "zenml stack set aws-stack"
 

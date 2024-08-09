@@ -4,44 +4,6 @@ from zenml.client import Client
 from zenml.exceptions import EntityExistsError
 
 
-def load_settings() -> "Settings":
-    """
-    Loads ZenML secrets into environment variables and initializes the Pydantic settings.
-
-    Returns:
-        Settings: The initialized Pydantic settings object.
-    """
-
-    try:
-        settings = Client().get_secret("settings")
-    except KeyError:
-        return Settings()
-
-    # for key, value in settings.secret_values.items():
-    #     os.environ[key] = value
-
-    return Settings(**settings.secret_values)
-
-
-def export_settings_to_zenml_secrets() -> None:
-    """
-    Exports the settings to a ZenML secret store.
-    """
-
-    env_vars = settings.model_dump()
-    for key, value in env_vars.items():
-        env_vars[key] = str(value)
-
-    client = Client()
-
-    try:
-        client.create_secret(name="settings", values=env_vars)
-    except EntityExistsError:
-        logger.warning(
-            "Secret 'scope' already exists. Delete it manually by running 'zenml secret delete settings', before trying to recreate it."
-        )
-
-
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
@@ -93,5 +55,41 @@ class Settings(BaseSettings):
 
         return max_token_window
 
+    @classmethod
+    def load_settings(cls) -> "Settings":
+        """
+        Tries to load the settings from the ZenML secret store. If the secret does not exist, it initializes the settings from the .env file and default values.
 
-settings = load_settings()
+        Returns:
+            Settings: The initialized settings object.
+        """
+
+        try:
+            settings = Client().get_secret("settings")
+        except KeyError:
+            settings = Settings()
+
+        settings = Settings(**settings.secret_values)
+
+        return settings
+
+    def export() -> None:
+        """
+        Exports the settings to the ZenML secret store.
+        """
+
+        env_vars = settings.model_dump()
+        for key, value in env_vars.items():
+            env_vars[key] = str(value)
+
+        client = Client()
+
+        try:
+            client.create_secret(name="settings", values=env_vars)
+        except EntityExistsError:
+            logger.warning(
+                "Secret 'scope' already exists. Delete it manually by running 'zenml secret delete settings', before trying to recreate it."
+            )
+
+
+settings = Settings.load_settings()
