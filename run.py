@@ -3,7 +3,7 @@ from pathlib import Path
 
 import click
 
-from llm_engineering.interfaces.orchestrator.pipelines import (
+from pipelines import (
     digital_data_etl,
     export_artifact_to_json,
     feature_engineering,
@@ -102,7 +102,8 @@ def main(
     pipeline_args = {
         "enable_cache": not no_cache,
     }
-    root_dir = Path(__file__).resolve().parent.parent.parent.parent
+    # root_dir = Path(__file__).resolve().parent.parent.parent.parent
+    root_dir = Path(__file__).resolve().parent
 
     if run_etl:
         run_args_etl = {}

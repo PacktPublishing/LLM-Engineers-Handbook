@@ -21,6 +21,7 @@ numpy = "^1.26.4"
 selenium = "^4.21.0"
 webdriver-manager = "^4.0.1"
 beautifulsoup4 = "^4.12.3"
+html2text = "^2024.2.26"
 jmespath = "^1.0.1"
 chromedriver-autoinstaller = "^0.6.4"
 
@@ -59,7 +60,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poe.tasks]
 # Pipelines
-run-digital-data-etl-alex = "python -m llm_engineering.interfaces.orchestrator.run --run-etl --no-cache --etl-config-filename digital_data_etl_alex_vesa.yaml"
+run-digital-data-etl-alex = "python run.py --run-etl --no-cache --etl-config-filename digital_data_etl_alex_vesa.yaml"
 run-digital-data-etl-maxime = "python -m llm_engineering.interfaces.orchestrator.run --run-etl --no-cache --etl-config-filename digital_data_etl_maxime_labonne.yaml"
 run-digital-data-etl-paul = "python -m llm_engineering.interfaces.orchestrator.run --run-etl --no-cache --etl-config-filename digital_data_etl_paul_iusztin.yaml"
 run-digital-data-etl = [
@@ -92,6 +93,10 @@ local-infrastructure-down = [
     "local-docker-infrastructure-down",
     "local-zenml-server-down",
 ]
+
+# ZenML
+set-local-stack = "zenml stack set default"
+set-aws-stack = "zenml stack set aws-stack"
 
 # Docker
 build-docker-image = "docker buildx build --platform linux/amd64 -t llmtwin -f Dockerfile ."

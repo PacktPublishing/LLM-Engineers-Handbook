@@ -1,6 +1,6 @@
 from zenml import pipeline
 
-from llm_engineering.interfaces.orchestrator.steps.etl import crawl_links, get_or_create_user
+from steps.etl import crawl_links, get_or_create_user
 
 
 @pipeline
