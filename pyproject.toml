@@ -59,6 +59,9 @@ build-backend = "poetry.core.masonry.api"
 # Poe the Poet Tasks
 
 [tool.poe.tasks]
+# Setup
+export-settings-to-zenml = "python run.py --export-settings"
+
 # Pipelines
 run-digital-data-etl-alex = "python run.py --run-etl --no-cache --etl-config-filename digital_data_etl_alex_vesa.yaml"
 run-digital-data-etl-maxime = "python -m llm_engineering.interfaces.orchestrator.run --run-etl --no-cache --etl-config-filename digital_data_etl_maxime_labonne.yaml"

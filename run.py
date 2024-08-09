@@ -2,6 +2,7 @@ from datetime import datetime as dt
 from pathlib import Path
 
 import click
+from loguru import logger
 
 from pipelines import (
     digital_data_etl,
@@ -82,6 +83,12 @@ Examples:
     default=False,
     help="Whether to run the training pipeline.",
 )
+@click.option(
+    "--export-settings",
+    is_flag=True,
+    default=False,
+    help="Whether to export your settings to ZenML or not.",
+)
 def main(
     no_cache: bool = False,
     run_etl: bool = False,
@@ -90,6 +97,7 @@ def main(
     run_feature_engineering: bool = False,
     run_generate_instruct_datasets: bool = False,
     run_training: bool = False,
+    export_settings: bool = False,
 ) -> None:
     assert (
         run_etl
@@ -97,12 +105,18 @@ def main(
         or run_feature_engineering
         or run_generate_instruct_datasets
         or run_training
-    ), "Please specify a pipeline to run."
+        or export_settings
+    ), "Please specify an action to run."
+
+    if export_settings:
+        from llm_engineering.settings import export_settings_to_zenml_secrets
+
+        logger.info("Exporting settings to ZenML secrets.")
+        export_settings_to_zenml_secrets()
 
     pipeline_args = {
         "enable_cache": not no_cache,
     }
-    # root_dir = Path(__file__).resolve().parent.parent.parent.parent
     root_dir = Path(__file__).resolve().parent
 
     if run_etl:
