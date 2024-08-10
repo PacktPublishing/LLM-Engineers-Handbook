@@ -5369,13 +5369,13 @@ multidict = ">=4.0"
 
 [[package]]
 name = "zenml"
-version = "0.63.0"
+version = "0.64.0"
 description = "ZenML: Write production-ready ML code."
 optional = false
 python-versions = "<3.12,>=3.8"
 files = [
-    {file = "zenml-0.63.0-py3-none-any.whl", hash = "sha256:4055e1c5e7c3e585a5e1adf53efe6fdbb96657225c50ff2f0df34d5d5b63201b"},
-    {file = "zenml-0.63.0.tar.gz", hash = "sha256:3bdc2b5b7263b8144152ea540909f149c812204bea918eb29ea6a2181642b1e5"},
+    {file = "zenml-0.64.0-py3-none-any.whl", hash = "sha256:c013a7dd490eb9ba653b2616cfde04911ef03c91a7f93e615dc9e9940e78df9f"},
+    {file = "zenml-0.64.0.tar.gz", hash = "sha256:5d9c12b4d5e2b18e28be45e55121643185e072e1117e642e892812a31cae423c"},
 ]
 
 [package.dependencies]
@@ -5448,4 +5448,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.11"
-content-hash = "bcecf4160348020e4e0d8dedbfa642eec3185e6d0389f4d5c54ddce6343883d9"
+content-hash = "ef0034e8faf0dd87d62b341bb5e0ed9163ee00dce4f86bb5b9b76fae0ca4a73a"

@@ -125,7 +125,7 @@ def main(
     pipeline_args = {
         "enable_cache": not no_cache,
     }
-    root_dir = Path(__file__).resolve().parent
+    root_dir = Path(__file__).resolve().parent.parent
 
     if run_end_to_end_data:
         run_args_end_to_end = {}

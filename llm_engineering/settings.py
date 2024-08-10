@@ -65,11 +65,10 @@ class Settings(BaseSettings):
         """
 
         try:
-            settings = Client().get_secret("settings")
+            settings_secrets = Client().get_secret("settings")
+            settings = Settings(**settings_secrets.secret_values)
         except KeyError:
             settings = Settings()
-
-        settings = Settings(**settings.secret_values)
 
         return settings
 
