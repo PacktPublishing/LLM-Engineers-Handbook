@@ -36,11 +36,12 @@ WORKDIR $WORKSPACE_ROOT
 # Copy the poetry lock file and pyproject.toml file to install dependencies
 COPY pyproject.toml poetry.lock $WORKSPACE_ROOT
 
-## Install the dependencies and clear cache
+# Install the dependencies and clear cache
 RUN poetry config virtualenvs.create false && \
     poetry install --no-root --no-interaction --no-cache --without dev && \
     poetry self add 'poethepoet[poetry_plugin]' && \
     rm -rf ~/.cache/pypoetry/cache/ && \
     rm -rf ~/.cache/pypoetry/artifacts/
 
+# Copy the rest of the code.
 COPY . $WORKSPACE_ROOT

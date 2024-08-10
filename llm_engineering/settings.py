@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
     # MongoDB NoSQL Database
-    DATABASE_HOST: str = "mongodb://decodingml:decodingml@llm_engineering_mongo:27017"
+    DATABASE_HOST: str = "mongodb://decodingml:decodingml@127.0.0.1:27017"
     DATABASE_NAME: str = "twin"
 
     # LinkedIn Credentials
@@ -25,7 +25,6 @@ class Settings(BaseSettings):
 
     QDRANT_DATABASE_HOST: str = "localhost"
     QDRANT_DATABASE_PORT: int = 6333
-    QDRANT_DATABASE_URL: str = "http://localhost:6333"
 
     QDRANT_CLOUD_URL: str = "str"
     QDRANT_APIKEY: str | None = None
@@ -65,14 +64,17 @@ class Settings(BaseSettings):
         """
 
         try:
+            logger.info("Loading settings from ZenML secret store.")
+
             settings_secrets = Client().get_secret("settings")
             settings = Settings(**settings_secrets.secret_values)
         except KeyError:
+            logger.warning("Failed to load settings from ZenML secret store. Default to .env file.")
             settings = Settings()
 
         return settings
 
-    def export() -> None:
+    def export(self) -> None:
         """
         Exports the settings to the ZenML secret store.
         """
