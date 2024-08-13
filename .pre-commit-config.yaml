@@ -8,12 +8,3 @@ repos:
     rev: v8.18.2
     hooks:
       - id: gitleaks
-  - repo: https://github.com/hadolint/hadolint
-    rev: v2.12.1-beta
-    hooks:
-      - id: hadolint-docker
-        name: Lint Dockerfiles
-        description: Runs hadolint Docker image to lint Dockerfiles
-        language: docker_image
-        types: ["dockerfile"]
-        entry: ghcr.io/hadolint/hadolint hadolint

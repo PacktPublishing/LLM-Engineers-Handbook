@@ -47,7 +47,7 @@ class CleaningDispatcher:
         clean_model = handler.clean(data_model)
 
         logger.info(
-            "Data cleaned successfully.",
+            "Document cleaned successfully.",
             data_category=data_category,
             cleaned_content_len=len(clean_model.content),
         )
@@ -78,7 +78,7 @@ class ChunkingDispatcher:
         chunk_models = handler.chunk(data_model)
 
         logger.info(
-            "Cleaned content chunked successfully.",
+            "Document chunked successfully.",
             num=len(chunk_models),
             data_category=data_category,
         )

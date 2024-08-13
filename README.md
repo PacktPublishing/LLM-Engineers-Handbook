@@ -9,7 +9,7 @@
 ## Install
 
 ```shell
-poetry install
+poetry install --without aws
 poetry self add 'poethepoet[poetry_plugin]'
 pre-commit install
 ```
@@ -17,32 +17,32 @@ pre-commit install
 We run all the scripts using [Poe the Poet](https://poethepoet.natn.io/index.html). You don't have to do anything else but install it as a Poetry plugin.
 
 ### Configure sensitive information
-After you have installed all the dependencies, you have to fill a `.env` file.
+After you have installed all the dependencies, you must create a `.env` file with sensitive credentials to run the project.
 
-First, copy our example:
+First, copy our example by running the following:
 ```shell
-cp .env.example .env
+cp .env.example .env # The file has to be at the root of your repository!
 ```
 
-Now, let's understand how to fill it.
+Now, let's understand how to fill in all the variables inside the `.env` file to get you started.
 
-### Selenium Drivers
+### OpenAI
 
-You must download the Selenium Chrome driver to run the data collection pipeline. To proceed, use the links below:
-* https://www.selenium.dev/documentation/webdriver/troubleshooting/errors/driver_location/
-* https://googlechromelabs.github.io/chrome-for-testing/#stable
+To authenticate to OpenAI, you must fill out the `OPENAI_API_KEY` env var with an authentication token.
 
-> [!WARNING]
-> For MacOS users, after downloading the driver, run the following command to give permissions for the driver to be accessible: `xattr -d com.apple.quarantine /path/to/your/driver/chromedriver`
+→ Check out this [tutorial](https://platform.openai.com/docs/quickstart) to learn how to provide one from OpenAI.
 
-The last step is to add the path to the downloaded driver in your `.env` file:
-```
-SELENIUM_BROWSER_DRIVER_PATH = "str"
-```
+### HuggingFace
 
-### LinkedIn Crawling
+To authenticate to HuggingFace, you must fill out the `HUGGINGFACE_ACCESS_TOKEN` env var with an authentication token.
 
-For crawling LinkedIn, you have to fill in your username and password:
+→ Check out this [tutorial](https://huggingface.co/docs/hub/en/security-tokens) to learn how to provide one from HuggingFace.
+
+
+### LinkedIn Crawling [Optional]
+This step is optional. You can finish the project without this step.
+
+But in case you want to enable LinkedIn crawling, you have to fill in your username and password:
 ```shell
 LINKEDIN_USERNAME = "str"
 LINKEDIN_PASSWORD = "str"
@@ -56,13 +56,9 @@ We also recommend to:
 - create a dummy profile for crawling
 - crawl only your data
 
-### OpenAI
-
-You also have to configure the standard `OPENAI_API_KEY`.
-
 
 > [!IMPORTANT]
-> Find more configuration options in the [settings.py](https://github.com/PacktPublishing/LLM-Engineering/blob/main/llm_engineering/settings.py) file.
+> Find more configuration options in the [settings.py](https://github.com/PacktPublishing/LLM-Engineering/blob/main/llm_engineering/settings.py) file. Every variable from the `Settings` class can be configured through the `.env` file. 
 
 
 ## Run Locally 
@@ -89,54 +85,58 @@ poetry poe local-infrastructure-down
 
 #### ZenML is now accessible at:
 
-Web UI: localhost:8237
+Web UI: [localhost:8237](localhost:8237)
 
 Default credentials:
-    - username: default
-    - password: 
+    - `username`: default
+    - `password`: 
 
-🔗 [More on ZenML](https://docs.zenml.io/)
+→🔗 [More on ZenML](https://docs.zenml.io/)
 
 #### Qdrant is now accessible at:
 
-REST API: localhost:6333
-Web UI: localhost:6333/dashboard
-GRPC API: localhost:6334
+REST API: [localhost:6333](localhost:6333)
+Web UI: [localhost:6333/dashboard](localhost:6333/dashboard)
+GRPC API: [localhost:6334](localhost:6334)
 
-🔗 [More on Qdrant](https://qdrant.tech/documentation/quick-start/)
+→🔗 [More on Qdrant](https://qdrant.tech/documentation/quick-start/)
 
 #### MongoDB is now accessible at:
 
-database URI: mongodb://decodingml:decodingml@127.0.0.1:27017
-database name: twin
+database URI: `mongodb://decodingml:decodingml@127.0.0.1:27017`
+database name: `twin`
+
+
+### AWS Infrastructure
+
+We will fill this section in the future. So far it is available only in the 11th Chapter of the book.
+
 
 ### Run Pipelines
 
 All the pipelines will be orchestrated behind the scenes by ZenML.
 
-To see the pipelines running and their results & metadata:
+To see the pipelines running and their results:
 - go to your ZenML dashboard
 - go to the `Pipelines` section
 - click on a specific pipeline (e.g., `feature_engineering`)
 - click on a specific run (e.g., `feature_engineering_run_2024_06_20_18_40_24`)
 - click on a specific step or artifact to find more details about the run
 
-#### General Utilities
+**But first, let's understand how we can run all our ML pipelines** ↓
 
-Export ZenML artifacts to JSON:
-```shell
-poetry poe run-export-artifact-to-json-pipeline
-```
-
-#### Data Preprocessing
+#### Data pipelines
 
 Run the data collection ETL:
 ```shell
 poetry poe run-digital-data-etl
 ```
 
+> [!WARNING]
+> You must have Chrome installed on your system for the LinkedIn and Medium crawlers to work (which use Selenium under the hood). Based on your Chrome version, the Chromedriver will be automatically installed to enable Selenium support. Note that you can run everything using our Docker image if you don't want to install Chrome. For example, to run all the pipelines combined you can run `poetry poe run-docker-end-to-end-data-pipeline`. Note that the command can be tweaked to support any other pipeline.
+
 > [!IMPORTANT]
-> To add additional links to collect, go to `configs_digital_data_etl_[your_name].yaml` and add them to the `links` field. Also, you can create a completely new file and specify it at run time, like this: `python -m llm_engineering.interfaces.orchestrator.run --run-etl --etl-config-filename configs_digital_data_etl_[your_name].yaml`
+> To add additional links to collect from, go to `configs_digital_data_etl_[your_name].yaml` and add them to the `links` field. Also, you can create a completely new file and specify it at run time, like this: `python -m llm_engineering.interfaces.orchestrator.run --run-etl --etl-config-filename configs_digital_data_etl_[your_name].yaml`
 
 Run the feature engineering pipeline:
 ```shell
@@ -148,18 +148,26 @@ Run the dataset generation pipeline:
 poetry poe run-generate-instruct-datasets-pipeline
 ```
 
-Run all of the above:
+Run all of the above compressed into a single pipeline:
 ```shell
-poetry poe run-preprocessing-pipeline
+poetry poe run-end-to-end-data-pipeline
 ```
 
-#### Training
+
+#### Utility pipelines
+
+Export ZenML artifacts to JSON:
+```shell
+poetry poe run-export-artifact-to-json-pipeline
+```
+
+#### Training pipelines
 
 ```shell
 poetry poe run-training-pipeline
 ```
 
-#### QA
+### Linting & Formatting (QA)
 
 Check and fix your linting issues:
 ```shell

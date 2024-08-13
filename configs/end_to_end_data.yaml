@@ -1,0 +1,103 @@
+settings:
+  docker:
+    parent_image: 992382797823.dkr.ecr.eu-central-1.amazonaws.com/zenml-rlwlcs:latest
+    skip_build: True
+  orchestrator.sagemaker:
+    synchronous: false
+
+parameters:
+  # Data ETL & Feature engineering pipelines parameters
+  author_links:
+    - user_full_name: Paul Iusztin # [First Name(s)] [Last Name]
+      links:
+        # Medium (only articles that are not under the paid wall work)
+        - https://medium.com/decodingml/an-end-to-end-framework-for-production-ready-llm-systems-by-building-your-llm-twin-2cc6bb01141f
+        - https://medium.com/decodingml/a-real-time-retrieval-system-for-rag-on-social-media-data-9cc01d50a2a0
+        - https://medium.com/decodingml/sota-python-streaming-pipelines-for-fine-tuning-llms-and-rag-in-real-time-82eb07795b87
+        - https://medium.com/decodingml/the-4-advanced-rag-algorithms-you-must-know-to-implement-5d0c7f1199d2
+        - https://medium.com/decodingml/architect-scalable-and-cost-effective-llm-rag-inference-pipelines-73b94ef82a99
+        # Substack
+        - https://decodingml.substack.com/p/a-blueprint-for-designing-production?r=1ttoeh
+        - https://decodingml.substack.com/p/the-difference-between-development?r=1ttoeh
+        - https://decodingml.substack.com/p/architect-scalable-and-cost-effective?r=1ttoeh
+        - https://decodingml.substack.com/p/7-tips-to-reduce-your-vram-when-training?r=1ttoeh
+        - https://decodingml.substack.com/p/using-this-python-package-you-can?r=1ttoeh
+        - https://decodingml.substack.com/p/the-4-advanced-rag-algorithms-you?r=1ttoeh
+        - https://decodingml.substack.com/p/problems-deploying-your-ml-models?r=1ttoeh
+        - https://decodingml.substack.com/p/sota-python-streaming-pipelines-for?r=1ttoeh
+        - https://decodingml.substack.com/p/ready-for-production-ml-here-are?r=1ttoeh
+        - https://decodingml.substack.com/p/ready-for-production-ml-here-are?r=1ttoeh
+        - https://decodingml.substack.com/p/my-ml-monthly-learning-resource-recommendations?r=1ttoeh
+        - https://decodingml.substack.com/p/an-end-to-end-framework-for-production?r=1ttoeh
+        - https://decodingml.substack.com/p/upskill-your-llm-knowledge-base-with?r=1ttoeh
+        - https://decodingml.substack.com/p/want-to-learn-an-end-to-end-framework?r=1ttoeh
+        - https://decodingml.substack.com/p/my-favorite-way-to-implement-a-configuration?r=1ttoeh
+        - https://decodingml.substack.com/p/a-real-time-retrieval-system-for?r=1ttoeh
+        - https://decodingml.substack.com/p/4-key-decoding-strategies-for-llms?r=1ttoeh
+        - https://decodingml.substack.com/p/dml-new-year-the-new-and-improved?r=1ttoeh
+        - https://decodingml.substack.com/p/dml-8-types-of-mlops-tools-that-must?r=1ttoeh
+        - https://decodingml.substack.com/p/dml-this-is-what-you-need-to-build?r=1ttoeh
+        - https://decodingml.substack.com/p/dml-7-steps-on-how-to-fine-tune-an?r=1ttoeh
+        - https://decodingml.substack.com/p/dml-how-do-you-generate-a-q-and-a?r=1ttoeh
+        - https://decodingml.substack.com/p/dml-what-do-you-need-to-fine-tune?r=1ttoeh
+        - https://decodingml.substack.com/p/dml-why-and-when-do-you-need-to-fine?r=1ttoeh
+        - https://decodingml.substack.com/p/dml-how-to-implement-a-streaming?r=1ttoeh
+        - https://decodingml.substack.com/p/dml-why-and-what-do-you-need-a-streaming?r=1ttoeh
+        - https://decodingml.substack.com/p/dml-unwrapping-the-3-pipeline-design?r=1ttoeh
+        - https://decodingml.substack.com/p/dml-how-to-design-an-llm-system-for?r=1ttoeh
+        - https://decodingml.substack.com/p/dml-synced-vector-dbs-a-guide-to?r=1ttoeh
+        - https://decodingml.substack.com/p/dml-what-is-the-difference-between?r=1ttoeh
+        - https://decodingml.substack.com/p/dml-7-steps-to-build-a-production?r=1ttoeh
+        - https://decodingml.substack.com/p/dml-chain-of-thought-reasoning-write?r=1ttoeh
+        - https://decodingml.substack.com/p/dml-build-and-serve-a-production?r=1ttoeh
+        - https://decodingml.substack.com/p/dml-4-key-ideas-you-must-know-to?r=1ttoeh
+        - https://decodingml.substack.com/p/dml-how-to-add-real-time-monitoring?r=1ttoeh
+        - https://decodingml.substack.com/p/dml-top-6-ml-platform-features-you?r=1ttoeh
+    - user_full_name: Alex Vesa # [First Name(s)] [Last Name]
+      links:
+        # Medium (only articles that are not under the paid wall work)
+        - https://medium.com/decodingml/the-importance-of-data-pipelines-in-the-era-of-generative-ai-673e1505a861
+        - https://medium.com/decodingml/the-3nd-out-of-11-lessons-of-the-llm-twin-free-course-ba82752dad5a
+        - https://medium.com/decodingml/the-role-of-feature-stores-in-fine-tuning-llms-22bd60afd4b9
+        # Substack
+        - https://decodingml.substack.com/p/2-crucial-antipatterns-to-avoid-when?r=1ttoeh
+        - https://decodingml.substack.com/p/the-role-of-feature-stores-in-fine?r=1ttoeh
+        - https://decodingml.substack.com/p/change-data-capture-enabling-event?r=1ttoeh
+        - https://decodingml.substack.com/p/the-importance-of-data-pipelines?r=1ttoeh
+        - https://decodingml.substack.com/p/steal-my-code-to-solve-real-world?r=1ttoeh
+        - https://decodingml.substack.com/p/framework-for-measuring-generative?r=1ttoeh
+        - https://decodingml.substack.com/p/youre-not-digging-deeper-into-concepts?r=1ttoeh
+        - https://decodingml.substack.com/p/do-not-evaluate-llm-summary-task?r=1ttoeh
+        - https://decodingml.substack.com/p/dml-introduction-to-deploying-private?r=1ttoeh
+    - user_full_name: Maxime Labonne # [First Name(s)] [Last Name]
+      links:
+        # Substack
+        - https://maximelabonne.substack.com/p/uncensor-any-llm-with-abliteration-d30148b7d43e
+        - https://maximelabonne.substack.com/p/create-mixtures-of-experts-with-mergekit-11b318c99562
+        - https://maximelabonne.substack.com/p/merge-large-language-models-with-mergekit-2118fb392b54
+        - https://maximelabonne.substack.com/p/fine-tune-a-mistral-7b-model-with-direct-preference-optimization-708042745aac
+        - https://maximelabonne.substack.com/p/exllamav2-the-fastest-library-to-run-llms-32aeda294d26
+        - https://maximelabonne.substack.com/p/quantize-llama-models-with-ggml-and-llama-cpp-3612dfbcc172
+        - https://maximelabonne.substack.com/p/a-beginners-guide-to-llm-fine-tuning-4bae7d4da672
+        - https://maximelabonne.substack.com/p/graph-convolutional-networks-introduction-to-gnns-24b3f60d6c95
+        - https://maximelabonne.substack.com/p/4-bit-quantization-with-gptq-36b0f4f02c34
+        - https://maximelabonne.substack.com/p/fine-tune-your-own-llama-2-model-in-a-colab-notebook-df9823a04a32
+        - https://maximelabonne.substack.com/p/introduction-to-weight-quantization-2494701b9c0c
+        - https://maximelabonne.substack.com/p/decoding-strategies-in-large-language-models-9733a8f70539
+        - https://maximelabonne.substack.com/p/the-art-of-spending-optimizing-your-marketing-budget-with-nonlinear-optimization-6c8a39afb3c2
+        - https://maximelabonne.substack.com/p/create-a-bot-to-find-diamonds-in-minecraft-d836606a993a
+        - https://maximelabonne.substack.com/p/constraint-programming-67ac16fa0c81
+        - https://maximelabonne.substack.com/p/how-to-design-the-most-powerful-graph-neural-network-3d18b07a6e66
+        - https://maximelabonne.substack.com/p/introduction-to-graphsage-in-python-a9e7f9ecf9d7
+        - https://maximelabonne.substack.com/p/graph-attention-networks-in-python-975736ac5c0c
+        - https://maximelabonne.substack.com/p/integer-programming-vs-linear-programming-in-python-f1be5bb4e60e
+        - https://maximelabonne.substack.com/p/introduction-to-linear-programming-in-python-9261e7eb44b
+        - https://maximelabonne.substack.com/p/what-is-a-tensor-in-deep-learning-6dedd95d6507
+        - https://maximelabonne.substack.com/p/efficiently-iterating-over-rows-in-a-pandas-dataframe-7dd5f9992c01
+        - https://maximelabonne.substack.com/p/q-learning-for-beginners-2837b777741
+        - https://maximelabonne.substack.com/p/how-to-start-machine-learning-for-developers-in-2022-390af12b193f
+  # Generate instruct dataset pipeline parameters
+  test_split_size: 0.1
+  push_to_huggingface: false
+  dataset_id: pauliusztin/llmtwin
+  mock: true

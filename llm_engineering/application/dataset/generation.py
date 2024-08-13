@@ -114,7 +114,9 @@ Output JSON format. Make sure that you generate exactly three instruction-answer
         if mock:
             llm = FakeListLLM(responses=[constants.MOCKED_RESPONSE])
         else:
-            llm = ChatOpenAI(model=settings.OPENAI_MODEL_ID, max_tokens=800, temperature=0.7, n=1)
+            llm = ChatOpenAI(
+                model=settings.OPENAI_MODEL_ID, api_key=settings.OPENAI_API_KEY, max_tokens=800, temperature=0.7, n=1
+            )
         parser = ListPydanticOutputParser(pydantic_object=domain.dataset.InstructDatasetSample)
 
         chain = llm | parser

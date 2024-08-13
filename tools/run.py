@@ -2,9 +2,12 @@ from datetime import datetime as dt
 from pathlib import Path
 
 import click
+from loguru import logger
 
-from llm_engineering.interfaces.orchestrator.pipelines import (
+from llm_engineering import settings
+from pipelines import (
     digital_data_etl,
+    end_to_end_data,
     export_artifact_to_json,
     feature_engineering,
     generate_instruct_datasets,
@@ -48,6 +51,12 @@ Examples:
     help="Disable caching for the pipeline run.",
 )
 @click.option(
+    "--run-end-to-end-data",
+    is_flag=True,
+    default=False,
+    help="Whether to run all the data pipelines in one go.",
+)
+@click.option(
     "--run-etl",
     is_flag=True,
     default=False,
@@ -82,27 +91,48 @@ Examples:
     default=False,
     help="Whether to run the training pipeline.",
 )
+@click.option(
+    "--export-settings",
+    is_flag=True,
+    default=False,
+    help="Whether to export your settings to ZenML or not.",
+)
 def main(
     no_cache: bool = False,
+    run_end_to_end_data: bool = False,
     run_etl: bool = False,
     etl_config_filename: str = "digital_data_etl_paul_iusztin.yaml",
     run_export_artifact_to_json: bool = False,
     run_feature_engineering: bool = False,
     run_generate_instruct_datasets: bool = False,
     run_training: bool = False,
+    export_settings: bool = False,
 ) -> None:
     assert (
-        run_etl
+        run_end_to_end_data
+        or run_etl
         or run_export_artifact_to_json
         or run_feature_engineering
         or run_generate_instruct_datasets
         or run_training
-    ), "Please specify a pipeline to run."
+        or export_settings
+    ), "Please specify an action to run."
+
+    if export_settings:
+        logger.info("Exporting settings to ZenML secrets.")
+        settings.export()
 
     pipeline_args = {
         "enable_cache": not no_cache,
     }
-    root_dir = Path(__file__).resolve().parent.parent.parent.parent
+    root_dir = Path(__file__).resolve().parent.parent
+
+    if run_end_to_end_data:
+        run_args_end_to_end = {}
+        pipeline_args["config_path"] = root_dir / "configs" / "end_to_end_data.yaml"
+        assert pipeline_args["config_path"].exists(), f"Config file not found: {pipeline_args['config_path']}"
+        pipeline_args["run_name"] = f"end_to_end_data_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+        end_to_end_data.with_options(**pipeline_args)(**run_args_end_to_end)
 
     if run_etl:
         run_args_etl = {}

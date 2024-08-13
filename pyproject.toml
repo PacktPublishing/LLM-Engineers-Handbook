@@ -8,7 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "~3.11"
-zenml = { version = "0.63.0", extras = ["server"] }
+zenml = { version = "0.64.0", extras = ["server"] }
 pymongo = "^4.6.2"
 pydantic = "^2.7.0"
 pydantic-settings = "^2.2.1"
@@ -21,24 +21,35 @@ numpy = "^1.26.4"
 selenium = "^4.21.0"
 webdriver-manager = "^4.0.1"
 beautifulsoup4 = "^4.12.3"
+html2text = "^2024.2.26"
 jmespath = "^1.0.1"
+chromedriver-autoinstaller = "^0.6.4"
 
 # Feature engineering
 qdrant-client = "^1.8.0"
 langchain = "^0.2.11"
 sentence-transformers = "^2.6.1"
-datasets = "2.20.0"
 
 # RAG
 langchain-openai = "^0.1.19"
 jinja2 = "^3.1.4"
 tiktoken = "^0.7.0"
 fake-useragent = "^1.5.1"
+langchain-community = "^0.2.11"
+
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.4.9"
 pre-commit = "^3.7.1"
 pytest = "^8.2.2"
+
+
+[tool.poetry.group.aws.dependencies]
+sagemaker = ">=2.117.0"
+s3fs = ">2022.3.0"
+aws-profile-manager = "^0.7.3"
+kubernetes = "^30.1.0"
+
 
 [build-system]
 requires = ["poetry-core"]
@@ -48,28 +59,30 @@ build-backend = "poetry.core.masonry.api"
 # Poe the Poet Tasks
 
 [tool.poe.tasks]
-# Pipelines
-run-digital-data-etl-alex = "python -m llm_engineering.interfaces.orchestrator.run --run-etl --no-cache --etl-config-filename digital_data_etl_alex_vesa.yaml"
-run-digital-data-etl-maxime = "python -m llm_engineering.interfaces.orchestrator.run --run-etl --no-cache --etl-config-filename digital_data_etl_maxime_labonne.yaml"
-run-digital-data-etl-paul = "python -m llm_engineering.interfaces.orchestrator.run --run-etl --no-cache --etl-config-filename digital_data_etl_paul_iusztin.yaml"
+# Setup
+export-settings-to-zenml = "python -m tools.run --export-settings"
+delete-settings-zenml = "zenml secret delete settings"
+
+# Data pipelines
+run-digital-data-etl-alex = "python -m tools.run --run-etl --no-cache --etl-config-filename digital_data_etl_alex_vesa.yaml"
+run-digital-data-etl-maxime = "python -m tools.run --run-etl --no-cache --etl-config-filename digital_data_etl_maxime_labonne.yaml"
+run-digital-data-etl-paul = "python -m tools.run --run-etl --no-cache --etl-config-filename digital_data_etl_paul_iusztin.yaml"
 run-digital-data-etl = [
     "run-digital-data-etl-alex",
     "run-digital-data-etl-maxime",
     "run-digital-data-etl-paul",
 ]
+run-feature-engineering-pipeline = "python -m tools.run --no-cache --run-feature-engineering"
+run-generate-instruct-datasets-pipeline = "python -m tools.run --no-cache --run-generate-instruct-datasets"
+run-end-to-end-data-pipeline = "python -m tools.run --no-cache --run-end-to-end-data"
 
-run-feature-engineering-pipeline = "python -m llm_engineering.interfaces.orchestrator.run --no-cache --run-feature-engineering"
-run-generate-instruct-datasets-pipeline = "python -m llm_engineering.interfaces.orchestrator.run --no-cache --run-generate-instruct-datasets"
-run-preprocessing-pipeline = [
-    "run-digital-data-etl",
-    "run-feature-engineering-pipeline",
-    "run-generate-instruct-datasets-pipeline",
-]
-run-export-artifact-to-json-pipeline = "python -m llm_engineering.interfaces.orchestrator.run --no-cache --run-export-artifact-to-json"
+# Utility pipelines
+run-export-artifact-to-json-pipeline = "python -m tools.run --no-cache --run-export-artifact-to-json"
 
-run-training-pipeline = "python -m llm_engineering.interfaces.orchestrator.run --no-cache --run-training"
+# Training pipelines
+run-training-pipeline = "python -m tools.run --no-cache --run-training"
 
-# Local infrastructure
+# Infrastructure
 local-docker-infrastructure-up = "docker compose up -d"
 local-docker-infrastructure-down = "docker compose stop"
 local-zenml-server-down = "poetry run zenml down"
@@ -82,6 +95,14 @@ local-infrastructure-down = [
     "local-docker-infrastructure-down",
     "local-zenml-server-down",
 ]
+set-local-stack = "zenml stack set default"
+set-aws-stack = "zenml stack set aws-stack"
+set-asynchronous-runs = "zenml orchestrator update aws-stack --synchronous=False"
+
+# Docker
+build-docker-image = "docker buildx build --platform linux/amd64 -t llmtwin -f Dockerfile ."
+run-docker-end-to-end-data-pipeline = "docker run --rm --network host --shm-size=2g --env-file .env llmtwin poetry poe --no-cache --run-end-to-end-data"
+bash-docker-container = "docker run --rm -it --network host --env-file .env llmtwin bash"
 
 # QA
 lint-check = "poetry run ruff check ."
