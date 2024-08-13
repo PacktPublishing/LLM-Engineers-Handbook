@@ -40,9 +40,6 @@ jobs:
       - name: Format check [Python]
         run: poetry poe format-check
 
-      # - name: Lint check [Dockerfile]
-      #   run: poetry poe lint-check-docker
-
   test:
     name: Test
     runs-on: ubuntu-latest

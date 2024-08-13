@@ -64,12 +64,14 @@ class Settings(BaseSettings):
         """
 
         try:
-            logger.info("Loading settings from ZenML secret store.")
+            logger.info("Loading settings from the ZenML secret store.")
 
             settings_secrets = Client().get_secret("settings")
             settings = Settings(**settings_secrets.secret_values)
         except KeyError:
-            logger.warning("Failed to load settings from ZenML secret store. Default to .env file.")
+            logger.warning(
+                "Failed to load settings from the ZenML secret store. Defaulting to loading the settings from the '.env' file."
+            )
             settings = Settings()
 
         return settings
