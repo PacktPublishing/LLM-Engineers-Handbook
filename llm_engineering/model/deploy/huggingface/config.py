@@ -1,8 +1,6 @@
 import json
 
-from sagemaker.compute_resource_requirements.resource_requirements import (
-    ResourceRequirements,
-)
+from sagemaker.compute_resource_requirements.resource_requirements import ResourceRequirements
 
 from llm_engineering.settings import settings
 
@@ -13,7 +11,7 @@ hugging_face_deploy_config = {
     "MAX_TOTAL_TOKENS": json.dumps(settings.MAX_TOTAL_TOKENS),  # Max length of the generation (including input text)
     "MAX_BATCH_TOTAL_TOKENS": json.dumps(settings.MAX_BATCH_TOTAL_TOKENS),
     "HUGGING_FACE_HUB_TOKEN": settings.HUGGING_FACE_HUB_TOKEN,
-    "MAX_BATCH_PREFILL_TOKENS": "25000",
+    "MAX_BATCH_PREFILL_TOKENS": "10000",
     # 'HF_MODEL_QUANTIZE': "bitsandbytes",
 }
 

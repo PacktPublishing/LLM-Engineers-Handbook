@@ -26,6 +26,7 @@ class InferenceExecutor:
             },
         )
         extraction = self.llm.inference()[0]["generated_text"]
+
         return extraction
 
 

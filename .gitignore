@@ -166,3 +166,4 @@ cython_debug/
 
 # Data
 output/
+sagemaker_*.json

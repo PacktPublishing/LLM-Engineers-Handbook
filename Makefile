@@ -11,11 +11,11 @@ help:
 
 create-sagemaker-role:
 	@echo "Creating the SageMaker role..."
-	poetry run python llm_engineering/core/aws/create_sagemaker_role.py
+	poetry run python llm_engineering/core/aws/roles/create_sagemaker_role.py
 
 create-sagemaker-execution-role:
 	@echo "Creating the SageMaker execution role..."
-	poetry run python llm_engineering/core/aws/create_sagemaker_execution_role.py
+	poetry run python llm_engineering/core/aws/roles/create_execution_role.py
 
 deploy-inference-endpoint:
 	@echo "Deploying the inference endpoint..."
@@ -28,3 +28,6 @@ delete-inference-endpoint:
 	fi
 	@echo "Deleting the inference endpoint and config..."
 	poetry run python llm_engineering/model/delete_inference_endpoint.py $(ENDPOINT_NAME)
+
+test-inference:
+	poetry run python -m llm_engineering.model.inference.test

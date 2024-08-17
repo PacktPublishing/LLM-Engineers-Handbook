@@ -12,7 +12,7 @@ class Settings(BaseSettings):
 
     # Selenium Drivers
     SELENIUM_BROWSER_BINARY_PATH: str | None = None
-    SELENIUM_BROWSER_DRIVER_PATH: str
+    SELENIUM_BROWSER_DRIVER_PATH: str | None = None
 
     # LinkedIn Credentials
     LINKEDIN_USERNAME: str | None = None
@@ -42,14 +42,14 @@ class Settings(BaseSettings):
     COMET_WORKSPACE: str | None = None
     COMET_PROJECT: str | None = None
 
-    ARN_ROLE: str
+    ARN_ROLE: str | None = None
     HUGGING_FACE_HUB_TOKEN: str
 
-    HF_MODEL_ID: str = "test"
-    GPU_INSTANCE_TYPE: str = "test"
+    HF_MODEL_ID: str = "crumb/nano-mistral"
+    GPU_INSTANCE_TYPE: str = "ml.g5.xlarge"
     SM_NUM_GPUS: int = 1
-    MAX_INPUT_LENGTH: int = 20000
-    MAX_TOTAL_TOKENS: int = 32000
+    MAX_INPUT_LENGTH: int = 8000
+    MAX_TOTAL_TOKENS: int = 12000
     MAX_BATCH_TOTAL_TOKENS: int = 12000
     COPIES: int = 4  # Number of replicas
     GPUS: int = 1  # Number of GPUs

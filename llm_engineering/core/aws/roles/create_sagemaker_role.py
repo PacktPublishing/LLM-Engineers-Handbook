@@ -1,6 +1,8 @@
 import json
+from pathlib import Path
 
 import boto3
+from loguru import logger
 
 from llm_engineering.settings import settings
 
@@ -33,19 +35,16 @@ def create_sagemaker_user(username, region_name="eu-central-1"):
     response = iam.create_access_key(UserName=username)
     access_key = response["AccessKey"]
 
-    print(f"User '{username}' created successfully.")
-    print(f"Access Key ID: {access_key['AccessKeyId']}")
-    print(f"Secret Access Key: {access_key['SecretAccessKey']}")
+    logger.info(f"User '{username}' successfully created.")
+    logger.info("Access Key ID and Secret Access Key successfully created.")
 
-    # Return the access key info
     return {"AccessKeyId": access_key["AccessKeyId"], "SecretAccessKey": access_key["SecretAccessKey"]}
 
 
 if __name__ == "__main__":
-    new_user = create_sagemaker_user("sagemaker-deployer-2")
+    new_user = create_sagemaker_user("sagemaker-deployer-3")
 
-    # Save the access keys to a file
-    with open("sagemaker_user_credentials.json", "w") as f:
+    with Path("sagemaker_user_credentials.json").open("w") as f:
         json.dump(new_user, f)
 
-print("Credentials saved to 'sagemaker_user_credentials.json'")
+logger.info("Credentials saved to 'sagemaker_user_credentials.json'")
