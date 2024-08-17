@@ -42,7 +42,7 @@ class Settings(BaseSettings):
     COMET_PROJECT: str | None = None
 
     # SageMaker
-    HF_MODEL_ID: str = "mlabonne/TwinLlama-3.1-8B-13"
+    HF_MODEL_ID: str = "mlabonne/TwinLlama-3.1-8B-13"  # or use "crumb/nano-mistral" for a quick test with a small model
     GPU_INSTANCE_TYPE: str = "ml.g5.xlarge"
     SM_NUM_GPUS: int = 1
     MAX_INPUT_LENGTH: int = 8000
@@ -59,7 +59,7 @@ class Settings(BaseSettings):
     MAX_NEW_TOKENS_INFERENCE: int = 150
 
     # AWS
-    ARN_ROLE: str | None = None
+    AWS_ARN_ROLE: str | None = None
     AWS_REGION: str = "eu-central-1"
     AWS_ACCESS_KEY: str | None = None
     AWS_SECRET_KEY: str | None = None

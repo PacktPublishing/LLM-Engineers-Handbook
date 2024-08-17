@@ -11,7 +11,7 @@ from llm_engineering.settings import settings
 
 
 class SagemakerHuggingfaceStrategy(DeploymentStrategy):
-    def __init__(self, deployment_service):
+    def __init__(self, deployment_service) -> None:
         """
         Initializes the deployment strategy with the necessary services.
 
@@ -84,7 +84,6 @@ class DeploymentService:
             aws_secret_access_key=settings.AWS_SECRET_KEY,
         )
         self.resource_manager = resource_manager
-        self.settings = settings
 
     def deploy(
         self,

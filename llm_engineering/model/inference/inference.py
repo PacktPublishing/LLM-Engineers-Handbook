@@ -1,8 +1,8 @@
 import json
-import logging
 from typing import Any, Dict, Optional
 
 import boto3
+from loguru import logger
 
 from llm_engineering.domain.inference import Inference
 from llm_engineering.settings import settings
@@ -30,7 +30,6 @@ class LLMInferenceSagemakerEndpoint(Inference):
         self.endpoint_name = endpoint_name
         self.payload = default_payload if default_payload else self._default_payload()
         self.inference_component_name = inference_component_name
-        logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
     def _default_payload(self) -> Dict[str, Any]:
         """
@@ -74,7 +73,7 @@ class LLMInferenceSagemakerEndpoint(Inference):
         """
 
         try:
-            logging.info("Inference request sent.")
+            logger.info("Inference request sent.")
             invoke_args = {
                 "EndpointName": self.endpoint_name,
                 "ContentType": "application/json",
@@ -88,6 +87,6 @@ class LLMInferenceSagemakerEndpoint(Inference):
             return json.loads(response_body)
 
         except Exception:
-            logging.exception("SageMaker inference failed.")
+            logger.exception("SageMaker inference failed.")
 
             raise
