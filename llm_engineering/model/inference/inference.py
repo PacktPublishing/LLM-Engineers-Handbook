@@ -3,16 +3,14 @@ import logging
 from typing import Any, Dict, Optional
 
 import boto3
-from langchain_community.llms import SagemakerEndpoint
 
-from llm_engineering.core.interfaces import Inference
-from llm_engineering.core.langchain_utils import ContentHandler
+from llm_engineering.domain.inference import Inference
 from llm_engineering.settings import settings
 
 
 class LLMInferenceSagemakerEndpoint(Inference):
     """
-    Class for performing inference using a SageMaker endpoint for LLM (Language Model) schemas.
+    Class for performing inference using a SageMaker endpoint for LLM schemas.
     """
 
     def __init__(
@@ -20,7 +18,7 @@ class LLMInferenceSagemakerEndpoint(Inference):
         endpoint_name: str,
         default_payload: Optional[Dict[str, Any]] = None,
         inference_component_name: Optional[str] = None,
-    ):
+    ) -> None:
         super().__init__()
 
         self.client = boto3.client(
@@ -41,6 +39,7 @@ class LLMInferenceSagemakerEndpoint(Inference):
         Returns:
             dict: The default payload.
         """
+
         return {
             "inputs": "How is the weather?",
             "parameters": {
@@ -59,6 +58,7 @@ class LLMInferenceSagemakerEndpoint(Inference):
             inputs (str): The input text for the inference.
             parameters (dict, optional): Additional parameters for the inference. Defaults to None.
         """
+
         self.payload["inputs"] = inputs
         if parameters:
             self.payload["parameters"].update(parameters)
@@ -72,8 +72,11 @@ class LLMInferenceSagemakerEndpoint(Inference):
         Raises:
             Exception: If an error occurs during the inference request.
         """
+
         try:
-            logging.info(f"Inference request sent with parameters: {self.payload['parameters']}")
+            logging.info(
+                "Inference request sent with parameters with the following parameters:", {self.payload["parameters"]}
+            )
             invoke_args = {
                 "EndpointName": self.endpoint_name,
                 "ContentType": "application/json",
@@ -86,58 +89,7 @@ class LLMInferenceSagemakerEndpoint(Inference):
 
             return json.loads(response_body)
 
-        except Exception as e:
-            logging.error(f"An error occurred during inference: {e}")
+        except Exception:
+            logging.exception("SageMaker inference failed.")
+
             raise
-
-
-class LLMLangchainSagemakerInference(Inference):
-    """
-    Class for performing inference using a SageMaker endpoint for LLMLangchain model.
-    """
-
-    def __init__(self, endpoint_name: str, inference_component_name: Optional[str] = None):
-        super().__init__()
-        endpoint_kwargs = {"CustomAttributes": "accept_eula=true"}
-        if inference_component_name != "None":
-            endpoint_kwargs["InferenceComponentName"] = inference_component_name
-        self.model = SagemakerEndpoint(
-            endpoint_name=endpoint_name,
-            region_name="eu-central-1",
-            model_kwargs={
-                "max_new_tokens": settings.MAX_NEW_TOKENS_EXTRACTION,
-                "top_p": settings.TOP_P_EXTRACTION,
-                "temperature": settings.TEMPERATURE_SUMMARY,
-                "do_sample": True,
-            },
-            endpoint_kwargs=endpoint_kwargs,
-            content_handler=ContentHandler(),
-        )
-        self.inputs = None
-        self.parameters = None
-
-    def set_payload(self, inputs, parameters=None):
-        """
-                Set the payload for inference.
-        qqq
-                Args:
-                    inputs: The input data for inference.
-                    parameters: Additional parameters for the endpoint (optional).
-        """
-        self.inputs = inputs
-        self.parameters = parameters
-
-    def inference(self):
-        """
-        Perform inference using the set payload.
-
-        Returns:
-            The inference result.
-        Raises:
-            ValueError: If no inputs are set for inference.
-        """
-        if self.inputs is None:
-            raise ValueError("No inputs set for inference")
-
-        # If additional parameters are needed for the endpoint, modify the call accordingly
-        return self.model(self.inputs, **(self.parameters or {}))

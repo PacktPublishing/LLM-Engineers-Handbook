@@ -1,15 +1,13 @@
 import enum
-import logging
 from typing import Optional
 
 import boto3
+from loguru import logger
 from sagemaker.enums import EndpointType
 from sagemaker.huggingface import HuggingFaceModel
 
-from llm_engineering.core.interfaces import DeploymentStrategy
+from llm_engineering.domain.inference import DeploymentStrategy
 from llm_engineering.settings import settings
-
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 
 class SagemakerHuggingfaceStrategy(DeploymentStrategy):
@@ -46,8 +44,9 @@ class SagemakerHuggingfaceStrategy(DeploymentStrategy):
                 or EndpointType.INFERENCE_COMPONENT (with inference component)
 
         """
-        logging.info("Starting deployment using Sagemaker Huggingface Strategy...")
-        logging.info(
+
+        logger.info("Starting deployment using Sagemaker Huggingface Strategy...")
+        logger.info(
             f"Deployment parameters: nb of replicas: {settings.COPIES}, nb of gpus:{settings.GPUS}, instance_type:{settings.GPU_INSTANCE_TYPE}"
         )
         try:
@@ -62,14 +61,14 @@ class SagemakerHuggingfaceStrategy(DeploymentStrategy):
                 resources=resources,
                 endpoint_type=endpoint_type,
             )
-            logging.info("Deployment completed successfully.")
+            logger.info("Deployment completed successfully.")
         except Exception as e:
-            logging.error(f"Error during deployment: {e}")
+            logger.error(f"Error during deployment: {e}")
             raise
 
 
 class DeploymentService:
-    def __init__(self, resource_manager, logger=None):
+    def __init__(self, resource_manager):
         """
         Initializes the DeploymentService with necessary dependencies.
 
@@ -77,6 +76,7 @@ class DeploymentService:
         :param settings: Configuration settings for deployment.
         :param logger: Optional logger for logging messages. If None, the standard logging module will be used.
         """
+
         # self.session = boto3.Session(profile_name="decodingml")
         # self.sagemaker_client = self.session.client("sagemaker", region_name="eu-central-1")
         self.sagemaker_client = boto3.client(
@@ -87,7 +87,6 @@ class DeploymentService:
         )
         self.resource_manager = resource_manager
         self.settings = settings
-        self.logger = logger if logger else logging.getLogger(__name__)
 
     def deploy(
         self,
@@ -99,7 +98,7 @@ class DeploymentService:
         gpu_instance_type: str,
         resources: Optional[dict] = None,
         endpoint_type: enum.Enum = EndpointType.MODEL_BASED,
-    ):
+    ) -> None:
         """
         Handles the deployment of a model to SageMaker, including checking and creating
         configurations and endpoints as necessary.
@@ -114,14 +113,13 @@ class DeploymentService:
                 or EndpointType.INFERENCE_COMPONENT (with inference component)
         :param gpu_instance_type: The instance type for the SageMaker endpoint.
         """
+
         try:
             # Check if the endpoint configuration exists
             if self.resource_manager.endpoint_config_exists(endpoint_config_name=endpoint_config_name):
-                self.logger.info(
-                    f"Endpoint configuration {endpoint_config_name} exists. Using existing configuration..."
-                )
+                logger.info(f"Endpoint configuration {endpoint_config_name} exists. Using existing configuration...")
             else:
-                self.logger.info(f"Endpoint configuration{endpoint_config_name} does not exist.")
+                logger.info(f"Endpoint configuration{endpoint_config_name} does not exist.")
 
             # Prepare and deploy the HuggingFace model
             self.prepare_and_deploy_model(
@@ -135,9 +133,10 @@ class DeploymentService:
                 gpu_instance_type=gpu_instance_type,
             )
 
-            self.logger.info(f"Successfully deployed/updated model to endpoint {endpoint_name}.")
+            logger.info(f"Successfully deployed/updated model to endpoint {endpoint_name}.")
         except Exception as e:
-            self.logger.error(f"Failed to deploy model to SageMaker: {e}")
+            logger.error(f"Failed to deploy model to SageMaker: {e}")
+
             raise
 
     @staticmethod
@@ -150,7 +149,7 @@ class DeploymentService:
         gpu_instance_type: str,
         resources: Optional[dict] = None,
         endpoint_type: enum.Enum = EndpointType.MODEL_BASED,
-    ):
+    ) -> None:
         """
         Prepares and deploys/updates the HuggingFace model on SageMaker.
 
@@ -164,6 +163,7 @@ class DeploymentService:
         :param endpoint_type: can be EndpointType.MODEL_BASED (without inference component)
                 or EndpointType.INFERENCE_COMPONENT (with inference component)
         """
+
         huggingface_model = HuggingFaceModel(
             role=role_arn,
             image_uri=llm_image,

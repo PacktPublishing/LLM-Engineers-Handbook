@@ -1,6 +1,8 @@
 import json
+from pathlib import Path
 
 import boto3
+from loguru import logger
 
 from llm_engineering.settings import settings
 
@@ -41,23 +43,24 @@ def create_sagemaker_execution_role(role_name, region_name="eu-central-1"):
         for policy in policies:
             iam.attach_role_policy(RoleName=role_name, PolicyArn=policy)
 
-        print(f"Role '{role_name}' created successfully.")
-        print(f"Role ARN: {role['Role']['Arn']}")
+        logger.info(f"Role '{role_name}' created successfully.")
+        logger.info(f"Role ARN: {role['Role']['Arn']}")
 
         return role["Role"]["Arn"]
 
     except iam.exceptions.EntityAlreadyExistsException:
-        print(f"Role '{role_name}' already exists. Fetching its ARN...")
+        logger.warning(f"Role '{role_name}' already exists. Fetching its ARN...")
         role = iam.get_role(RoleName=role_name)
+
         return role["Role"]["Arn"]
 
 
 if __name__ == "__main__":
     role_arn = create_sagemaker_execution_role("SageMakerExecutionRoleLLM")
-    print(role_arn)
+    logger.info(role_arn)
 
     # Save the role ARN to a file
-    with open("sagemaker_execution_role.json", "w") as f:
+    with Path("sagemaker_execution_role.json").open("w") as f:
         json.dump({"RoleArn": role_arn}, f)
 
-    print("Role ARN saved to 'sagemaker_execution_role.json'")
+    logger.info("Role ARN saved to 'sagemaker_execution_role.json'")

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 
-from llm_engineering.core.interfaces import Inference
+from llm_engineering.domain.inference import Inference
 from llm_engineering.model.inference.inference import LLMInferenceSagemakerEndpoint
 from llm_engineering.settings import settings
 
