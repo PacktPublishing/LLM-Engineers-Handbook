@@ -1,8 +1,7 @@
-name: ci
+name: CI
 
 on:
   pull_request:
-  push:
     
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -40,9 +39,6 @@ jobs:
 
       - name: Format check [Python]
         run: poetry poe format-check
-
-      # - name: Lint check [Dockerfile]
-      #   run: poetry poe lint-check-docker
 
   test:
     name: Test

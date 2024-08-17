@@ -3,7 +3,7 @@ from pathlib import Path
 from zenml import pipeline
 from zenml.client import Client
 
-from llm_engineering.interfaces.orchestrator.steps import export as export_steps
+from steps import export as export_steps
 
 
 @pipeline

@@ -1,7 +1,7 @@
 from zenml import pipeline
 from zenml.client import Client
 
-from llm_engineering.interfaces.orchestrator.steps import training as training_steps
+from steps import training as training_steps
 
 
 @pipeline
