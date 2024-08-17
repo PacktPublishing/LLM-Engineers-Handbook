@@ -77,11 +77,9 @@ class DeploymentService:
         :param logger: Optional logger for logging messages. If None, the standard logging module will be used.
         """
 
-        # self.session = boto3.Session(profile_name="decodingml")
-        # self.sagemaker_client = self.session.client("sagemaker", region_name="eu-central-1")
         self.sagemaker_client = boto3.client(
             "sagemaker",
-            region_name="eu-central-1",
+            region_name=settings.AWS_REGION,
             aws_access_key_id=settings.AWS_ACCESS_KEY,
             aws_secret_access_key=settings.AWS_SECRET_KEY,
         )

@@ -41,10 +41,8 @@ class Settings(BaseSettings):
     COMET_WORKSPACE: str | None = None
     COMET_PROJECT: str | None = None
 
-    ARN_ROLE: str | None = None
-    HUGGING_FACE_HUB_TOKEN: str
-
-    HF_MODEL_ID: str = "crumb/nano-mistral"
+    # SageMaker
+    HF_MODEL_ID: str = "mlabonne/TwinLlama-3.1-8B-13"
     GPU_INSTANCE_TYPE: str = "ml.g5.xlarge"
     SM_NUM_GPUS: int = 1
     MAX_INPUT_LENGTH: int = 8000
@@ -53,16 +51,15 @@ class Settings(BaseSettings):
     COPIES: int = 4  # Number of replicas
     GPUS: int = 1  # Number of GPUs
     CPUS: int = 8  # Number of CPU cores  96 // num_replica - more for management
-    RETURN_FULL_TEXT: bool = False
 
-    SAGEMAKER_ENDPOINT_CONFIG_INFERENCE: str = "test"
-    SAGEMAKER_INFERENCE_COMPONENT_INFERENCE: str = "test"
-    SAGEMAKER_ENDPOINT_INFERENCE: str = "test"
-    SAGEMAKER_MODEL_INFERENCE: str = "test"
+    SAGEMAKER_ENDPOINT_CONFIG_INFERENCE: str = "twin"
+    SAGEMAKER_ENDPOINT_INFERENCE: str = "twin"
     TEMPERATURE_INFERENCE: float = 0.01
     TOP_P_INFERENCE: float = 0.9
     MAX_NEW_TOKENS_INFERENCE: int = 150
 
+    # AWS
+    ARN_ROLE: str | None = None
     AWS_REGION: str = "eu-central-1"
     AWS_ACCESS_KEY: str | None = None
     AWS_SECRET_KEY: str | None = None

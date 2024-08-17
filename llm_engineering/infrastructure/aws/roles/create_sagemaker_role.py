@@ -7,11 +7,11 @@ from loguru import logger
 from llm_engineering.settings import settings
 
 
-def create_sagemaker_user(username, region_name="eu-central-1"):
+def create_sagemaker_user(username: str):
     # Create IAM client
     iam = boto3.client(
         "iam",
-        region_name=region_name,
+        region_name=settings.AWS_REGION,
         aws_access_key_id=settings.AWS_ACCESS_KEY,
         aws_secret_access_key=settings.AWS_SECRET_KEY,
     )

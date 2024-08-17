@@ -1,5 +1,6 @@
 import boto3
 import sagemaker
+from loguru import logger
 
 from llm_engineering.settings import settings
 
@@ -7,7 +8,7 @@ from llm_engineering.settings import settings
 sagemaker_boto3_session = boto3.Session(
     aws_access_key_id=settings.AWS_ACCESS_KEY,
     aws_secret_access_key=settings.AWS_SECRET_KEY,
-    region_name="eu-central-1",  # Optional, specify your AWS region
+    region_name=settings.AWS_REGION,  # Optional, specify your AWS region
 )
 
 # Initialize the SageMaker session
@@ -23,4 +24,4 @@ input_data = sagemaker_session.upload_data(
     key_prefix="dummy-fine-tuning-data",
 )
 
-print(f"Data uploaded to: {input_data}")
+logger.info(f"Data uploaded to: {input_data}")

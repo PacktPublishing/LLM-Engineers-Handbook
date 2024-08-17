@@ -1,18 +1,11 @@
 from sagemaker.enums import EndpointType
 from sagemaker.huggingface import get_huggingface_llm_image_uri
 
-from llm_engineering.model.deploy.huggingface.config import (
-    hugging_face_deploy_config,
-    model_resource_config,
-)
-from llm_engineering.model.deploy.huggingface.sagemaker_huggingface import (
-    DeploymentService,
-    SagemakerHuggingfaceStrategy,
-)
-from llm_engineering.model.utils import (
-    ResourceManager,
-)
+from llm_engineering.model.utils import ResourceManager
 from llm_engineering.settings import settings
+
+from .config import hugging_face_deploy_config, model_resource_config
+from .sagemaker_huggingface import DeploymentService, SagemakerHuggingfaceStrategy
 
 
 def create_huggingface_endpoint(task_name, endpoint_type=EndpointType.INFERENCE_COMPONENT_BASED):

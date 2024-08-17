@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 import boto3
 import sagemaker
@@ -10,27 +10,27 @@ from llm_engineering.settings import settings
 sagemaker_boto3_session = boto3.Session(
     aws_access_key_id=settings.AWS_ACCESS_KEY,
     aws_secret_access_key=settings.AWS_SECRET_KEY,
-    region_name="eu-central-1",
+    region_name=settings.AWS_REGION,
 )
 sagemaker_session = sagemaker.Session(boto_session=sagemaker_boto3_session)
 
 # Set up paths
-base_dir = "/Users/vesaalexandru/Workspaces/cube/LLM-Engineering"
-script_dir = os.path.join(base_dir, "llm_engineering/model/finetuning")
-script_path = os.path.join(script_dir, "finetune.py")
-requirements_path = os.path.join(script_dir, "requirements.txt")
+base_dir = Path("/Users/vesaalexandru/Workspaces/cube/LLM-Engineering")
+script_dir = base_dir / "llm_engineering/model/finetuning"
+script_path = script_dir / "finetune.py"
+requirements_path = script_dir / "requirements.txt"
 bucket = sagemaker_session.default_bucket()
 input_data = f"s3://{bucket}/dummy-fine-tuning-data"
 
 # Verify that the necessary files exist
 for file_path in [script_path, requirements_path]:
-    if not os.path.exists(file_path):
+    if not file_path.exists():
         raise FileNotFoundError(f"The file {file_path} does not exist.")
 
 # Create the HuggingFace estimator
 huggingface_estimator = HuggingFace(
     entry_point="finetune.py",
-    source_dir=script_dir,
+    source_dir=str(script_dir),
     instance_type=settings.GPU_INSTANCE_TYPE,
     instance_count=1,
     role=settings.ARN_ROLE,
