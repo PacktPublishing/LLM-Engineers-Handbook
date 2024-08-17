@@ -40,7 +40,7 @@ class VectorBaseDocument(BaseModel, Generic[T], ABC):
             **payload,
         }
         if cls._has_class_attribute("embedding"):
-            payload["embedding"] = point.vector or None
+            attributes["embedding"] = point.vector or None
 
         return cls(**attributes)
 

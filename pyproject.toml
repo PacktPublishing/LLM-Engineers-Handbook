@@ -35,6 +35,10 @@ tiktoken = "^0.7.0"
 fake-useragent = "^1.5.1"
 langchain-community = "^0.2.11"
 
+# Inference
+fastapi = ">=0.100,<=0.110"
+uvicorn = "^0.30.6"
+
 # sagemaker-huggingface-inference-toolkit = "^2.4.0"
 # sagemaker = "^2.226.1"
 
@@ -92,6 +96,10 @@ run-export-artifact-to-json-pipeline = "python -m tools.run --no-cache --run-exp
 
 # Training pipelines
 run-training-pipeline = "python -m tools.run --no-cache --run-training"
+
+# Inference ML service
+run-inference-ml-service = "uvicorn tools.ml_service:app --host 0.0.0.0 --port 8000 --reload"
+call-inference-ml-service = "curl -X POST 'http://127.0.0.1:8000/rag' -H 'Content-Type: application/json' -d '{\"query\": \"My name is Paul Iusztin. Could you draft a LinkedIn post discussing RAG systems? I am particularly interested in how RAG works and how it is integrated with vector DBs and LLMs.\"}'"
 
 # Infrastructure
 local-docker-infrastructure-up = "docker compose up -d"

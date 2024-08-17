@@ -10,24 +10,38 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 
 
 class InferenceExecutor:
-    def __init__(self, llm: Inference, text: str, prompt: str):
+    def __init__(
+        self,
+        llm: Inference,
+        query: str,
+        context: str | None = None,
+        prompt: str | None = None,
+    ) -> None:
         self.llm = llm
-        self.text = text
-        self.prompt = prompt
+        self.query = query
+        self.context = context if context else ""
+
+        if prompt is None:
+            self.prompt = """
+You are a content creator. Write a paragraph about what the user asked you to while using the provided context.
+User query: {query}
+Context: {context}
+            """
+        else:
+            self.prompt = prompt
 
     def execute(self) -> str:
-        """Extracts entities from a text."""
         self.llm.set_payload(
-            inputs=self.prompt.format(TEXT=self.text),
+            inputs=self.prompt.format(query=self.query, context=self.context),
             parameters={
                 "max_new_tokens": settings.MAX_NEW_TOKENS_INFERENCE,
                 "repetition_penalty": 1.1,
                 "temperature": settings.TEMPERATURE_INFERENCE,
             },
         )
-        extraction = self.llm.inference()[0]["generated_text"]
+        answer = self.llm.inference()[0]["generated_text"]
 
-        return extraction
+        return answer
 
 
 if __name__ == "__main__":
