@@ -63,6 +63,7 @@ class Settings(BaseSettings):
     TOP_P_INFERENCE: float = 0.9
     MAX_NEW_TOKENS_INFERENCE: int = 150
 
+    AWS_REGION: str = "eu-central-1"
     AWS_ACCESS_KEY: str | None = None
     AWS_SECRET_KEY: str | None = None
 

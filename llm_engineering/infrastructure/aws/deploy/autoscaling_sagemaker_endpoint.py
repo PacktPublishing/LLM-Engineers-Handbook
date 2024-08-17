@@ -117,9 +117,9 @@ class AutoscalingSagemakerEndpoint:
         self,
         auto_scaling_client: IAutoScalingClient,
         inference_component_name: str,
+        endpoint_name: str,
         initial_copy_count: int = 1,
         max_copy_count: int = 6,
-        endpoint_name: str = None,
         target_value: float = 4.0,
     ):
         self.auto_scaling_client = auto_scaling_client

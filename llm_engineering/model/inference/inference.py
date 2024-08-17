@@ -23,7 +23,7 @@ class LLMInferenceSagemakerEndpoint(Inference):
 
         self.client = boto3.client(
             "sagemaker-runtime",
-            region_name="eu-central-1",
+            region_name=settings.AWS_REGION,
             aws_access_key_id=settings.AWS_ACCESS_KEY,
             aws_secret_access_key=settings.AWS_SECRET_KEY,
         )
@@ -74,9 +74,7 @@ class LLMInferenceSagemakerEndpoint(Inference):
         """
 
         try:
-            logging.info(
-                "Inference request sent with parameters with the following parameters:", {self.payload["parameters"]}
-            )
+            logging.info("Inference request sent.")
             invoke_args = {
                 "EndpointName": self.endpoint_name,
                 "ContentType": "application/json",

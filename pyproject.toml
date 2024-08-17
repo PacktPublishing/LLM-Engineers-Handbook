@@ -74,10 +74,6 @@ build-backend = "poetry.core.masonry.api"
 # Poe the Poet Tasks
 
 [tool.poe.tasks]
-# Setup
-export-settings-to-zenml = "python -m tools.run --export-settings"
-delete-settings-zenml = "zenml secret delete settings"
-
 # Data pipelines
 run-digital-data-etl-alex = "python -m tools.run --run-etl --no-cache --etl-config-filename digital_data_etl_alex_vesa.yaml"
 run-digital-data-etl-maxime = "python -m tools.run --run-etl --no-cache --etl-config-filename digital_data_etl_maxime_labonne.yaml"
@@ -118,10 +114,21 @@ set-local-stack = "zenml stack set default"
 set-aws-stack = "zenml stack set aws-stack"
 set-asynchronous-runs = "zenml orchestrator update aws-stack --synchronous=False"
 
-# Docker
+## Credentials
+export-settings-to-zenml = "python -m tools.run --export-settings"
+delete-settings-zenml = "zenml secret delete settings"
+
+## Docker
 build-docker-image = "docker buildx build --platform linux/amd64 -t llmtwin -f Dockerfile ."
 run-docker-end-to-end-data-pipeline = "docker run --rm --network host --shm-size=2g --env-file .env llmtwin poetry poe --no-cache --run-end-to-end-data"
 bash-docker-container = "docker run --rm -it --network host --env-file .env llmtwin bash"
+
+## SageMaker
+create-sagemaker-role = "poetry run python llm_engineering/infrastructure/aws/roles/create_sagemaker_role.py"
+create-sagemaker-execution-role = "poetry run python llm_engineering/core/aws/roles/create_execution_role.py"
+deploy-inference-endpoint = "poetry run python llm_engineering/infrastructure/aws/deploy/huggingface/run.py"
+test-sagemaker-endpoint = "poetry run python -m llm_engineering.model.inference.test"
+delete-inference-endpoint = "poetry run python llm_engineering/infrastructure/aws/deploy/delete_inference_endpoint.py"
 
 # QA
 lint-check = "poetry run ruff check ."
