@@ -18,9 +18,9 @@ hugging_face_deploy_config = {
 
 model_resource_config = ResourceRequirements(
     requests={
-        "copies": settings.COPIES,  # Number of replicas
-        "num_accelerators": settings.GPUS,  # Number of GPUs
-        "num_cpus": settings.CPUS,  # Number of CPU cores  96 // num_replica - more for management
-        "memory": 5 * 1024,  # Minimum memory in MB 1152 // num_replica - more for management
+        "copies": settings.COPIES,  # Number of replicas.
+        "num_accelerators": settings.GPUS,  # Number of GPUs required.
+        "num_cpus": settings.CPUS,  # Number of CPU cores required.
+        "memory": 5 * 1024,  # Minimum memory required in Mb (required)
     },
 )

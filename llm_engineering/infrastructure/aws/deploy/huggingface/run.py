@@ -8,7 +8,9 @@ from .config import hugging_face_deploy_config, model_resource_config
 from .sagemaker_huggingface import DeploymentService, SagemakerHuggingfaceStrategy
 
 
-def create_huggingface_endpoint(endpoint_type=EndpointType.INFERENCE_COMPONENT_BASED):
+def create_huggingface_endpoint(endpoint_type=EndpointType.INFERENCE_COMPONENT_BASED) -> None:
+    assert settings.AWS_ARN_ROLE is not None, "AWS_ARN_ROLE is not set in the .env file."
+
     llm_image = get_huggingface_llm_image_uri("huggingface", version=None)
 
     resource_manager = ResourceManager()

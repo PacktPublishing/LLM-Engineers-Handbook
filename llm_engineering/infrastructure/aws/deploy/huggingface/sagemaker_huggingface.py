@@ -39,7 +39,7 @@ class SagemakerHuggingfaceStrategy(DeploymentStrategy):
         :param config: Configuration settings for the model environment.
         :param endpoint_name: Name of the SageMaker endpoint.
         :param endpoint_config_name: Name of the SageMaker endpoint configuration.
-        :param resources: Optional resources for the model deployment(used for multi model endpoints)
+        :param resources: Optional resources for the model deployment (used for multi model endpoints)
         :param endpoint_type: can be EndpointType.MODEL_BASED (without inference component)
                 or EndpointType.INFERENCE_COMPONENT (with inference component)
 
@@ -105,7 +105,7 @@ class DeploymentService:
         :param config: Configuration dictionary for the environment variables of the model.
         :param endpoint_name: The name for the SageMaker endpoint.
         :param endpoint_config_name: The name for the SageMaker endpoint configuration.
-        :param resources: Optional resources for the model deployment(used for multi model endpoints)
+        :param resources: Optional resources for the model deployment (used for multi model endpoints)
         :param endpoint_type: can be EndpointType.MODEL_BASED (without inference component)
                 or EndpointType.INFERENCE_COMPONENT (with inference component)
         :param gpu_instance_type: The instance type for the SageMaker endpoint.

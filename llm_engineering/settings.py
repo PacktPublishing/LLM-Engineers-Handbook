@@ -48,9 +48,9 @@ class Settings(BaseSettings):
     MAX_INPUT_LENGTH: int = 8000
     MAX_TOTAL_TOKENS: int = 12000
     MAX_BATCH_TOTAL_TOKENS: int = 12000
-    COPIES: int = 4  # Number of replicas
+    COPIES: int = 1  # Number of replicas
     GPUS: int = 1  # Number of GPUs
-    CPUS: int = 8  # Number of CPU cores  96 // num_replica - more for management
+    CPUS: int = 2  # Number of CPU cores
 
     SAGEMAKER_ENDPOINT_CONFIG_INFERENCE: str = "twin"
     SAGEMAKER_ENDPOINT_INFERENCE: str = "twin"
