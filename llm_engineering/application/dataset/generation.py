@@ -50,7 +50,7 @@ Output JSON format. Make sure that you generate exactly three instruction-answer
     @classmethod
     def get_system_prompt(cls) -> Prompt:
         return Prompt(
-            template=cls.system_prompt_template,
+            template=PromptTemplate.from_template(cls.system_prompt_template),
             input_variables={},
             content=cls.system_prompt_template,
         )
@@ -84,7 +84,7 @@ Output JSON format. Make sure that you generate exactly three instruction-answer
             prompt = cls.tokenizer.decode(prompt_tokens)
 
         prompt = GenerateDatasetSamplesPrompt(
-            template=prompt_template.template,
+            template=prompt_template,
             input_variables=input_variables,
             content=prompt,
             num_tokens=len(prompt_tokens),

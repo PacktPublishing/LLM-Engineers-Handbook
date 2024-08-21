@@ -40,7 +40,7 @@ class VectorBaseDocument(BaseModel, Generic[T], ABC):
             **payload,
         }
         if cls._has_class_attribute("embedding"):
-            payload["embedding"] = point.vector or None
+            attributes["embedding"] = point.vector or None
 
         return cls(**attributes)
 
@@ -48,7 +48,7 @@ class VectorBaseDocument(BaseModel, Generic[T], ABC):
         exclude_unset = kwargs.pop("exclude_unset", False)
         by_alias = kwargs.pop("by_alias", True)
 
-        payload = self.model_dump(exclude_unset=exclude_unset, by_alias=by_alias, **kwargs)
+        payload = self.dict(exclude_unset=exclude_unset, by_alias=by_alias, **kwargs)
 
         _id = str(payload.pop("id"))
         vector = payload.pop("embedding", {})
@@ -57,8 +57,8 @@ class VectorBaseDocument(BaseModel, Generic[T], ABC):
 
         return PointStruct(id=_id, vector=vector, payload=payload)
 
-    def model_dump(self: T, **kwargs) -> dict:
-        dict_ = super().model_dump(**kwargs)
+    def dict(self: T, **kwargs) -> dict:
+        dict_ = super().dict(**kwargs)
 
         for key, value in dict_.items():
             if isinstance(value, UUID):

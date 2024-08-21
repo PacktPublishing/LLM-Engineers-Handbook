@@ -41,6 +41,29 @@ class Settings(BaseSettings):
     COMET_WORKSPACE: str | None = None
     COMET_PROJECT: str | None = None
 
+    # SageMaker
+    HF_MODEL_ID: str = "mlabonne/TwinLlama-3.1-8B-13"  # or use "crumb/nano-mistral" for a quick test with a small model
+    GPU_INSTANCE_TYPE: str = "ml.g5.xlarge"
+    SM_NUM_GPUS: int = 1
+    MAX_INPUT_LENGTH: int = 8000
+    MAX_TOTAL_TOKENS: int = 12000
+    MAX_BATCH_TOTAL_TOKENS: int = 12000
+    COPIES: int = 1  # Number of replicas
+    GPUS: int = 1  # Number of GPUs
+    CPUS: int = 2  # Number of CPU cores
+
+    SAGEMAKER_ENDPOINT_CONFIG_INFERENCE: str = "twin"
+    SAGEMAKER_ENDPOINT_INFERENCE: str = "twin"
+    TEMPERATURE_INFERENCE: float = 0.01
+    TOP_P_INFERENCE: float = 0.9
+    MAX_NEW_TOKENS_INFERENCE: int = 150
+
+    # AWS
+    AWS_ARN_ROLE: str | None = None
+    AWS_REGION: str = "eu-central-1"
+    AWS_ACCESS_KEY: str | None = None
+    AWS_SECRET_KEY: str | None = None
+
     @property
     def OPENAI_MAX_TOKEN_WINDOW(self) -> int:
         official_max_token_window = {

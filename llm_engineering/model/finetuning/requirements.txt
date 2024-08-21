@@ -1,0 +1,7 @@
+transformers
+datasets
+peft
+trl
+accelerate
+bitsandbytes
+flash-attn>=2.1.0

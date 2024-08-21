@@ -161,9 +161,13 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+# MacOs
+.DS_Store
+
 # VS Code
 .vscode/**/launch.json
 
 # Data
 output/
+sagemaker_*.json
 run_ids.txt
