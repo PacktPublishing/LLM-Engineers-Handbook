@@ -24,12 +24,12 @@ def setup_torch_config():
 
             if version.parse(flash_attn.__version__) >= version.parse("2.1.0"):
                 attn_implementation = "flash_attention_2"
-                print("Using FlashAttention 2")
+                print("Using FlashAttention 2")  # noqa
             else:
                 attn_implementation = "eager"
-                print(f"FlashAttention version {flash_attn.__version__} is not compatible. Using eager implementation.")
+                print(f"FlashAttention version {flash_attn.__version__} is not compatible. Using eager implementation.")  # noqa
         except ImportError:
-            warnings.warn("FlashAttention not installed. Defaulting to eager attention.")
+            warnings.warn("FlashAttention not installed. Defaulting to eager attention.")  # noqa
             attn_implementation = "eager"
     else:
         torch_dtype = torch.float16
