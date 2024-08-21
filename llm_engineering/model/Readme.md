@@ -45,8 +45,8 @@ Before you can use the scripts in this repository, you need to set up your AWS e
 
 Example:
 ```
-AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
-AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+AWS Access Key ID [None]: <your access key ID>
+AWS Secret Access Key [None]: <your secret access key>
 Default region name [None]: us-west-2
 Default output format [None]: json
 ```
