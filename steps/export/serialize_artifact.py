@@ -26,6 +26,6 @@ def _serialize_artifact(arfifact: list | dict | BaseModel | str | int | float | 
     elif isinstance(arfifact, dict):
         return {key: _serialize_artifact(value) for key, value in arfifact.items()}
     if isinstance(arfifact, BaseModel):
-        return arfifact.dict()
+        return arfifact.model_dump()
     else:
         return arfifact

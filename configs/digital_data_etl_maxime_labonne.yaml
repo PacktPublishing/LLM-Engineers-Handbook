@@ -8,6 +8,9 @@ settings:
 parameters:
   user_full_name: Maxime Labonne # [First Name(s)] [Last Name]
   links:
+    # Personal Blog
+    - https://mlabonne.github.io/blog/posts/2024-07-29_Finetune_Llama31.html
+    - https://mlabonne.github.io/blog/posts/2024-07-15_The_Rise_of_Agentic_Data_Generation.html
     # Substack
     - https://maximelabonne.substack.com/p/uncensor-any-llm-with-abliteration-d30148b7d43e
     - https://maximelabonne.substack.com/p/create-mixtures-of-experts-with-mergekit-11b318c99562

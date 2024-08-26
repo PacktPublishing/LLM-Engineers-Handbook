@@ -113,6 +113,7 @@ local-infrastructure-down = [
 set-local-stack = "zenml stack set default"
 set-aws-stack = "zenml stack set aws-stack"
 set-asynchronous-runs = "zenml orchestrator update aws-stack --synchronous=False"
+zenml-server-disconnect = "zenml disconnect"
 
 ## Credentials
 export-settings-to-zenml = "python -m tools.run --export-settings"

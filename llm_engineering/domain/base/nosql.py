@@ -55,8 +55,8 @@ class NoSQLBaseDocument(BaseModel, Generic[T], ABC):
 
         return parsed
 
-    def dict(self: T, **kwargs) -> dict:
-        dict_ = super().dict(**kwargs)
+    def model_dump(self: T, **kwargs) -> dict:
+        dict_ = super().model_dump(**kwargs)
 
         for key, value in dict_.items():
             if isinstance(value, uuid.UUID):

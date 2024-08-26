@@ -57,8 +57,8 @@ class VectorBaseDocument(BaseModel, Generic[T], ABC):
 
         return PointStruct(id=_id, vector=vector, payload=payload)
 
-    def dict(self: T, **kwargs) -> dict:
-        dict_ = super().dict(**kwargs)
+    def model_dump(self: T, **kwargs) -> dict:
+        dict_ = super().model_dump(**kwargs)
 
         for key, value in dict_.items():
             if isinstance(value, UUID):
