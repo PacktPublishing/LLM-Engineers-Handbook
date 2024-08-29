@@ -26,7 +26,7 @@ chromedriver-autoinstaller = "^0.6.4"
 # Feature engineering
 qdrant-client = "^1.8.0"
 langchain = "^0.2.11"
-sentence-transformers = "^2.6.1"
+sentence-transformers = "^3.0.0"
 
 # RAG
 langchain-openai = "^0.1.3"
