@@ -1,14 +1,23 @@
+from io import BytesIO
+
+import requests
 from PIL import Image
 from sentence_transformers import SentenceTransformer
 
 if __name__ == "__main__":
+    # Get the image
+    response = requests.get(
+        "https://github.com/PacktPublishing/LLM-Engineering/blob/main/images/crazy_cat.jpg?raw=true"
+    )
+    image = Image.open(BytesIO(response.content))
+
     # Load CLIP model
 
     model = SentenceTransformer("clip-ViT-B-32")
 
     # Encode an image:
 
-    img_emb = model.encode(Image.open("two_dogs_in_snow.jpg"))
+    img_emb = model.encode(image)
 
     # Encode text descriptions
 
