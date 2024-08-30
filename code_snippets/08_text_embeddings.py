@@ -10,13 +10,11 @@ if __name__ == "__main__":
     # 2. Calculate embeddings.
     embeddings = model.encode(sentences)
     print(embeddings.shape)  # noqa
-
     # Output: [3, 384]
 
     # 3. Calculate the embedding similarities using cosine similarity.
     similarities = model.similarity(embeddings, embeddings)
     print(similarities)  # noqa
-
     # Output:
     # tensor([[ 1.0000, -0.0389,  0.2692],
     #     [-0.0389,  1.0000,  0.3837],
