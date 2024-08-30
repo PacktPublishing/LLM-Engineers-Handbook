@@ -1,6 +1,6 @@
 from sentence_transformers import SentenceTransformer
 
-# Leverage the Poetry virtual to run the code:
+# Leverage the Poetry virtual environment to run the code:
 # poetry run python code_snippets/08_text_embeddings.py
 
 if __name__ == "__main__":
