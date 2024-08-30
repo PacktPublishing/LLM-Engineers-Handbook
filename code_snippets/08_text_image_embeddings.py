@@ -4,6 +4,9 @@ import requests
 from PIL import Image
 from sentence_transformers import SentenceTransformer
 
+# Leverage the Poetry virtual to run the code:
+# poetry run python code_snippets/08_text_image_embeddings.py
+
 if __name__ == "__main__":
     # Load an image with a crazy cat.
     response = requests.get(
