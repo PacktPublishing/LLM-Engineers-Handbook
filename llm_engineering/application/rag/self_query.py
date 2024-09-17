@@ -5,13 +5,11 @@ from llm_engineering.domain.documents import UserDocument
 from llm_engineering.domain.queries import Query
 from llm_engineering.settings import settings
 
+from .base import RAGStep
 from .prompt_templates import SelfQueryTemplate
 
 
-class SelfQuery:
-    def __init__(self, mock: bool = False) -> None:
-        self._mock = mock
-
+class SelfQuery(RAGStep):
     def generate(self, query: Query) -> Query:
         if self._mock:
             return query

@@ -2,11 +2,14 @@ from llm_engineering.application.networks import CrossEncoderModelSingleton
 from llm_engineering.domain.embedded_chunks import EmbeddedChunk
 from llm_engineering.domain.queries import Query
 
+from .base import RAGStep
 
-class Reranker:
+
+class Reranker(RAGStep):
     def __init__(self, mock: bool = False) -> None:
+        super().__init__(mock=mock)
+
         self._model = CrossEncoderModelSingleton()
-        self._mock = mock
 
     def generate(self, query: Query, chunks: list[EmbeddedChunk], keep_top_k: int) -> list[EmbeddedChunk]:
         if self._mock:

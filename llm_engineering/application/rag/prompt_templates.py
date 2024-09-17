@@ -1,16 +1,9 @@
-from abc import ABC, abstractmethod
-
 from langchain.prompts import PromptTemplate
-from pydantic import BaseModel
+
+from .base import PromptTemplateFactory
 
 
-class BasePromptTemplate(ABC, BaseModel):
-    @abstractmethod
-    def create_template(self) -> PromptTemplate:
-        pass
-
-
-class QueryExpansionTemplate(BasePromptTemplate):
+class QueryExpansionTemplate(PromptTemplateFactory):
     prompt: str = """You are an AI language model assistant. Your task is to generate {expand_to_n}
     different versions of the given user question to retrieve relevant documents from a vector
     database. By generating multiple perspectives on the user question, your goal is to help
@@ -33,7 +26,7 @@ class QueryExpansionTemplate(BasePromptTemplate):
         )
 
 
-class SelfQueryTemplate(BasePromptTemplate):
+class SelfQueryTemplate(PromptTemplateFactory):
     prompt: str = """You are an AI language model assistant. Your task is to extract information from a user question.
     The required information that needs to be extracted is the user name or user id. 
     Your response should consists of only the extracted user name (e.g., John Doe) or id (e.g. 1345256), nothing else.

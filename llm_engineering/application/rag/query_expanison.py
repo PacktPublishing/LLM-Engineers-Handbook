@@ -3,13 +3,11 @@ from langchain_openai import ChatOpenAI
 from llm_engineering.domain.queries import Query
 from llm_engineering.settings import settings
 
+from .base import RAGStep
 from .prompt_templates import QueryExpansionTemplate
 
 
-class QueryExpansion:
-    def __init__(self, mock: bool = False) -> None:
-        self._mock = mock
-
+class QueryExpansion(RAGStep):
     def generate(self, query: Query, expand_to_n: int) -> list[Query]:
         assert expand_to_n > 0, f"'expand_to_n' should be greater than 0. Got {expand_to_n}."
 
