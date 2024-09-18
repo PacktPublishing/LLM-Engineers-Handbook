@@ -18,7 +18,7 @@ class InferenceExecutor:
 
         if prompt is None:
             self.prompt = """
-You are a content creator. Write a paragraph about what the user asked you to while using the provided context.
+You are a content creator. Write what the user asked you to while using the provided context as the primary source of information for the content.
 User query: {query}
 Context: {context}
             """

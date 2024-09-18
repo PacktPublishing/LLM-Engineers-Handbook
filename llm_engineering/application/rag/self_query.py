@@ -1,4 +1,5 @@
 from langchain_openai import ChatOpenAI
+from loguru import logger
 
 from llm_engineering.application import utils
 from llm_engineering.domain.documents import UserDocument
@@ -20,15 +21,23 @@ class SelfQuery(RAGStep):
         chain = prompt | model
 
         response = chain.invoke({"question": query})
-        username_or_id = response.content.strip("\n ")
+        user_full_name = response.content.strip("\n ")
 
-        if username_or_id == "none":
+        if user_full_name == "none":
             return query
 
-        first_name, last_name = utils.split_user_full_name(username_or_id)
+        first_name, last_name = utils.split_user_full_name(user_full_name)
         user = UserDocument.get_or_create(first_name=first_name, last_name=last_name)
 
-        query.author_id = username_or_id
+        query.author_id = user.id
         query.author_full_name = user.full_name
 
         return query
+
+
+if __name__ == "__main__":
+    query = Query.from_str("I am Paul Iusztin. Write an article about the best types of advanced RAG methods.")
+    self_query = SelfQuery()
+    query = self_query.generate(query)
+    logger.info(f"Extracted author_id: {query.author_id}")
+    logger.info(f"Extracted author_full_name: {query.author_full_name}")

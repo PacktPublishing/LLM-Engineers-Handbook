@@ -34,14 +34,12 @@ class ContextRetriever:
 
         query_model = self._metadata_extractor.generate(query_model)
         logger.info(
-            "Successfully extracted the author_id from the query.",
-            author_id=query_model.author_id,
+            f"Successfully extracted the author_full_name = {query_model.author_full_name} from the query.",
         )
 
         n_generated_queries = self._query_expander.generate(query_model, expand_to_n=expand_to_n_queries)
         logger.info(
-            "Successfully generated queries for search.",
-            num_queries=len(n_generated_queries),
+            f"Successfully generated {len(n_generated_queries)} search queries.",
         )
 
         with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -51,7 +49,7 @@ class ContextRetriever:
             n_k_documents = utils.misc.flatten(n_k_documents)
             n_k_documents = list(set(n_k_documents))
 
-        logger.info("All documents retrieved successfully.", num_documents=len(n_k_documents))
+        logger.info(f"{len(n_k_documents)} documents retrieved successfully")
 
         if len(n_k_documents) > 0:
             k_documents = self.rerank(query, chunks=n_k_documents, keep_top_k=k)
@@ -102,6 +100,6 @@ class ContextRetriever:
 
         reranked_documents = self._reranker.generate(query=query, chunks=chunks, keep_top_k=keep_top_k)
 
-        logger.info("Documents reranked successfully.", num_documents=len(reranked_documents))
+        logger.info(f"{len(reranked_documents)} documents reranked successfully.")
 
         return reranked_documents

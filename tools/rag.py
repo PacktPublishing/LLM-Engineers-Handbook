@@ -17,7 +17,8 @@ if __name__ == "__main__":
         """
 
     retriever = ContextRetriever(mock=False)
-    documents = retriever.search(query, k=12)
+    documents = retriever.search(query, k=9)
 
+    logger.info("Retrieved documents:")
     for rank, document in enumerate(documents):
-        logger.info(f"{rank}: {document}")
+        logger.info(f"{rank + 1}: {document}")

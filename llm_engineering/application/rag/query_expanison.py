@@ -1,4 +1,5 @@
 from langchain_openai import ChatOpenAI
+from loguru import logger
 
 from llm_engineering.domain.queries import Query
 from llm_engineering.settings import settings
@@ -33,3 +34,11 @@ class QueryExpansion(RAGStep):
         ]
 
         return queries
+
+
+if __name__ == "__main__":
+    query = Query.from_str("Write an article about the best types of advanced RAG methods.")
+    query_expander = QueryExpansion()
+    expanded_queries = query_expander.generate(query, expand_to_n=3)
+    for expanded_query in expanded_queries:
+        logger.info(expanded_query.content)
