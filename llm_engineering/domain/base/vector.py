@@ -60,9 +60,18 @@ class VectorBaseDocument(BaseModel, Generic[T], ABC):
     def model_dump(self: T, **kwargs) -> dict:
         dict_ = super().model_dump(**kwargs)
 
+        dict_ = self._uuid_to_str(dict_)
+
+        return dict_
+
+    def _uuid_to_str(self, dict_: dict) -> dict:
         for key, value in dict_.items():
             if isinstance(value, UUID):
                 dict_[key] = str(value)
+            elif isinstance(value, list):
+                dict_[key] = [self._uuid_to_str(v) for v in value]
+            elif isinstance(value, dict):
+                dict_[key] = {k: self._uuid_to_str(v) for k, v in value.items()}
 
         return dict_
 

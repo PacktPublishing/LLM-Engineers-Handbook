@@ -2,7 +2,7 @@ from zenml import pipeline
 
 from .digital_data_etl import digital_data_etl
 from .feature_engineering import feature_engineering
-from .generate_instruct_datasets import generate_instruct_datasets
+from .generate_datasets import generate_datasets
 
 
 @pipeline
@@ -24,7 +24,7 @@ def end_to_end_data(
     author_full_names = [author_data["user_full_name"] for author_data in author_links]
     wait_for_ids = feature_engineering(author_full_names=author_full_names, wait_for=wait_for_ids)
 
-    generate_instruct_datasets(
+    generate_datasets(
         test_split_size=test_split_size,
         push_to_huggingface=push_to_huggingface,
         dataset_id=dataset_id,

@@ -2,6 +2,7 @@ from typing_extensions import Annotated
 from zenml import get_step_context, step
 
 from llm_engineering.application.dataset import generation
+from llm_engineering.domain.dataset import DatasetType
 from llm_engineering.domain.prompt import GenerateDatasetSamplesPrompt
 from llm_engineering.domain.types import DataCategory
 
@@ -9,8 +10,10 @@ from llm_engineering.domain.types import DataCategory
 @step
 def create_prompts(
     documents: Annotated[list, "queried_cleaned_documents"],
+    dataset_type: Annotated[DatasetType, "dataset_type"],
 ) -> Annotated[dict[DataCategory, list[GenerateDatasetSamplesPrompt]], "prompts"]:
-    grouped_prompts = generation.DatasetGenerator.get_prompts(documents)
+    dataset_generator = generation.get_dataset_generator(dataset_type)
+    grouped_prompts = dataset_generator.get_prompts(documents)
 
     step_context = get_step_context()
     step_context.add_output_metadata(output_name="prompts", metadata=_get_metadata(grouped_prompts))

@@ -1,12 +1,10 @@
-from langchain_core.prompts import PromptTemplate
-
 from llm_engineering.domain.base import VectorBaseDocument
 from llm_engineering.domain.cleaned_documents import CleanedDocument
 from llm_engineering.domain.types import DataCategory
 
 
 class Prompt(VectorBaseDocument):
-    template: PromptTemplate
+    template: str
     input_variables: dict
     content: str
     num_tokens: int | None = None

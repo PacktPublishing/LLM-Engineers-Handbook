@@ -10,7 +10,7 @@ from pipelines import (
     end_to_end_data,
     export_artifact_to_json,
     feature_engineering,
-    generate_instruct_datasets,
+    generate_datasets,
     training,
 )
 
@@ -86,6 +86,12 @@ Examples:
     help="Whether to run the instruct dataset generation pipeline.",
 )
 @click.option(
+    "--run-generate-preference-datasets",
+    is_flag=True,
+    default=False,
+    help="Whether to run the preference dataset generation pipeline.",
+)
+@click.option(
     "--run-training",
     is_flag=True,
     default=False,
@@ -105,6 +111,7 @@ def main(
     run_export_artifact_to_json: bool = False,
     run_feature_engineering: bool = False,
     run_generate_instruct_datasets: bool = False,
+    run_generate_preference_datasets: bool = False,
     run_training: bool = False,
     export_settings: bool = False,
 ) -> None:
@@ -114,6 +121,7 @@ def main(
         or run_export_artifact_to_json
         or run_feature_engineering
         or run_generate_instruct_datasets
+        or run_generate_preference_datasets
         or run_training
         or export_settings
     ), "Please specify an action to run."
@@ -158,7 +166,13 @@ def main(
         run_args_cd = {}
         pipeline_args["config_path"] = root_dir / "configs" / "generate_instruct_datasets.yaml"
         pipeline_args["run_name"] = f"generate_instruct_datasets_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
-        generate_instruct_datasets.with_options(**pipeline_args)(**run_args_cd)
+        generate_datasets.with_options(**pipeline_args)(**run_args_cd)
+
+    if run_generate_preference_datasets:
+        run_args_cd = {}
+        pipeline_args["config_path"] = root_dir / "configs" / "generate_preference_datasets.yaml"
+        pipeline_args["run_name"] = f"generate_preference_datasets_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+        generate_datasets.with_options(**pipeline_args)(**run_args_cd)
 
     if run_training:
         run_args_cd = {}

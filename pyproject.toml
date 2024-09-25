@@ -85,6 +85,7 @@ run-digital-data-etl = [
 ]
 run-feature-engineering-pipeline = "python -m tools.run --no-cache --run-feature-engineering"
 run-generate-instruct-datasets-pipeline = "python -m tools.run --no-cache --run-generate-instruct-datasets"
+run-generate-preference-datasets-pipeline = "python -m tools.run --no-cache --run-generate-preference-datasets"
 run-end-to-end-data-pipeline = "python -m tools.run --no-cache --run-end-to-end-data"
 
 # Utility pipelines

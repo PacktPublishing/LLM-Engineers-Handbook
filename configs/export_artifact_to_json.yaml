@@ -4,8 +4,10 @@ settings:
     skip_build: True
   orchestrator.sagemaker:
     synchronous: false
-    
+
 parameters:
-  artifact_names: 
-  - raw_documents
-  - cleaned_documents
+  artifact_names:
+    - raw_documents
+    - cleaned_documents
+    - instruct_datasets
+    - preference_datasets

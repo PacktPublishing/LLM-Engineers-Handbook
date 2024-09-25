@@ -6,8 +6,8 @@ settings:
     synchronous: false
 
 parameters:
-  test_split_size: 0.1
-  dataset_type: "instruction"
+  test_split_size: 0.05
+  dataset_type: "preference"
   push_to_huggingface: false
   dataset_id: pauliusztin/llmtwin
   mock: false

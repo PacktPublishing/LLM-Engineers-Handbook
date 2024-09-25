@@ -1,3 +1,5 @@
+from abc import ABC, abstractmethod
+
 import tiktoken
 from langchain_core.exceptions import OutputParserException
 from langchain_core.language_models.fake import FakeListLLM
@@ -9,50 +11,41 @@ from loguru import logger
 from llm_engineering import domain
 from llm_engineering.application import utils
 from llm_engineering.domain.cleaned_documents import CleanedDocument
+from llm_engineering.domain.dataset import DatasetType, TrainTestSplit
 from llm_engineering.domain.prompt import GenerateDatasetSamplesPrompt, Prompt
 from llm_engineering.domain.types import DataCategory
 from llm_engineering.settings import settings
 
-from . import constants, splits
+from . import constants
+from . import utils as generation_utils
 from .output_parsers import ListPydanticOutputParser
 
 
-class DatasetGenerator:
+class DatasetGenerator(ABC):
     tokenizer = tiktoken.encoding_for_model(settings.OPENAI_MODEL_ID)
+    dataset_type: DatasetType | None = None
 
-    system_prompt_template: str = "You are a helpful assistant who \
-            generates instruction-answer pairs based on the given context. \
-            You will imitate the casual tone and writing style of the context."
-    prompt_template_str: str = """I want to create an AI assistant that can write paragraphs and \
-{{ data_category }} about machine learning topics. Based on the following extract, \
-generate three instruction-answer pairs. Each instruction should ask \
-to write about a specific topic contained in the context, and each answer \
-should provide a relevant paragraph based on the information found in the \
-context. Only use concepts from the context to generate the instructions. \
-Copy the writing style from the extract to imitate the author's personality. \
-Do not use markdown.
-
-Extract:
-{{ extract }}
-
-Structure the answer in JSON format, ready to be loaded in Python by json.loads(), a list of objects only with fields called instruction and content.
-Do not add any extra characters and make sure it is a list with objects in valid json format following exactly the next structure:\n
-'```json\n[{"instruction": "<generated instruction>"}, {"instruction": "<generated instruction here>"}, ...]\n```'
-
-Output JSON format. Make sure that you generate exactly three instruction-answer pairs, and the keys of the JSON object are 'instruction' and 'answer':
-[
-    {"instruction": "<generated instruction> 1", "answer": "<generated answer> 1"},
-    {"instruction": "<generated instruction> 2", "answer": "<generated answer> 2"},
-    {"instruction": "<generated instruction> 3", "answer": "<generated answer> 3"}
-]
+    system_prompt_template = """You are a helpful assistant who generates {dataset_format} based on the given context. \
+Provide your response in JSON format.
 """
+    prompt_template_str: str | None = None
 
     @classmethod
     def get_system_prompt(cls) -> Prompt:
+        assert cls.dataset_type is not None, "Dataset type must be set before calling get_system_prompt()"
+
+        dataset_format = (
+            "instruction-answer pairs" if cls.dataset_type == DatasetType.INSTRUCTION else "instruction-answer triples"
+        )
+        input_variables = {
+            "dataset_format": dataset_format,
+        }
+        system_prompt = cls.system_prompt_template.format(**input_variables)
+
         return Prompt(
-            template=PromptTemplate.from_template(cls.system_prompt_template),
-            input_variables={},
-            content=cls.system_prompt_template,
+            template=cls.system_prompt_template,
+            input_variables=input_variables,
+            content=system_prompt,
         )
 
     @classmethod
@@ -67,6 +60,8 @@ Output JSON format. Make sure that you generate exactly three instruction-answer
 
     @classmethod
     def get_prompt(cls, document: CleanedDocument) -> GenerateDatasetSamplesPrompt:
+        assert cls.prompt_template_str is not None, "Prompt template must be set before calling get_prompt()"
+
         data_category = document.get_category()
 
         prompt_template = PromptTemplate.from_template(
@@ -74,7 +69,6 @@ Output JSON format. Make sure that you generate exactly three instruction-answer
             template_format="jinja2",
         )
         input_variables = {
-            "data_category": data_category,
             "extract": document.content,
         }
         prompt = prompt_template.format(**input_variables)
@@ -84,7 +78,7 @@ Output JSON format. Make sure that you generate exactly three instruction-answer
             prompt = cls.tokenizer.decode(prompt_tokens)
 
         prompt = GenerateDatasetSamplesPrompt(
-            template=prompt_template,
+            template=prompt_template.template,
             input_variables=input_variables,
             content=prompt,
             num_tokens=len(prompt_tokens),
@@ -100,7 +94,9 @@ Output JSON format. Make sure that you generate exactly three instruction-answer
         prompts: dict[DataCategory, list[GenerateDatasetSamplesPrompt]],
         test_size: float = 0.2,
         mock: bool = False,
-    ) -> domain.dataset.TrainTestSplit:
+    ) -> TrainTestSplit:
+        assert cls.dataset_type is not None, "Dataset type must be set before calling generate()"
+
         def _to_langchain(
             prompt: GenerateDatasetSamplesPrompt,
         ) -> list[BaseMessage]:
@@ -112,33 +108,152 @@ Output JSON format. Make sure that you generate exactly three instruction-answer
             return messages
 
         if mock:
-            llm = FakeListLLM(responses=[constants.MOCKED_RESPONSE])
+            llm = FakeListLLM(responses=[constants.get_mocked_response(cls.dataset_type)])
         else:
             llm = ChatOpenAI(
-                model=settings.OPENAI_MODEL_ID, api_key=settings.OPENAI_API_KEY, max_tokens=800, temperature=0.7, n=1
+                model=settings.OPENAI_MODEL_ID,
+                api_key=settings.OPENAI_API_KEY,
+                max_tokens=2000 if cls.dataset_type == DatasetType.PREFERENCE else 1200,
+                temperature=0.7,
             )
-        parser = ListPydanticOutputParser(pydantic_object=domain.dataset.InstructDatasetSample)
+        parser = ListPydanticOutputParser(pydantic_object=cls._get_dataset_sample_type())
 
         chain = llm | parser
 
         datasets = {}
         for category, category_prompts in prompts.items():
             langchain_category_prompts = [_to_langchain(prompt) for prompt in category_prompts]
-            batches = utils.misc.batch(langchain_category_prompts, size=4)
+            batches = utils.misc.batch(langchain_category_prompts[:10], size=4)
 
             flattened_instruct_dataset_samples = []
             for batch in batches:
                 try:
-                    batched_instruct_dataset_samples = chain.batch(batch, stop=None)
+                    batched_dataset_samples = chain.batch(batch, stop=None)
+
+                    for instruct_dataset_sample_batch in batched_dataset_samples:
+                        flattened_instruct_dataset_samples.extend(instruct_dataset_sample_batch)
                 except OutputParserException:
-                    logger.error(f"Failed to parse the output JSON for a batch for category {category}")
+                    logger.exception(f"Failed to parse the output JSON for a batch for category {category}")
 
-                for instruct_dataset_sample_batch in batched_instruct_dataset_samples:
-                    flattened_instruct_dataset_samples.extend(instruct_dataset_sample_batch)
-
-            dataset = domain.dataset.InstructDataset(category=category, samples=flattened_instruct_dataset_samples)
+            dataset = domain.dataset.build_dataset(
+                dataset_type=cls.dataset_type, category=category, samples=flattened_instruct_dataset_samples
+            )
             datasets[category] = dataset
+            logger.info(f"Generated {len(dataset.samples)} samples for category '{category}'.")
 
-        train_test_split = splits.create_train_test_split(datasets, test_size=test_size, random_state=42)
+        processed_datasets = cls.post_process_datasets(datasets, test_size=test_size)
+
+        return processed_datasets
+
+    @classmethod
+    def _get_dataset_sample_type(
+        cls,
+    ) -> type[domain.dataset.InstructDatasetSample] | type[domain.dataset.PreferenceDatasetSample]:
+        return (
+            domain.dataset.InstructDatasetSample
+            if cls.dataset_type == DatasetType.INSTRUCTION
+            else domain.dataset.PreferenceDatasetSample
+        )
+
+    @classmethod
+    @abstractmethod
+    def post_process_datasets(
+        cls, datasets: dict[DataCategory, domain.dataset.InstructDataset], test_size: float
+    ) -> TrainTestSplit:
+        pass
+
+
+class InstructionDatasetGenerator(DatasetGenerator):
+    dataset_type = DatasetType.INSTRUCTION
+
+    prompt_template_str = """Based on the following extract, generate five instruction-answer pairs. Each instruction \
+must ask to write about a specific topic contained in the context. Each answer \
+must provide a relevant paragraph based on the information found in the \
+context. Only use concepts from the context to generate the instructions. \
+Instructions must never explicitly mention a context, a system, a course, or an extract. \
+Instructions must be self-contained and general. \
+Answers must imitate the writing style of the context. \
+    
+Example instruction: Explain the concept of an LLM Twin. \
+Example answer: An LLM Twin is essentially an AI character that mimics your writing style, personality, and voice. \
+It's designed to write just like you by incorporating these elements into a language model. \
+The idea is to create a digital replica of your writing habits using advanced AI techniques. \
+
+Structure the answer in JSON format, ready to be loaded in Python by json.loads(), as a list of objects.
+Do not add any extra characters and provide your response in JSON format with the following structure:
+[
+    {"instruction": "...", "answer": "..."},
+    ...
+]
+
+Extract:
+{extract}
+"""
+
+    @classmethod
+    def post_process_datasets(
+        cls, datasets: dict[DataCategory, domain.dataset.InstructDataset], test_size: float
+    ) -> TrainTestSplit:
+        train_test_split = generation_utils.create_instruct_train_test_split(
+            datasets, test_size=test_size, random_state=42
+        )
 
         return train_test_split
+
+
+class PreferenceDatasetGenerator(DatasetGenerator):
+    dataset_type = DatasetType.PREFERENCE
+
+    prompt_template_str = """Based on the following extract, generate five instruction-answer triples. Each triple should consist of:
+1. An instruction asking about a specific topic in the context.
+2. A generated answer that attempts to answer the instruction based on the context, named as 'rejected'.
+3. An extracted answer that is a relevant excerpt directly from the given context, named as 'chosen'.
+
+Instructions must be self-contained and general, without explicitly mentioning a context, system, course, or extract.
+
+Important:
+- Ensure that the extracted answer, the chosen one, is a verbatim copy from the context, including all punctuation and apostrophes.
+- Do not add any ellipsis (...) or [...]  to indicate skipped text in the extracted answer.
+- If the relevant text is not continuous, use two separate sentences from the context instead of skipping text.
+
+Structure the answer in JSON format, ready to be loaded in Python by json.loads(), as a list of objects.
+Do not add any extra characters and provide your response in JSON format with the following structure:
+[
+    {
+        "instruction": "...",
+        "rejected": "...",
+        "chosen": "..."
+    },
+    ...
+]
+
+Extract:
+{extract}
+"""
+
+    @classmethod
+    def post_process_datasets(
+        cls, datasets: dict[DataCategory, domain.dataset.PreferenceDataset], test_size: float
+    ) -> TrainTestSplit:
+        datasets = generation_utils.filter_short_answers(datasets)
+        datasets = generation_utils.filter_answer_format(datasets)
+
+        remaining_samples = sum([dataset.num_samples for dataset in datasets.values()])
+        logger.info(
+            f"Filtered out short answers and answers with incorrect format. Remaining samples: {remaining_samples}"
+        )
+
+        train_test_split = generation_utils.create_preference_train_test_split(
+            datasets, test_size=test_size, random_state=42
+        )
+
+        return train_test_split
+
+
+def get_dataset_generator(dataset_type: DatasetType) -> type[DatasetGenerator]:
+    if dataset_type == DatasetType.INSTRUCTION:
+        return InstructionDatasetGenerator
+    elif dataset_type == DatasetType.PREFERENCE:
+        return PreferenceDatasetGenerator
+    else:
+        raise ValueError(f"Invalid dataset type: {dataset_type}")
