@@ -123,7 +123,7 @@ Provide your response in JSON format.
         datasets = {}
         for category, category_prompts in prompts.items():
             langchain_category_prompts = [_to_langchain(prompt) for prompt in category_prompts]
-            batches = utils.misc.batch(langchain_category_prompts[:10], size=4)
+            batches = utils.misc.batch(langchain_category_prompts, size=4)
 
             flattened_instruct_dataset_samples = []
             for batch in batches:
