@@ -66,7 +66,8 @@ We also recommend to:
 ### Local Infrastructure
 
 > [!WARNING]
-> You need Docker installed.
+> You need Docker installed (v27.1.1 or higher)
+
 
 Start:
 ```shell
