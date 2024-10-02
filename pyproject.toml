@@ -75,27 +75,27 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poe.tasks]
 # Data pipelines
-run-digital-data-etl-alex = "python -m tools.run --run-etl --no-cache --etl-config-filename digital_data_etl_alex_vesa.yaml"
-run-digital-data-etl-maxime = "python -m tools.run --run-etl --no-cache --etl-config-filename digital_data_etl_maxime_labonne.yaml"
-run-digital-data-etl-paul = "python -m tools.run --run-etl --no-cache --etl-config-filename digital_data_etl_paul_iusztin.yaml"
+run-digital-data-etl-alex = "poetry run python -m tools.run --run-etl --no-cache --etl-config-filename digital_data_etl_alex_vesa.yaml"
+run-digital-data-etl-maxime = "poetry run python -m tools.run --run-etl --no-cache --etl-config-filename digital_data_etl_maxime_labonne.yaml"
+run-digital-data-etl-paul = "poetry run python -m tools.run --run-etl --no-cache --etl-config-filename digital_data_etl_paul_iusztin.yaml"
 run-digital-data-etl = [
     "run-digital-data-etl-alex",
     "run-digital-data-etl-maxime",
     "run-digital-data-etl-paul",
 ]
-run-feature-engineering-pipeline = "python -m tools.run --no-cache --run-feature-engineering"
-run-generate-instruct-datasets-pipeline = "python -m tools.run --no-cache --run-generate-instruct-datasets"
-run-generate-preference-datasets-pipeline = "python -m tools.run --no-cache --run-generate-preference-datasets"
-run-end-to-end-data-pipeline = "python -m tools.run --no-cache --run-end-to-end-data"
+run-feature-engineering-pipeline = "poetry run python -m tools.run --no-cache --run-feature-engineering"
+run-generate-instruct-datasets-pipeline = "poetry run python -m tools.run --no-cache --run-generate-instruct-datasets"
+run-generate-preference-datasets-pipeline = "poetry run python -m tools.run --no-cache --run-generate-preference-datasets"
+run-end-to-end-data-pipeline = "poetry run python -m tools.run --no-cache --run-end-to-end-data"
 
 # Utility pipelines
-run-export-artifact-to-json-pipeline = "python -m tools.run --no-cache --run-export-artifact-to-json"
+run-export-artifact-to-json-pipeline = "poetry run python -m tools.run --no-cache --run-export-artifact-to-json"
 
 # Training pipelines
-run-training-pipeline = "python -m tools.run --no-cache --run-training"
+run-training-pipeline = "poetry run python -m tools.run --no-cache --run-training"
 
 # Miscellanous tools
-call-rag-retrieval-module = "python -m tools.rag"
+call-rag-retrieval-module = "poetry run python -m tools.rag"
 
 # Inference ML service
 run-inference-ml-service = "uvicorn tools.ml_service:app --host 0.0.0.0 --port 8000 --reload"
@@ -114,14 +114,14 @@ local-infrastructure-down = [
     "local-docker-infrastructure-down",
     "local-zenml-server-down",
 ]
-set-local-stack = "zenml stack set default"
-set-aws-stack = "zenml stack set aws-stack"
-set-asynchronous-runs = "zenml orchestrator update aws-stack --synchronous=False"
-zenml-server-disconnect = "zenml disconnect"
+set-local-stack = "poetry run zenml stack set default"
+set-aws-stack = "poetry run zenml stack set aws-stack"
+set-asynchronous-runs = "poetry run zenml orchestrator update aws-stack --synchronous=False"
+zenml-server-disconnect = "poetry run zenml disconnect"
 
 ## Credentials
-export-settings-to-zenml = "python -m tools.run --export-settings"
-delete-settings-zenml = "zenml secret delete settings"
+export-settings-to-zenml = "poetry run python -m tools.run --export-settings"
+delete-settings-zenml = "poetry run zenml secret delete settings"
 
 ## Docker
 build-docker-image = "docker buildx build --platform linux/amd64 -t llmtwin -f Dockerfile ."
