@@ -173,4 +173,5 @@ sagemaker_*.json
 run_ids.txt
 
 # Virtual environments
-instructor_venv
+*_venv
+*_myenv
