@@ -3,8 +3,11 @@
 ### Repository containing all the code used throughout the [LLM Engineer's Handbook](https://www.amazon.com/LLM-Engineers-Handbook-engineering-production/dp/1836200072/).
 
 <p align="center">
-  [![Book Cover](/images/book_cover.png)](https://www.amazon.com/LLM-Engineers-Handbook-engineering-production/dp/1836200072/)
+  <a href="https://www.amazon.com/LLM-Engineers-Handbook-engineering-production/dp/1836200072/">
+    <img src="images/book_cover" alt="Book cover" height="500">
+  </a>
 </p>
+
 
 
 ## Table of Contents
