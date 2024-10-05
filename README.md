@@ -2,7 +2,7 @@
 
 <div align="center">
   <h3>
-    Repository containing all the code used throughout the <a href="https://www.amazon.com/LLM-Engineers-Handbook-engineering-production/dp/1836200072/">LLM Engineer's Handbook: Master the art of engineering Large Language Models from concept to production</a>.
+    Repository containing all the code for <a href="https://www.amazon.com/LLM-Engineers-Handbook-engineering-production/dp/1836200072/">LLM Engineer's Handbook: Master the art of engineering Large Language Models from concept to production</a>.
   </h3>
 </div>
 
