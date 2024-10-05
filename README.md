@@ -1,19 +1,19 @@
 # The LLM Engineer's Handbook
 
 <div align="center">
-  <h3>
-    Repository containing all the code for <a href="https://www.amazon.com/LLM-Engineers-Handbook-engineering-production/dp/1836200072/">LLM Engineer's Handbook: Master the art of engineering Large Language Models from concept to production</a>.
-  </h3>
+  <h2>
+    <a href="https://www.amazon.com/LLM-Engineers-Handbook-engineering-production/dp/1836200072/">LLM Engineer's Handbook: Master the art of engineering Large Language Models from concept to production</a>.
+  </h2>
+  <h4>
+    Repository containing all the code for the LLM Engineer's Handbook.
+  </h4>
 </div>
-
 
 <p align="center">
   <a href="https://www.amazon.com/LLM-Engineers-Handbook-engineering-production/dp/1836200072/">
     <img src="images/book_cover.png" alt="Book cover" height="600">
   </a>
 </p>
-
-
 
 ## Table of Contents
 
