@@ -15,7 +15,6 @@
 
 ## Table of Contents
 
-- [The LLM Engineer's Handbook](#the-llm-engineers-handbook)
 - [Dependencies](#dependencies)
 - [Install](#install)
 - [Project structure](#project-structure)
