@@ -14,6 +14,7 @@ click = "^8.0.1"
 loguru = "^0.7.2"
 rich = "^13.7.1"
 numpy = "^1.26.4"
+poethepoet = "0.29.0"
 
 # Digital data ETL
 selenium = "^4.21.0"
@@ -51,7 +52,6 @@ uvicorn = "^0.30.6"
 # trl = "0.9.6"
 # bitsandbytes = "0.42"
 # comet-ml = "3.44.3"
-poethepoet = "0.29.0"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -72,7 +72,9 @@ sagemaker-huggingface-inference-toolkit = "^2.4.0"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-# Poe the Poet Tasks
+# ----------------------------------
+# --- Poe the Poet Configuration ---
+# ----------------------------------
 
 [tool.poe.tasks]
 # Data pipelines
@@ -95,14 +97,14 @@ run-export-artifact-to-json-pipeline = "poetry run python -m tools.run --no-cach
 # Training pipelines
 run-training-pipeline = "poetry run python -m tools.run --no-cache --run-training"
 
-# Miscellanous tools
+# Inference
 call-rag-retrieval-module = "poetry run python -m tools.rag"
 
-# Inference ML service
 run-inference-ml-service = "uvicorn tools.ml_service:app --host 0.0.0.0 --port 8000 --reload"
 call-inference-ml-service = "curl -X POST 'http://127.0.0.1:8000/rag' -H 'Content-Type: application/json' -d '{\"query\": \"My name is Paul Iusztin. Could you draft a LinkedIn post discussing RAG systems? I am particularly interested in how RAG works and how it is integrated with vector DBs and LLMs.\"}'"
 
 # Infrastructure
+## Local infrastructure
 local-docker-infrastructure-up = "docker compose up -d"
 local-docker-infrastructure-down = "docker compose stop"
 local-zenml-server-down = "poetry run zenml down"
@@ -120,14 +122,9 @@ set-aws-stack = "poetry run zenml stack set aws-stack"
 set-asynchronous-runs = "poetry run zenml orchestrator update aws-stack --synchronous=False"
 zenml-server-disconnect = "poetry run zenml disconnect"
 
-## Credentials
+## Settings
 export-settings-to-zenml = "poetry run python -m tools.run --export-settings"
 delete-settings-zenml = "poetry run zenml secret delete settings"
-
-## Docker
-build-docker-image = "docker buildx build --platform linux/amd64 -t llmtwin -f Dockerfile ."
-run-docker-end-to-end-data-pipeline = "docker run --rm --network host --shm-size=2g --env-file .env llmtwin poetry poe --no-cache --run-end-to-end-data"
-bash-docker-container = "docker run --rm -it --network host --env-file .env llmtwin bash"
 
 ## SageMaker
 create-sagemaker-role = "poetry run python llm_engineering/infrastructure/aws/roles/create_sagemaker_role.py"
@@ -135,6 +132,11 @@ create-sagemaker-execution-role = "poetry run python llm_engineering/core/aws/ro
 deploy-inference-endpoint = "poetry run python -m llm_engineering.infrastructure.aws.deploy.huggingface.run"
 test-sagemaker-endpoint = "poetry run python -m llm_engineering.model.inference.test"
 delete-inference-endpoint = "poetry run python llm_engineering/infrastructure/aws/deploy/delete_sagemaker_endpoint.py"
+
+## Docker
+build-docker-image = "docker buildx build --platform linux/amd64 -t llmtwin -f Dockerfile ."
+run-docker-end-to-end-data-pipeline = "docker run --rm --network host --shm-size=2g --env-file .env llmtwin poetry poe --no-cache --run-end-to-end-data"
+bash-docker-container = "docker run --rm -it --network host --env-file .env llmtwin bash"
 
 # QA
 lint-check = "poetry run ruff check ."
@@ -154,7 +156,3 @@ cmd = "poetry run zenml up"
 
 [[tool.poe.tasks.local-zenml-server-up.switch]]
 cmd = "poetry run zenml up"
-
-[tool.poe.tasks.test]
-cmd = "pytest tests/"
-env = { ENV_FILE = ".env.testing" }

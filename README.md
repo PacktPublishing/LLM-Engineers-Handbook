@@ -1,4 +1,4 @@
-# LLM-Engineering
+# The LLM Engineer's Handbook
 
 Repository that contains all the code used throughout the [LLM Engineer's Handbook](https://www.amazon.com/LLM-Engineers-Handbook-engineering-production/dp/1836200072/).
 
@@ -135,11 +135,13 @@ We will just highlight what has to be configured, as in **Chapter 11** of the [L
 
 ### MongoDB
 
-We must change the `DATABASE_HOST` env var with the URL pointing to the cloud MongoDB cluster.
+We must change the `DATABASE_HOST` env var with the URL pointing to your cloud MongoDB cluster.
+
+You can easily host a MongoDB cluster for free on their [MongoDB serverless platform](https://www.mongodb.com/).
 
 ### Qdrant
 
-Change `USE_QDRANT_CLOUD` to `True` and `QDRANT_CLOUD_URL` with the URL and `QDRANT_APIKEY` with the API KEY of your cloud Qdrant cluster.
+Change `USE_QDRANT_CLOUD` to `True`, `QDRANT_CLOUD_URL` with the URL point to your cloud Qdrant cluster, and `QDRANT_APIKEY` with its API key.
 
 To work with Qdrant cloud, the env vars will look like this:
 ```env
@@ -148,28 +150,73 @@ QDRANT_CLOUD_URL="<your_qdrant_cloud_url>"
 QDRANT_APIKEY="<your_qdrant_api_key>"
 ```
 
-### AWS
+You can create a Qdrant cluster for free on [Qdrant's serverless platform](https://qdrant.tech/).
 
+### AWS
+---> Add here
 
 
 > [!IMPORTANT]
 > Find more configuration options in the [settings.py](https://github.com/PacktPublishing/LLM-Engineers-Handbook/blob/main/llm_engineering/settings.py) file. Every variable from the `Settings` class can be configured through the `.env` file. 
 
+# Project structure
 
-# Run the project locally 
+Here are the project's core folders that we have to understand:
+```bash
+.
+├── code_snippets/
+├── configs/
+├── llm_engineering/
+│   ├── application/
+│   ├── domain/
+│   ├── infrastructure/
+│   ├── model/
+├── pipelines/
+├── steps/
+├── tools/
+│   ├── run.py
+│   ├── ml_service.py
+│   ├── rag.py
+```
 
-## Local infrastructure
+`llm_engineering/` : The core Python package for the project, containing the main logic for Large Language Models (LLMs), Retrieval-Augmented Generation (RAG), and data collection.
+
+Follows the Domain Driven Design (DDD) pattern, having the following structure:
+- `domain/`: Defines all the entities, structures, and documents.
+- `application/`: Application level-code, such as crawlers, processing logic and RAG.
+- `model/`: Training and inference code.
+- `infrastructure/`: Infrastructure code related to AWS, Qdrant, MongoDB, FastAPI and others.
+
+The code logic and imports flows as follows: `infrastructure` -> `model` -> `application` -> `domain`
+
+`pipelines/` : Contains the ZenML ML pipelines, which serve as the entry point for all the ML pipelines. Coordinates the data processing and model training stages of the ML lifecycle.
+
+`steps/`: Contains individual ZenML steps, which are reusable components for building and customizing ZenML pipelines. Steps perform specific tasks (e.g., data loading, preprocessing) and can be combined within the ML pipelines.
+
+`tools/`: Utility scripts used to call the ZenML pipelines and inference code.
+
+It contains the following scripts:
+- `run.py``: Entry point script to run ZenML pipelines.
+- `ml_service.py`: Starts the REST API inference server.
+- `rag.py`: Demonstrates usage of the RAG retrieval module.
+
+`configs/` : Contains ZenML YAML configuration files to control the execution of pipelines and steps.
+
+`code_snippets/` : Holds independent code examples that can be executed on their own.
+
+# Set up local infrastructure (for testing and development)
+
+When running the project locally, we host a MongoDB and Qdrant database using Docker. Also, a testing ZenML server is made available through their Python package.
 
 > [!WARNING]
 > You need Docker installed (v27.1.1 or higher)
 
-
-Start:
+For ease of use, you can start the whole local development infrastructure with the following command:
 ```shell
 poetry poe local-infrastructure-up
 ```
 
-Stop:
+Also, you can stop the ZenML server and all the Docker containers using the following command:
 ```shell
 poetry poe local-infrastructure-down
 ```
@@ -178,6 +225,12 @@ poetry poe local-infrastructure-down
 > When running on MacOS, before starting the server, export the following environment variable:
 > `export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES`
 > Otherwise, the connection between the local server and pipeline will break. 🔗 More details in [this issue](https://github.com/zenml-io/zenml/issues/2369).
+> This is done by default when using Poe the Poet.
+
+Start the inference real-time RESTful API:
+```shell
+poetry poe run-inference-ml-service
+```
 
 ### ZenML is now accessible at:
 
@@ -193,35 +246,38 @@ Default credentials:
 
 REST API: [localhost:6333](localhost:6333)
 Web UI: [localhost:6333/dashboard](localhost:6333/dashboard)
-GRPC API: [localhost:6334](localhost:6334)
 
 →🔗 [More on Qdrant](https://qdrant.tech/documentation/quick-start/)
 
 ### MongoDB is now accessible at:
 
-database URI: `mongodb://decodingml:decodingml@127.0.0.1:27017`
+database URI: `mongodb://llm_engineering:llm_engineering@127.0.0.1:27017`
 database name: `twin`
 
+Default credentials:
+    - `username`: llm_engineering
+    - `password`: llm_engineering
 
-### AWS Infrastructure
 
-We will fill this section in the future. So far it is available only in the 11th Chapter of the book.
+# Set up cloud infrastructure (for production)
+---> Add here
 
+# ZenML pipelines
 
-## Run Pipelines
+All the ML pipelines will be orchestrated behind the scenes by [ZenML](https://www.zenml.io/).
 
-All the pipelines will be orchestrated behind the scenes by ZenML.
+The ZenML pipelines are the entry point for most processes throughout this project. They are under the `pipelines/` folder. Thus, when you want to understand or debug a workflow, starting with the ZenML pipeline is the best approach.
 
 To see the pipelines running and their results:
 - go to your ZenML dashboard
 - go to the `Pipelines` section
 - click on a specific pipeline (e.g., `feature_engineering`)
 - click on a specific run (e.g., `feature_engineering_run_2024_06_20_18_40_24`)
-- click on a specific step or artifact to find more details about the run
+- click on a specific step or artifact of the DAG to find more details about it
 
-**But first, let's understand how we can run all our ML pipelines** ↓
+Now, let's explore all the pipelines you can run. From data collection to training, we will present them in their natural order to go through the LLM project end-to-end.
 
-### Data pipelines
+## Data pipelines
 
 Run the data collection ETL:
 ```shell
@@ -229,19 +285,23 @@ poetry poe run-digital-data-etl
 ```
 
 > [!WARNING]
-> You must have Chrome installed on your system for the LinkedIn and Medium crawlers to work (which use Selenium under the hood). Based on your Chrome version, the Chromedriver will be automatically installed to enable Selenium support. Note that you can run everything using our Docker image if you don't want to install Chrome. For example, to run all the pipelines combined you can run `poetry poe run-docker-end-to-end-data-pipeline`. Note that the command can be tweaked to support any other pipeline.
+> You must have Chrome (or another Chrome-based browser) installed on your system for LinkedIn and Medium crawlers to work (which use Selenium under the hood). Based on your Chrome version, the Chromedriver will be automatically installed to enable Selenium support. Another option is to run everything using our Docker image if you don't want to install Chrome. For example, to run all the pipelines combined you can run `poetry poe run-docker-end-to-end-data-pipeline`. Note that the command can be tweaked to support any other pipeline.
 
-> [!IMPORTANT]
-> To add additional links to collect from, go to `configs_digital_data_etl_[your_name].yaml` and add them to the `links` field. Also, you can create a completely new file and specify it at run time, like this: `python -m llm_engineering.interfaces.orchestrator.run --run-etl --etl-config-filename configs_digital_data_etl_[your_name].yaml`
+To add additional links to collect from, go to `configs/digital_data_etl_[author_name].yaml` and add them to the `links` field. Also, you can create a completely new file and specify it at run time, like this: `python -m llm_engineering.interfaces.orchestrator.run --run-etl --etl-config-filename configs/digital_data_etl_[your_name].yaml`
 
 Run the feature engineering pipeline:
 ```shell
 poetry poe run-feature-engineering-pipeline
 ```
 
-Run the dataset generation pipeline:
+Generate the instruct dataset:
 ```shell
 poetry poe run-generate-instruct-datasets-pipeline
+```
+
+Generate the preference dataset:
+```shell
+poetry poe run-generate-preference-datasets-pipeline
 ```
 
 Run all of the above compressed into a single pipeline:
@@ -249,30 +309,64 @@ Run all of the above compressed into a single pipeline:
 poetry poe run-end-to-end-data-pipeline
 ```
 
-
-### Utility pipelines
+## Utility pipelines
 
 Export ZenML artifacts to JSON:
 ```shell
 poetry poe run-export-artifact-to-json-pipeline
 ```
 
-### Training pipelines
+This will export the following ZenML artifacts to the `output` folder as JSON files (it will take their latest version):
+    - raw_documents
+    - cleaned_documents
+    - instruct_datasets
+    - preference_datasets
 
+You can configure what artifacts to export by tweaking the `configs/export_artifact_to_json.yaml` configuration file.
+
+## Training pipelines
+
+Run the training pipeline:
 ```shell
 poetry poe run-training-pipeline
 ```
 
-### Linting & Formatting (QA)
+# Inference 
 
-Check and fix your linting issues:
+Call the RAG retrieval module with a test query:
+```shell
+poetry poe call-rag-retrieval-module
+```
+
+Start the inference real-time RESTful API:
+```shell
+poetry poe run-inference-ml-service
+```
+
+Call the inference real-time RESTful API with a test query:
+```shell
+poetry poe call-inference-ml-service
+```
+
+> [!WARNING]
+> For the inference service to work, you must have the LLM microservice deployed to AWS SageMaker, as explained in the setup cloud infrastructure section.
+
+
+# Linting & Formatting (QA)
+
+Check or fix your linting issues:
 ```shell
 poetry poe lint-check
 poetry poe lint-fix
 ```
 
-Check and fix your formatting issues:
+Check or fix your formatting issues:
 ```shell
 poetry poe format-check
 poetry poe format-fix
+```
+
+Check the code for leaked credentials:
+```shell
+poetry poe gitleaks-check
 ```
