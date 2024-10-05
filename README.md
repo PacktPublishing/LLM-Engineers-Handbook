@@ -254,29 +254,29 @@ poetry poe run-inference-ml-service
 
 ### ZenML is now accessible at:
 
-Web UI: [localhost:8237](localhost:8237)
+**Dashboard URL**: localhost:8237
 
 Default credentials:
-    - `username`: default
-    - `password`: 
+  - `username`: default
+  - `password`: 
 
 →🔗 [More on ZenML](https://docs.zenml.io/)
 
 ### Qdrant is now accessible at:
 
-REST API: [localhost:6333](localhost:6333)
-Web UI: [localhost:6333/dashboard](localhost:6333/dashboard)
+- **REST API URL**: [localhost:6333](localhost:6333)
+- **Dashboard URL**: [localhost:6333/dashboard](localhost:6333/dashboard)
 
 →🔗 [More on Qdrant](https://qdrant.tech/documentation/quick-start/)
 
 ### MongoDB is now accessible at:
 
-database URI: `mongodb://llm_engineering:llm_engineering@127.0.0.1:27017`
-database name: `twin`
+- **database URI**: `mongodb://llm_engineering:llm_engineering@127.0.0.1:27017`
+- **database name**: `twin`
 
 Default credentials:
-    - `username`: llm_engineering
-    - `password`: llm_engineering
+  - `username`: llm_engineering
+  - `password`: llm_engineering
 
 
 # Set up cloud infrastructure (for production)
