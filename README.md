@@ -4,6 +4,18 @@ Repository that contains all the code used throughout the [LLM Engineer's Handbo
 
 ![Book Cover](/images/book_cover.png)
 
+## Table of Contents
+
+- [The LLM Engineer's Handbook](#the-llm-engineers-handbook)
+- [Dependencies](#dependencies)
+- [Install](#install)
+- [Project structure](#project-structure)
+- [Set up local infrastructure (for testing and development)](#set-up-local-infrastructure-for-testing-and-development)
+- [Set up cloud infrastructure (for production)](#set-up-cloud-infrastructure-for-production)
+- [ZenML pipelines](#zenml-pipelines)
+- [Inference](#inference)
+- [Linting & Formatting (QA)](#linting--formatting-qa)
+
 # Dependencies
 
 ## Local dependencies
@@ -179,15 +191,15 @@ Here are the project's core folders that we have to understand:
 │   ├── rag.py
 ```
 
-`llm_engineering/` : The core Python package for the project, containing the main logic for Large Language Models (LLMs), Retrieval-Augmented Generation (RAG), and data collection.
+`llm_engineering/`: The core Python package for the project, containing the main logic for Large Language Models (LLMs), Retrieval-Augmented Generation (RAG), and data collection.
 
 Follows the Domain Driven Design (DDD) pattern, having the following structure:
 - `domain/`: Defines all the entities, structures, and documents.
-- `application/`: Application level-code, such as crawlers, processing logic and RAG.
+- `application/`: Application level code, such as crawlers, processing logic and RAG.
 - `model/`: Training and inference code.
 - `infrastructure/`: Infrastructure code related to AWS, Qdrant, MongoDB, FastAPI and others.
 
-The code logic and imports flows as follows: `infrastructure` -> `model` -> `application` -> `domain`
+The code logic and imports flow as follows: `infrastructure` -> `model` -> `application` -> `domain`
 
 `pipelines/` : Contains the ZenML ML pipelines, which serve as the entry point for all the ML pipelines. Coordinates the data processing and model training stages of the ML lifecycle.
 
@@ -196,13 +208,13 @@ The code logic and imports flows as follows: `infrastructure` -> `model` -> `app
 `tools/`: Utility scripts used to call the ZenML pipelines and inference code.
 
 It contains the following scripts:
-- `run.py``: Entry point script to run ZenML pipelines.
+- `run.py`: Entry point script to run ZenML pipelines.
 - `ml_service.py`: Starts the REST API inference server.
 - `rag.py`: Demonstrates usage of the RAG retrieval module.
 
-`configs/` : Contains ZenML YAML configuration files to control the execution of pipelines and steps.
+`configs/`: Contains ZenML YAML configuration files to control the execution of pipelines and steps.
 
-`code_snippets/` : Holds independent code examples that can be executed on their own.
+`code_snippets/`: Holds independent code examples that can be executed independently.
 
 # Set up local infrastructure (for testing and development)
 
@@ -370,3 +382,7 @@ Check the code for leaked credentials:
 ```shell
 poetry poe gitleaks-check
 ```
+
+# License
+
+This course is an open-source project released under the MIT license. Thus, as long you distribute our LICENSE and acknowledge our work, you can safely clone or fork this project and use it as a source of inspiration for whatever you want (e.g., university projects, college degree projects, personal projects, etc.).
