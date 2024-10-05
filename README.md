@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://www.amazon.com/LLM-Engineers-Handbook-engineering-production/dp/1836200072/">
-    <img src="images/book_cover" alt="Book cover" height="500">
+    <img src="images/book_cover.png" alt="Book cover" height="500">
   </a>
 </p>
 
