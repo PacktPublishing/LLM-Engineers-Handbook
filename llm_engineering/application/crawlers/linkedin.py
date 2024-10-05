@@ -16,10 +16,36 @@ from .base import BaseSeleniumCrawler
 class LinkedInCrawler(BaseSeleniumCrawler):
     model = PostDocument
 
+    def __init__(self, scroll_limit: int = 5, is_deprecated: bool = True) -> None:
+        super().__init__(scroll_limit)
+
+        self._is_deprecated = is_deprecated
+
     def set_extra_driver_options(self, options) -> None:
         options.add_experimental_option("detach", True)
 
+    def login(self) -> None:
+        if self._is_deprecated:
+            raise DeprecationWarning(
+                "As LinkedIn has updated its security measures, the login() method is no longer supported."
+            )
+
+        self.driver.get("https://www.linkedin.com/login")
+        if not settings.LINKEDIN_USERNAME or not settings.LINKEDIN_PASSWORD:
+            raise ImproperlyConfigured(
+                "LinkedIn scraper requires the {LINKEDIN_USERNAME} and {LINKEDIN_PASSWORD} settings."
+            )
+
+        self.driver.find_element(By.ID, "username").send_keys(settings.LINKEDIN_USERNAME)
+        self.driver.find_element(By.ID, "password").send_keys(settings.LINKEDIN_PASSWORD)
+        self.driver.find_element(By.CSS_SELECTOR, ".login__form_action_container button").click()
+
     def extract(self, link: str, **kwargs) -> None:
+        if self._is_deprecated:
+            raise DeprecationWarning(
+                "As LinkedIn has updated its feed structure, the extract() method is no longer supported."
+            )
+
         if self.model.link is not None:
             old_model = self.model.find(link=link)
             if old_model is not None:
@@ -76,7 +102,9 @@ class LinkedInCrawler(BaseSeleniumCrawler):
     def _scrape_section(self, soup: BeautifulSoup, *args, **kwargs) -> str:
         """Scrape a specific section of the LinkedIn profile."""
         # Example: Scrape the 'About' section
+
         parent_div = soup.find(*args, **kwargs)
+
         return parent_div.get_text(strip=True) if parent_div else ""
 
     def _extract_image_urls(self, buttons: List[Tag]) -> Dict[str, str]:
@@ -89,6 +117,7 @@ class LinkedInCrawler(BaseSeleniumCrawler):
         Returns:
             Dict[str, str]: A dictionary mapping post indexes to image URLs.
         """
+
         post_images = {}
         for i, button in enumerate(buttons):
             img_tag = button.find("img")
@@ -100,8 +129,10 @@ class LinkedInCrawler(BaseSeleniumCrawler):
 
     def _get_page_content(self, url: str) -> BeautifulSoup:
         """Retrieve the page content of a given URL."""
+
         self.driver.get(url)
         time.sleep(5)
+
         return BeautifulSoup(self.driver.page_source, "html.parser")
 
     def _extract_posts(self, post_elements: List[Tag], post_images: Dict[str, str]) -> Dict[str, Dict[str, str]]:
@@ -115,6 +146,7 @@ class LinkedInCrawler(BaseSeleniumCrawler):
         Returns:
             Dict[str, Dict[str, str]]: A dictionary containing post data with text and optional image URL.
         """
+
         posts_data = {}
         for i, post_element in enumerate(post_elements):
             post_text = post_element.get_text(strip=True, separator="\n")
@@ -122,14 +154,17 @@ class LinkedInCrawler(BaseSeleniumCrawler):
             if f"Post_{i}" in post_images:
                 post_data["image"] = post_images[f"Post_{i}"]
             posts_data[f"Post_{i}"] = post_data
+
         return posts_data
 
     def _scrape_experience(self, profile_url: str) -> str:
         """Scrapes the Experience section of the LinkedIn profile."""
+
         self.driver.get(profile_url + "/details/experience/")
         time.sleep(5)
         soup = BeautifulSoup(self.driver.page_source, "html.parser")
         experience_content = soup.find("section", {"id": "experience-section"})
+
         return experience_content.get_text(strip=True) if experience_content else ""
 
     def _scrape_education(self, profile_url: str) -> str:
@@ -137,16 +172,5 @@ class LinkedInCrawler(BaseSeleniumCrawler):
         time.sleep(5)
         soup = BeautifulSoup(self.driver.page_source, "html.parser")
         education_content = soup.find("section", {"id": "education-section"})
+
         return education_content.get_text(strip=True) if education_content else ""
-
-    def login(self):
-        """Log in to LinkedIn."""
-        self.driver.get("https://www.linkedin.com/login")
-        if not settings.LINKEDIN_USERNAME or not settings.LINKEDIN_PASSWORD:
-            raise ImproperlyConfigured(
-                "LinkedIn scraper requires the {LINKEDIN_USERNAME} and {LINKEDIN_PASSWORD} settings."
-            )
-
-        self.driver.find_element(By.ID, "username").send_keys(settings.LINKEDIN_USERNAME)
-        self.driver.find_element(By.ID, "password").send_keys(settings.LINKEDIN_PASSWORD)
-        self.driver.find_element(By.CSS_SELECTOR, ".login__form_action_container button").click()

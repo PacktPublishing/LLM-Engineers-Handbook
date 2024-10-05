@@ -51,6 +51,7 @@ uvicorn = "^0.30.6"
 # trl = "0.9.6"
 # bitsandbytes = "0.42"
 # comet-ml = "3.44.3"
+poethepoet = "0.29.0"
 
 
 [tool.poetry.group.dev.dependencies]
