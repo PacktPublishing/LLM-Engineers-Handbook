@@ -1,8 +1,11 @@
 # The LLM Engineer's Handbook
 
-Repository that contains all the code used throughout the [LLM Engineer's Handbook](https://www.amazon.com/LLM-Engineers-Handbook-engineering-production/dp/1836200072/).
+### Repository containing all the code used throughout the [LLM Engineer's Handbook](https://www.amazon.com/LLM-Engineers-Handbook-engineering-production/dp/1836200072/).
 
-![Book Cover](/images/book_cover.png)
+<p align="center">
+  [![Book Cover](/images/book_cover.png)](https://www.amazon.com/LLM-Engineers-Handbook-engineering-production/dp/1836200072/)
+</p>
+
 
 ## Table of Contents
 
