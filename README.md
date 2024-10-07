@@ -30,12 +30,12 @@
 
 To install and run the project locally, you need the following dependencies (the code was tested with the specified versions of the dependencies):
 
-- [pyenv 2.3.36](https://github.com/pyenv/pyenv) (optional: for installing multiple Python versions on your machine)
+- [pyenv >=2.3.36](https://github.com/pyenv/pyenv) (optional: for installing multiple Python versions on your machine)
 - [Python 3.11](https://www.python.org/downloads/)
-- [Poetry 1.8.3](https://python-poetry.org/docs/#installation)
-- [Docker 27.1.1](https://docs.docker.com/engine/install/)
-- [aws CLI 2.15.42](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
-- [git 2.44.0](https://git-scm.com/downloads)
+- [Poetry >=1.8.3](https://python-poetry.org/docs/#installation)
+- [Docker >=27.1.1](https://docs.docker.com/engine/install/)
+- [aws CLI >=2.15.42](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- [git >=2.44.0](https://git-scm.com/downloads)
 
 ## Cloud services
 
@@ -54,9 +54,11 @@ In the [LLM Engineer's Handbook](https://www.amazon.com/LLM-Engineers-Handbook-e
 
 # Install
 
+The first step is to prepare your Python environment and its adjacent dependencies. 
+
 ## Install Python 3.11 using pyenv (Optional)
 
-If you have a different global Python version than Python 3.11, you can use pyenv to install Python 3.11 at the project level. Verify your Python version with:
+If you have a different global Python version than Python 3.11, you can use pyenv to install Python 3.11 only at the project level. Verify your Python version with:
 ```shell
 python --version
 ```
@@ -88,7 +90,7 @@ python --version
 
 If you move out of this repository, both `pyenv versions` and `python --version`, might output different Python versions.
 
-## Install project dependences
+## Install project dependencies
 
 The first step is to verify that you have Poetry installed:
 ```shell
@@ -96,32 +98,33 @@ poetry --version
 # Output: Poetry (version 1.8.3)
 ```
 
-Use Poetry to install all the project's requirements to run it locally. Thus, we don't need to install any AWS dependencies. Also, we install Poe the Poet as a Poetry plugin to manage our CLI commands and pre-commit to verify our code before committing changes to git:
+We use Poetry to install all the project's requirements to run it locally. Until deploying the code to AWS, we don't need to install any AWS dependencies. Also, we install Poe the Poet as a Poetry plugin to manage our CLI commands and pre-commit to verify our code before committing changes to git:
 ```shell
 poetry install --without aws
 poetry self add 'poethepoet[poetry_plugin]==0.29.0'
 pre-commit install
 ```
 
-We run all the scripts using [Poe the Poet](https://poethepoet.natn.io/index.html). You don't have to do anything else but install Poe the Poet as a Poetry plugin, as described above: `poetry self add 'poethepoet[poetry_plugin]'`
+We run all the scripts using [Poe the Poet](https://poethepoet.natn.io/index.html). To start using it, you don't have to do anything else but install Poe the Poet as a Poetry plugin, as described above: `poetry self add 'poethepoet[poetry_plugin]'`
 
 To activate the environment created by Poetry, run:
 ```shell
 poetry shell
 ```
+Now, let’s configure our local project with all the necessary credentials and tokens to run the code locally.
 
 ## Set up .env settings file (for local development)
 
-After you have installed all the dependencies, you must create and fill a `.env` file with your credentials to properly interact with other services and run the project.
+After you have installed all the dependencies, you must create and fill a `.env` file with your credentials to appropriately interact with other services and run the project. Setting your sensitive credentials in a `.env` file is a good security practice, as this file won’t be committed to GitHub or shared with anyone else. 
 
 First, copy our example by running the following:
 ```shell
 cp .env.example .env # The file must be at your repository's root!
 ```
 
-Now, let's understand how to fill in all the variables inside the `.env` file to get you started.
+Now, let's understand how to fill in all the essential variables within the `.env` file to get you started.
 
-We will begin by reviewing the mandatory settings we must complete when working locally or in the cloud.
+The following are the mandatory settings we must complete when working locally:
 
 ### OpenAI
 
@@ -141,7 +144,7 @@ Comet ML is required only during training.
 
 To authenticate to Comet ML, you must fill out the `COMET_API_KEY` and `COMET_WORKSPACE` env vars with an authentication token and workspace name.
 
-→ Check out this [tutorial](https://www.comet.com/docs/v2/api-and-sdk/rest-api/overview/) to learn how to fill the Comet ML variables from above.
+→ Check out this [tutorial](https://www.comet.com/docs/v2/api-and-sdk/rest-api/overview/) to learn how to get the Comet ML variables from above.
 
 ### Opik
 
@@ -246,7 +249,7 @@ It contains the following scripts:
 When running the project locally, we host a MongoDB and Qdrant database using Docker. Also, a testing ZenML server is made available through their Python package.
 
 > [!WARNING]
-> You need Docker installed (v27.1.1 or higher)
+> You need Docker installed (>= v27.1.1)
 
 For ease of use, you can start the whole local development infrastructure with the following command:
 ```shell
@@ -269,6 +272,9 @@ Start the inference real-time RESTful API:
 poetry poe run-inference-ml-service
 ```
 
+> [!IMPORTANT]
+> The LLM microservice, called by the RESTful API, will work only after deploying the LLM to AWS SageMaker.
+
 ### ZenML is now accessible at:
 
 **Dashboard URL**: `localhost:8237`
@@ -277,14 +283,14 @@ Default credentials:
   - `username`: default
   - `password`: 
 
-→🔗 [More on ZenML](https://docs.zenml.io/)
+→🔗 Find more on using and setting up [ZenML](https://docs.zenml.io/).
 
 ### Qdrant is now accessible at:
 
 - **REST API URL**: `localhost:6333`
 - **Dashboard URL**: `localhost:6333/dashboard`
 
-→🔗 [More on Qdrant](https://qdrant.tech/documentation/quick-start/)
+→🔗 Find more on using and setting up [Qdrant with Docker](https://qdrant.tech/documentation/quick-start/).
 
 ### MongoDB is now accessible at:
 
@@ -295,10 +301,19 @@ Default credentials:
   - `username`: llm_engineering
   - `password`: llm_engineering
 
+→🔗 Find more on using and setting up [MongoDB with Docker](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-community-with-docker).
+
+You can **search** your MongoDB collections using your **IDEs MongoDB plugin** (which you have to install separately), where you have to use the database URI to connect to the MongoDB database hosted within the Docker container: `mongodb://llm_engineering:llm_engineering@127.0.0.1:27017`
+
 
 # Set up cloud infrastructure (for production)
 
-Here we will quickly present how to deploy the project to AWS and other serverless services. We won't go into the details (as everything is presented in the book) but only point out the main steps you have to go through:
+Here we will quickly present how to deploy the project to AWS and other serverless services. We won't go into the details (as everything is presented in the book) but only point out the main steps you have to go through.
+
+First, reinstall your Python dependencies with the AWS group:
+```shell
+poetry install --with aws
+```
 
 ## AWS SageMaker: Training & Inference
 
