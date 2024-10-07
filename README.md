@@ -44,10 +44,11 @@ The code also uses and depends on the following cloud services. For now, you don
 - [HuggingFace](https://huggingface.com/): Model registry
 - [Comet ML](https://www.comet.com/site/): Experiment tracker
 - [Opik](https://www.comet.com/site/products/opik/): LLM evaluation and prompt monitoring
-- [ZenML](https://www.zenml.io/): Orchestrator
+- [ZenML](https://www.zenml.io/): Orchestrator and artifacts layer
 - [AWS](https://aws.amazon.com/): Compute and storage
 - [MongoDB](https://www.mongodb.com/): NoSQL database
 - [Qdrant](https://qdrant.tech/): Vector database
+- [GitHub Actions](https://github.com/features/actions): CI/CD pipeline
 
 In the [LLM Engineer's Handbook](https://www.amazon.com/LLM-Engineers-Handbook-engineering-production/dp/1836200072/), Chapter 2 will walk you through each tool, and in Chapters 10 and 11, you will have step-by-step guides on how to set everything you need.  
 
