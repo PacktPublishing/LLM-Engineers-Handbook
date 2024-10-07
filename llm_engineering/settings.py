@@ -36,10 +36,10 @@ class Settings(BaseSettings):
     QDRANT_APIKEY: str | None = None
 
     # AWS Authentication
-    AWS_ARN_ROLE: str | None = None
     AWS_REGION: str = "eu-central-1"
     AWS_ACCESS_KEY: str | None = None
     AWS_SECRET_KEY: str | None = None
+    AWS_ARN_ROLE: str | None = None
 
     # --- Optional settings used to tweak the code. ---
 
