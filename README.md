@@ -30,7 +30,7 @@
 
 To install and run the project locally, you need the following dependencies (the code was tested with the specified versions of the dependencies):
 
-- [pyenv >=2.3.36](https://github.com/pyenv/pyenv) (optional: for installing multiple Python versions on your machine)
+- [pyenv >=2.3.36](https://github.com/pyenv/pyenv?tab=readme-ov-file#installation) (optional: for installing multiple Python versions on your machine)
 - [Python 3.11](https://www.python.org/downloads/)
 - [Poetry >=1.8.3](https://python-poetry.org/docs/#installation)
 - [Docker >=27.1.1](https://docs.docker.com/engine/install/)
@@ -54,7 +54,13 @@ In the [LLM Engineer's Handbook](https://www.amazon.com/LLM-Engineers-Handbook-e
 
 # Install
 
-The first step is to prepare your Python environment and its adjacent dependencies. 
+The first step is to clone the repository to your local machine using `git`:
+```shell
+git clone https://github.com/PacktPublishing/LLM-Engineers-Handbook.git
+cd LLM-Engineers-Handbook 
+```
+
+Next, we have to prepare your Python environment and its adjacent dependencies. 
 
 ## Install Python 3.11 using pyenv (Optional)
 
@@ -71,7 +77,7 @@ pyenv --version
 
 Install Python 3.11: 
 ```shell
-pyenv install 3.11
+pyenv install 3.11.8
 ```
 
 From the root of your repository, run the following to verify that everything works fine:
