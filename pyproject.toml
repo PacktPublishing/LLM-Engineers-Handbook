@@ -156,3 +156,8 @@ cmd = "poetry run zenml up"
 
 [[tool.poe.tasks.local-zenml-server-up.switch]]
 cmd = "poetry run zenml up"
+
+# Tests
+[tool.poe.tasks.test]
+cmd = "pytest tests/"
+env = { ENV_FILE = ".env.testing" }

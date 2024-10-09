@@ -219,6 +219,7 @@ Here are the project's core folders that we have to understand:
 │   ├── model/
 ├── pipelines/
 ├── steps/
+├── tests/
 ├── tools/
 │   ├── run.py
 │   ├── ml_service.py
@@ -238,6 +239,8 @@ The code logic and imports flow as follows: `infrastructure` -> `model` -> `appl
 `pipelines/` : Contains the ZenML ML pipelines, which serve as the entry point for all the ML pipelines. Coordinates the data processing and model training stages of the ML lifecycle.
 
 `steps/`: Contains individual ZenML steps, which are reusable components for building and customizing ZenML pipelines. Steps perform specific tasks (e.g., data loading, preprocessing) and can be combined within the ML pipelines.
+
+`tests/`: Covers a few example tests used as examples within the CI pipeline.
 
 `tools/`: Utility scripts used to call the ZenML pipelines and inference code.
 
@@ -496,6 +499,13 @@ poetry poe format-fix
 Check the code for leaked credentials:
 ```shell
 poetry poe gitleaks-check
+```
+
+# Tests
+
+Run all the tests using the following command:
+```shell
+poetry poe test
 ```
 
 # License
