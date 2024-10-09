@@ -48,7 +48,7 @@ class VectorBaseDocument(BaseModel, Generic[T], ABC):
         exclude_unset = kwargs.pop("exclude_unset", False)
         by_alias = kwargs.pop("by_alias", True)
 
-        payload = self.dict(exclude_unset=exclude_unset, by_alias=by_alias, **kwargs)
+        payload = self.model_dump(exclude_unset=exclude_unset, by_alias=by_alias, **kwargs)
 
         _id = str(payload.pop("id"))
         vector = payload.pop("embedding", {})
@@ -64,16 +64,17 @@ class VectorBaseDocument(BaseModel, Generic[T], ABC):
 
         return dict_
 
-    def _uuid_to_str(self, dict_: dict) -> dict:
-        for key, value in dict_.items():
-            if isinstance(value, UUID):
-                dict_[key] = str(value)
-            elif isinstance(value, list):
-                dict_[key] = [self._uuid_to_str(v) for v in value]
-            elif isinstance(value, dict):
-                dict_[key] = {k: self._uuid_to_str(v) for k, v in value.items()}
+    def _uuid_to_str(self, item: Any) -> Any:
+        if isinstance(item, dict):
+            for key, value in item.items():
+                if isinstance(value, UUID):
+                    item[key] = str(value)
+                elif isinstance(value, list):
+                    item[key] = [self._uuid_to_str(v) for v in value]
+                elif isinstance(value, dict):
+                    item[key] = {k: self._uuid_to_str(v) for k, v in value.items()}
 
-        return dict_
+        return item
 
     @classmethod
     def bulk_insert(cls: Type[T], documents: list["VectorBaseDocument"]) -> bool:

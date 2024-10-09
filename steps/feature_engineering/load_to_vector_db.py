@@ -19,6 +19,8 @@ def load_to_vector_db(
             try:
                 document_class.bulk_insert(documents_batch)
             except Exception:
+                logger.error(f"Failed to insert documents into {document_class.get_collection_name()}")
+
                 return False
 
     return True
