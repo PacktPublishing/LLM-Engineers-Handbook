@@ -1,3 +1,4 @@
+import urllib3
 from loguru import logger
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from zenml.client import Client
@@ -96,7 +97,7 @@ class Settings(BaseSettings):
 
             settings_secrets = Client().get_secret("settings")
             settings = Settings(**settings_secrets.secret_values)
-        except KeyError:
+        except (RuntimeError, KeyError):
             logger.warning(
                 "Failed to load settings from the ZenML secret store. Defaulting to loading the settings from the '.env' file."
             )

@@ -44,7 +44,7 @@ class NoSQLBaseDocument(BaseModel, Generic[T], ABC):
         exclude_unset = kwargs.pop("exclude_unset", False)
         by_alias = kwargs.pop("by_alias", True)
 
-        parsed = self.dict(exclude_unset=exclude_unset, by_alias=by_alias, **kwargs)
+        parsed = self.model_dump(exclude_unset=exclude_unset, by_alias=by_alias, **kwargs)
 
         if "_id" not in parsed and "id" in parsed:
             parsed["_id"] = str(parsed.pop("id"))
@@ -96,11 +96,11 @@ class NoSQLBaseDocument(BaseModel, Generic[T], ABC):
     def bulk_insert(cls: Type[T], documents: list[T], **kwargs) -> bool:
         collection = _database[cls.get_collection_name()]
         try:
-            collection.insert_many([doc.to_mongo(**kwargs) for doc in documents])
+            collection.insert_many(doc.to_mongo(**kwargs) for doc in documents)
 
             return True
-        except errors.WriteError as e:
-            logger.error(f"Failed to insert document {e}")
+        except (errors.WriteError, errors.BulkWriteError):
+            logger.error(f"Failed to insert documents of type {cls.__name__}")
 
             return False
 
@@ -113,8 +113,8 @@ class NoSQLBaseDocument(BaseModel, Generic[T], ABC):
                 return cls.from_mongo(instance)
 
             return None
-        except errors.OperationFailure as e:
-            logger.error(f"Failed to retrieve document: {e}")
+        except errors.OperationFailure:
+            logger.error("Failed to retrieve document")
 
             return None
 
@@ -124,8 +124,8 @@ class NoSQLBaseDocument(BaseModel, Generic[T], ABC):
         try:
             instances = collection.find(filter_options)
             return [document for instance in instances if (document := cls.from_mongo(instance)) is not None]
-        except errors.OperationFailure as e:
-            logger.error(f"Failed to retrieve document: {e}")
+        except errors.OperationFailure:
+            logger.error("Failed to retrieve documents")
 
             return []
 

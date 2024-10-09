@@ -93,6 +93,8 @@ run-end-to-end-data-pipeline = "poetry run python -m tools.run --no-cache --run-
 
 # Utility pipelines
 run-export-artifact-to-json-pipeline = "poetry run python -m tools.run --no-cache --run-export-artifact-to-json"
+run-export-data-warehouse-to-json = "poetry run python -m tools.data_warehouse --export-raw-data"
+run-import-data-warehouse-from-json = "poetry run python -m tools.data_warehouse --import-raw-data"
 
 # Training pipelines
 run-training-pipeline = "poetry run python -m tools.run --no-cache --run-training"

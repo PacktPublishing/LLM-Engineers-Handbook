@@ -20,9 +20,10 @@
 - [Project structure](#project-structure)
 - [Set up local infrastructure (for testing and development)](#set-up-local-infrastructure-for-testing-and-development)
 - [Set up cloud infrastructure (for production)](#set-up-cloud-infrastructure-for-production)
-- [ZenML pipelines](#zenml-pipelines)
+- [Usage of pipelines and other tools](#usage-of-pipelines-and-other-tools)
 - [Inference](#inference)
-- [Linting & Formatting (QA)](#linting--formatting-qa)
+- [Linting & formatting (QA)](#linting--formatting-qa)
+- [Tests](#tests)
 
 # Dependencies
 
@@ -240,7 +241,7 @@ The code logic and imports flow as follows: `infrastructure` -> `model` -> `appl
 
 `steps/`: Contains individual ZenML steps, which are reusable components for building and customizing ZenML pipelines. Steps perform specific tasks (e.g., data loading, preprocessing) and can be combined within the ML pipelines.
 
-`tests/`: Covers a few example tests used as examples within the CI pipeline.
+`tests/`: Covers a few sample tests used as examples within the CI pipeline.
 
 `tools/`: Utility scripts used to call the ZenML pipelines and inference code.
 
@@ -248,6 +249,7 @@ It contains the following scripts:
 - `run.py`: Entry point script to run ZenML pipelines.
 - `ml_service.py`: Starts the REST API inference server.
 - `rag.py`: Demonstrates usage of the RAG retrieval module.
+- `data_warehouse.py`: Used to export or import data from the MongoDB data warehouse through JSON files..
 
 `configs/`: Contains ZenML YAML configuration files to control the execution of pipelines and steps.
 
@@ -389,9 +391,9 @@ We use GitHub Actions to implement our CI/CD pipelines. To implement your own, y
 Also, we provide instructions on how to set everything up in **Chapter 11**, section **Adding LLMOps to the LLM Twin**.
 
 
-# ZenML pipelines
+# Usage of pipelines and other tools
 
-All the ML pipelines will be orchestrated behind the scenes by [ZenML](https://www.zenml.io/).
+All the ML pipelines will be orchestrated behind the scenes by [ZenML](https://www.zenml.io/). A few exceptions exist when running utility scrips, such as exporting or importing from the data warehouse.
 
 The ZenML pipelines are the entry point for most processes throughout this project. They are under the `pipelines/` folder. Thus, when you want to understand or debug a workflow, starting with the ZenML pipeline is the best approach.
 
@@ -438,6 +440,16 @@ poetry poe run-end-to-end-data-pipeline
 
 ## Utility pipelines
 
+Export the data from the data warehouse to JSON files:
+```shell
+poetry poe run-export-data-warehouse-to-json
+```
+
+Import data to the data warehouse from JSON files (by default, it imports the data from the `data/data_warehouse_raw_data` directory):
+```shell
+poetry poe run-import-data-warehouse-from-json
+```
+
 Export ZenML artifacts to JSON:
 ```shell
 poetry poe run-export-artifact-to-json-pipeline
@@ -482,7 +494,7 @@ poetry poe call-inference-ml-service
 > For the inference service to work, you must have the LLM microservice deployed to AWS SageMaker, as explained in the setup cloud infrastructure section.
 
 
-# Linting & Formatting (QA)
+# Linting & formatting (QA)
 
 Check or fix your linting issues:
 ```shell
