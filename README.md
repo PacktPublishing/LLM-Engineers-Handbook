@@ -456,10 +456,10 @@ poetry poe run-export-artifact-to-json-pipeline
 ```
 
 This will export the following ZenML artifacts to the `output` folder as JSON files (it will take their latest version):
-    - raw_documents
-    - cleaned_documents
-    - instruct_datasets
-    - preference_datasets
+    - cleaned_documents.json
+    - instruct_datasets.json
+    - preference_datasets.json
+    - raw_documents.json
 
 You can configure what artifacts to export by tweaking the `configs/export_artifact_to_json.yaml` configuration file.
 

@@ -1,0 +1,224 @@
+{
+    "id": "6cba3f12-5004-46e0-ac78-b014040a0b05",
+    "train": {
+        "articles": {
+            "id": "c92d959b-8ad6-42f0-88c8-3dfc0384332b",
+            "category": "articles",
+            "samples": [
+                {
+                    "id": "1eb67859-8e05-4b1f-b673-44a6d7506cdf",
+                    "instruction": "What feedback have users provided about the program?",
+                    "rejected": "Users have generally provided positive feedback, noting its effectiveness and ease of use.",
+                    "chosen": "Users have expressed satisfaction with the program, highlighting its efficiency and user-friendly design."
+                },
+                {
+                    "id": "80f65529-0758-4e55-86e1-11a13f583489",
+                    "instruction": "How does the program impact user experience?",
+                    "rejected": "The program enhances user experience by making interactions more intuitive and enjoyable.",
+                    "chosen": "The program significantly improves the user experience by streamlining processes and providing valuable feedback."
+                },
+                {
+                    "id": "c84c7e0b-36f9-473a-bbd4-50c3cfde441c",
+                    "instruction": "What are the proposed solutions to the challenges mentioned?",
+                    "rejected": "The challenges are acknowledged, but no solutions are proposed.",
+                    "chosen": "Proposed solutions include adopting sustainable farming practices and investing in agricultural technology."
+                },
+                {
+                    "id": "71ebed40-6b21-4144-a550-fc6c4095dc75",
+                    "instruction": "How does the extract describe the future of renewable energy?",
+                    "rejected": "The future of renewable energy is uncertain and varies from region to region.",
+                    "chosen": "The extract predicts that renewable energy will become the dominant source of power in the coming decades."
+                },
+                {
+                    "id": "8e3bb70f-34e1-481c-96ca-6a1b994cd535",
+                    "instruction": "What are the limitations mentioned in the research?",
+                    "rejected": "The research has some limitations that could affect the generalizability of the results.",
+                    "chosen": "One limitation of the study is the small sample size, which may not represent the larger population."
+                },
+                {
+                    "id": "ee814525-477e-414c-b504-cfe5e6667d65",
+                    "instruction": "Can you summarize the key points mentioned in the extract?",
+                    "rejected": "The extract highlights several key points including the importance of collaboration, effective communication, and continuous improvement.",
+                    "chosen": "The extract highlights several key points including the importance of collaboration, effective communication, and continuous improvement."
+                },
+                {
+                    "id": "cb07008f-f80e-4652-8b30-dd7005ce0361",
+                    "instruction": "Who are the key supporting characters?",
+                    "rejected": "The key supporting characters include friends and family members who aid the protagonist.",
+                    "chosen": "The key supporting characters are essential in shaping the protagonist's experiences and decisions throughout the narrative."
+                },
+                {
+                    "id": "b75c82fa-8e6a-43e2-8d48-9faf4c968862",
+                    "instruction": "How does climate change affect food security?",
+                    "rejected": "Food security is not addressed in the context.",
+                    "chosen": "Climate change affects food security by altering crop yields and increasing the frequency of extreme weather events."
+                },
+                {
+                    "id": "31f48207-ae18-4bd7-a3e0-3c2cf279d55c",
+                    "instruction": "What is the timeline for the implementation of the new policy?",
+                    "rejected": "The implementation is set to begin shortly and will be completed within a few months.",
+                    "chosen": "The implementation of the new policy is scheduled to start next month and will last for three months."
+                },
+                {
+                    "id": "fc3b4e36-7917-47c8-b303-362c884f0c75",
+                    "instruction": "What is the significance of the main theme in the context?",
+                    "rejected": "The main theme is important for understanding the overall message and implications of the narrative.",
+                    "chosen": "The main theme is important for understanding the overall message and implications of the narrative."
+                },
+                {
+                    "id": "442e8bae-0204-415c-8cd3-41396258ecb1",
+                    "instruction": "What training is provided for the new software?",
+                    "rejected": "Training sessions will help users adapt to the new software.",
+                    "chosen": "Comprehensive training sessions will be offered to ensure users can effectively use the new software."
+                },
+                {
+                    "id": "949f168f-5b13-4886-a171-1929f4d57f1a",
+                    "instruction": "What is the significance of the data collected?",
+                    "rejected": "The significance of the data collected is related to its potential insights and applications in various fields.",
+                    "chosen": "The significance of the data collected is crucial for understanding patterns and making informed decisions."
+                },
+                {
+                    "id": "e2bddc19-2ea1-4f0f-a66d-1876478b2c68",
+                    "instruction": "How does the setting influence the events of the story?",
+                    "rejected": "The setting plays a crucial role in shaping the narrative and the characters' actions.",
+                    "chosen": "The setting creates a backdrop that intensifies the conflict and challenges faced by the characters."
+                },
+                {
+                    "id": "be300fe8-e768-434b-a2c2-9b5988318d84",
+                    "instruction": "What challenges are presented in the extract?",
+                    "rejected": "The extract discusses several challenges such as limited resources, time constraints, and varying levels of expertise among team members.",
+                    "chosen": "The extract discusses several challenges such as limited resources, time constraints, and varying levels of expertise among team members."
+                },
+                {
+                    "id": "0c288ce3-66f1-44ea-a52f-0722581c8be5",
+                    "instruction": "What is the main theme discussed in the extract?",
+                    "rejected": "The extract primarily focuses on various themes such as growth, resilience, and the pursuit of knowledge.",
+                    "chosen": "The extract primarily focuses on various themes such as growth, resilience, and the pursuit of knowledge."
+                },
+                {
+                    "id": "7ef019d2-4b95-49c8-9d21-0d010c36f083",
+                    "instruction": "Can you summarize the key points mentioned in the extract?",
+                    "rejected": "The extract highlights several key points that contribute to the understanding of the subject matter.",
+                    "chosen": "The extract highlights several key points that contribute to the understanding of the subject matter."
+                },
+                {
+                    "id": "b00b33a3-cd32-4424-a876-2844cfe99db7",
+                    "instruction": "What future research directions does the study suggest?",
+                    "rejected": "The study suggests several future research directions that are worth exploring.",
+                    "chosen": "The study suggests that future research should focus on longitudinal studies to assess long-term effects."
+                },
+                {
+                    "id": "9b94f4cd-81a8-4756-9ae9-20180346d03b",
+                    "instruction": "How does the setting influence the plot?",
+                    "rejected": "The setting plays a crucial role in shaping the events of the story.",
+                    "chosen": "The setting influences the plot by providing a backdrop that challenges the characters and drives the narrative."
+                },
+                {
+                    "id": "42c5e243-c94e-4214-a450-5cc309cba332",
+                    "instruction": "Can you summarize the main argument presented in the text?",
+                    "rejected": "The main argument is that existing theories do not fully explain the phenomena observed.",
+                    "chosen": "The text argues that current models are insufficient to account for the complexities of the situation."
+                },
+                {
+                    "id": "dd561aa3-d24f-4b3c-b2ed-7575a0f56a14",
+                    "instruction": "What challenges might arise during the transition?",
+                    "rejected": "Challenges may include resistance to change and technical difficulties.",
+                    "chosen": "Challenges during the transition may involve resistance to change and potential technical difficulties."
+                },
+                {
+                    "id": "03fcda99-6f91-4bb1-a6e0-837ac8f735cc",
+                    "instruction": "What feedback was received from employees regarding the updates?",
+                    "rejected": "Employees generally appreciate the improvements and the direction of the updates.",
+                    "chosen": "Feedback from employees has been largely positive, highlighting the desire for further enhancements."
+                },
+                {
+                    "id": "5698bc0d-92cb-4be6-94de-d2fa4ac868e6",
+                    "instruction": "What themes are explored in the story?",
+                    "rejected": "The story explores themes of love, loss, and redemption.",
+                    "chosen": "The themes explored in the story include the complexities of human relationships and the struggle for self-acceptance."
+                },
+                {
+                    "id": "8013eb9f-588e-460a-ac64-4cc612cada69",
+                    "instruction": "Can you summarize the main conclusion of the research?",
+                    "rejected": "The conclusion drawn is that further studies are needed to explore this area.",
+                    "chosen": "The main conclusion of the research is that the current findings contribute to a better understanding of the topic."
+                },
+                {
+                    "id": "8cf84231-634b-4013-bd2d-2914391e8fd8",
+                    "instruction": "What is the main conclusion drawn from the study?",
+                    "rejected": "The main conclusion drawn from the study reflects the importance of the findings in real-world applications.",
+                    "chosen": "The main conclusion of the study is that there is a significant correlation between the variables studied."
+                },
+                {
+                    "id": "c6f8d263-9769-4c89-a5f9-31a9d9a5df58",
+                    "instruction": "What challenges are associated with the transition to renewable energy?",
+                    "rejected": "The transition presents various economic and logistical challenges.",
+                    "chosen": "One of the main challenges is the initial investment cost and the need for technological innovation."
+                },
+                {
+                    "id": "45b7e8bc-305a-426c-812b-ced6a1f8796e",
+                    "instruction": "Who are the key supporting characters in the story?",
+                    "rejected": "The key supporting characters contribute significantly to the protagonist's development.",
+                    "chosen": "Several supporting characters provide insight and assistance, influencing the protagonist's journey."
+                },
+                {
+                    "id": "837c52f5-842a-4fb5-9c2b-5f2cf33252d5",
+                    "instruction": "What conclusions were drawn from the research?",
+                    "rejected": "The research concluded that there are various implications, but did not specify the main conclusions.",
+                    "chosen": "The conclusions drawn suggest that responsible social media use can mitigate negative mental health effects."
+                },
+                {
+                    "id": "e0df6fd4-2586-43d0-904d-90a19b30bb15",
+                    "instruction": "What challenges does the protagonist face?",
+                    "rejected": "The protagonist faces various obstacles that test their resolve.",
+                    "chosen": "The protagonist faces significant challenges that force them to confront their fears and make difficult choices."
+                },
+                {
+                    "id": "cf747c25-592d-4476-9c20-8369e025296b",
+                    "instruction": "Who are the key stakeholders involved in the topic?",
+                    "rejected": "Several individuals and organizations are mentioned, but they are not key stakeholders.",
+                    "chosen": "The key stakeholders involved in the topic include farmers, agricultural scientists, and policymakers."
+                },
+                {
+                    "id": "989f9e8e-dec8-4b76-9a27-c61e89af73fa",
+                    "instruction": "What role does technology play in addressing the issues discussed?",
+                    "rejected": "Technology's role is not specified in the discussion.",
+                    "chosen": "Technology plays a crucial role in addressing the issues by providing innovative solutions for crop management and resource conservation."
+                },
+                {
+                    "id": "7638aba4-9038-41e9-9d35-f58e78840b95",
+                    "instruction": "What solutions are proposed in the extract?",
+                    "rejected": "The extract proposes solutions like enhanced training programs, strategic planning, and fostering a supportive environment.",
+                    "chosen": "The extract proposes solutions like enhanced training programs, strategic planning, and fostering a supportive environment."
+                },
+                {
+                    "id": "13bb8b69-09e9-4cc9-8deb-0942f7d2f29a",
+                    "instruction": "What future improvements are planned for the program?",
+                    "rejected": "Future improvements to the program are expected to focus on expanding its features and enhancing performance.",
+                    "chosen": "Future enhancements planned for the program include integrating advanced analytics and improving mobile accessibility."
+                }
+            ]
+        }
+    },
+    "test": {
+        "articles": {
+            "id": "7fb73a57-4ad6-4b9e-988e-dd616f8beecf",
+            "category": "articles",
+            "samples": [
+                {
+                    "id": "a9c7994c-5c6c-4a00-97cf-068b1901a715",
+                    "instruction": "How does the extract emphasize the importance of teamwork?",
+                    "rejected": "The extract emphasizes the importance of teamwork by illustrating how collaborative efforts lead to greater outcomes.",
+                    "chosen": "The extract emphasizes the importance of teamwork by illustrating how collaborative efforts lead to greater outcomes."
+                },
+                {
+                    "id": "b8a85447-7a35-4e07-886d-1a732411edfc",
+                    "instruction": "What were the key findings of the study?",
+                    "rejected": "The study reported several findings but did not specify which were key.",
+                    "chosen": "The key findings indicate a significant correlation between social media usage and increased anxiety levels."
+                }
+            ]
+        }
+    },
+    "test_split_size": 0.05
+}
