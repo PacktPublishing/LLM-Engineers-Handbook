@@ -8,6 +8,6 @@ settings:
 parameters:
   test_split_size: 0.1
   dataset_type: "instruction"
-  push_to_huggingface: false
+  push_to_huggingface: true
   dataset_id: pauliusztin/llmtwin
   mock: false

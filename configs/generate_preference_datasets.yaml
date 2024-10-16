@@ -8,6 +8,6 @@ settings:
 parameters:
   test_split_size: 0.05
   dataset_type: "preference"
-  push_to_huggingface: false
-  dataset_id: pauliusztin/llmtwin
-  mock: false
+  push_to_huggingface: true
+  dataset_id: pauliusztin/llmtwin-dpo
+  mock: true

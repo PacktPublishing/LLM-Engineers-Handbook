@@ -1,13 +1,13 @@
 from typing_extensions import Annotated
 from zenml import step
 
-from llm_engineering.domain.dataset import InstructTrainTestSplit
+from llm_engineering.domain.dataset import InstructTrainTestSplit, PreferenceTrainTestSplit
 from llm_engineering.settings import settings
 
 
 @step
 def push_to_huggingface(
-    dataset: Annotated[InstructTrainTestSplit, "dataset"],
+    dataset: Annotated[InstructTrainTestSplit | PreferenceTrainTestSplit, "dataset_split"],
     dataset_id: Annotated[str, "dataset_id"],
 ) -> None:
     assert dataset_id is not None, "Dataset id must be provided for pushing to Huggingface"

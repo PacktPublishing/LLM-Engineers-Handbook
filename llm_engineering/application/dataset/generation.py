@@ -50,6 +50,8 @@ Provide your response in JSON format.
 
     @classmethod
     def get_prompts(cls, documents: list[CleanedDocument]) -> dict[DataCategory, list[GenerateDatasetSamplesPrompt]]:
+        documents = generation_utils.extract_substrings(documents)
+        
         grouped_prompts = {}
         grouped_cleaned_documents = CleanedDocument.group_by_category(documents)
         for category, category_documents in grouped_cleaned_documents.items():
@@ -110,6 +112,8 @@ Provide your response in JSON format.
         if mock:
             llm = FakeListLLM(responses=[constants.get_mocked_response(cls.dataset_type)])
         else:
+            assert settings.OPENAI_API_KEY is not None, "OpenAI API key must be set to generate datasets"
+            
             llm = ChatOpenAI(
                 model=settings.OPENAI_MODEL_ID,
                 api_key=settings.OPENAI_API_KEY,
@@ -123,7 +127,7 @@ Provide your response in JSON format.
         datasets = {}
         for category, category_prompts in prompts.items():
             langchain_category_prompts = [_to_langchain(prompt) for prompt in category_prompts]
-            batches = utils.misc.batch(langchain_category_prompts, size=4)
+            batches = utils.misc.batch(langchain_category_prompts, size=24)
 
             flattened_instruct_dataset_samples = []
             for batch in batches:

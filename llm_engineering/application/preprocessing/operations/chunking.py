@@ -23,6 +23,12 @@ def chunk_text(text: str, chunk_size: int = 500, chunk_overlap: int = 50) -> lis
     return chunks_by_tokens
 
 
+def chunk_document(text: str, min_length: int, max_length: int) -> list[str]:
+    """Alias for chunk_article()."""
+
+    return chunk_article(text, min_length, max_length)
+
+
 def chunk_article(text: str, min_length: int, max_length: int) -> list[str]:
     sentences = re.split(r"(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s", text)
 

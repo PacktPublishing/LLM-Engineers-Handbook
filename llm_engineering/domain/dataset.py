@@ -49,7 +49,7 @@ class InstructDataset(VectorBaseDocument):
         data = [sample.model_dump() for sample in self.samples]
 
         return Dataset.from_dict(
-            {"instruction": [d["instruction"] for d in data], "answer": [d["answer"] for d in data]}
+            {"instruction": [d["instruction"] for d in data], "output": [d["answer"] for d in data]}
         )
 
 
