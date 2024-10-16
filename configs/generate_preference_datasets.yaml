@@ -10,4 +10,4 @@ parameters:
   dataset_type: "preference"
   push_to_huggingface: true
   dataset_id: pauliusztin/llmtwin-dpo
-  mock: true
+  mock: false
