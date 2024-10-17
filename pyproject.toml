@@ -62,7 +62,7 @@ pytest = "^8.2.2"
 
 
 [tool.poetry.group.aws.dependencies]
-sagemaker = ">=2.117.0"
+sagemaker = ">=2.232.2"
 s3fs = ">2022.3.0"
 aws-profile-manager = "^0.7.3"
 kubernetes = "^30.1.0"

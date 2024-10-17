@@ -165,9 +165,9 @@ class DeploymentService:
             role=role_arn,
             image_uri=llm_image,
             env=config,
-            transformers_version="4.6",  # Transformers version
-            pytorch_version="1.13",  # PyTorch version
-            py_version="py310",
+            # transformers_version="4.37",  # Transformers version
+            # pytorch_version="2.1",  # PyTorch version
+            # py_version="py310",
         )
 
         # Deploy or update the model based on the endpoint existence
@@ -179,4 +179,5 @@ class DeploymentService:
             resources=resources,
             tags=[{"Key": "task", "Value": "model_task"}],
             endpoint_type=endpoint_type,
+            container_startup_health_check_timeout=900,
         )

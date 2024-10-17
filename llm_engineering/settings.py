@@ -1,4 +1,3 @@
-import urllib3
 from loguru import logger
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from zenml.client import Client
@@ -45,12 +44,12 @@ class Settings(BaseSettings):
     # --- Optional settings used to tweak the code. ---
 
     # AWS SageMaker
-    HF_MODEL_ID: str = "mlabonne/TwinLlama-3.1-8B-13"  # or use "crumb/nano-mistral" for a quick test with a small model
-    GPU_INSTANCE_TYPE: str = "ml.g5.xlarge"
+    HF_MODEL_ID: str = "mlabonne/TwinLlama-3.1-8B-DPO"
+    GPU_INSTANCE_TYPE: str = "ml.g5.2xlarge"
     SM_NUM_GPUS: int = 1
-    MAX_INPUT_LENGTH: int = 8000
-    MAX_TOTAL_TOKENS: int = 12000
-    MAX_BATCH_TOTAL_TOKENS: int = 12000
+    MAX_INPUT_LENGTH: int = 2048
+    MAX_TOTAL_TOKENS: int = 4096
+    MAX_BATCH_TOTAL_TOKENS: int = 4096
     COPIES: int = 1  # Number of replicas
     GPUS: int = 1  # Number of GPUs
     CPUS: int = 2  # Number of CPU cores
