@@ -3,7 +3,7 @@ import os
 import warnings
 
 import torch
-from datasets import load_from_disk
+from datasets import load_dataset
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments
 from trl import SFTTrainer
@@ -12,6 +12,7 @@ from trl import SFTTrainer
 def model_fn(model_dir):
     model = AutoModelForCausalLM.from_pretrained(model_dir)
     tokenizer = AutoTokenizer.from_pretrained(model_dir)
+    
     return model, tokenizer
 
 
@@ -71,7 +72,7 @@ def train(args):
     model, tokenizer, peft_config = load_model_and_tokenizer(args, torch_dtype, attn_implementation)
 
     # Load dataset
-    dataset = load_from_disk(args.data_dir)
+    dataset = load_dataset("mlabonne/llmtwin")
 
     # Set up training arguments
     training_args = TrainingArguments(
@@ -100,7 +101,7 @@ def train(args):
         train_dataset=dataset["train"],
         eval_dataset=dataset["test"],
         peft_config=peft_config,
-        dataset_text_field="text",
+        dataset_text_field="instruction",
         max_seq_length=args.max_seq_length,
         tokenizer=tokenizer,
     )
@@ -130,7 +131,6 @@ if __name__ == "__main__":
     parser.add_argument("--output_data_dir", type=str, default=os.environ["SM_OUTPUT_DATA_DIR"])
     parser.add_argument("--model_dir", type=str, default=os.environ["SM_MODEL_DIR"])
     parser.add_argument("--n_gpus", type=str, default=os.environ["SM_NUM_GPUS"])
-    parser.add_argument("--data_dir", type=str, default=os.environ["SM_CHANNEL_TRAINING"])
 
     args = parser.parse_args()
 

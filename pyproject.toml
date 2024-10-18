@@ -132,6 +132,7 @@ delete-settings-zenml = "poetry run zenml secret delete settings"
 ## SageMaker
 create-sagemaker-role = "poetry run python llm_engineering/infrastructure/aws/roles/create_sagemaker_role.py"
 create-sagemaker-execution-role = "poetry run python llm_engineering/core/aws/roles/create_execution_role.py"
+run-sagemaker-training = "poetry run python -m llm_engineering.model.finetuning.run"
 deploy-inference-endpoint = "poetry run python -m llm_engineering.infrastructure.aws.deploy.huggingface.run"
 test-sagemaker-endpoint = "poetry run python -m llm_engineering.model.inference.test"
 delete-inference-endpoint = "poetry run python llm_engineering/infrastructure/aws/deploy/delete_sagemaker_endpoint.py"

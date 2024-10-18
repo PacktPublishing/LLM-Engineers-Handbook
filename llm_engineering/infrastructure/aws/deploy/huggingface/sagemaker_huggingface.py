@@ -165,9 +165,6 @@ class DeploymentService:
             role=role_arn,
             image_uri=llm_image,
             env=config,
-            # transformers_version="4.37",  # Transformers version
-            # pytorch_version="2.1",  # PyTorch version
-            # py_version="py310",
         )
 
         # Deploy or update the model based on the endpoint existence
