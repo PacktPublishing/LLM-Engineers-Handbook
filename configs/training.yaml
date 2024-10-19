@@ -7,8 +7,8 @@ settings:
 
 parameters:
   finetuning_type: sft
-  num_train_epochs: 1 # 3
+  num_train_epochs: 3
   per_device_train_batch_size: 2
   learning_rate: 3e-4
   dataset_huggingface_workspace: mlabonne
-  is_dummy: true
+  is_dummy: true # Change this to 'false' to run the training with the full dataset and epochs.

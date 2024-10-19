@@ -83,6 +83,11 @@ def finetune(
     EOS_TOKEN = tokenizer.eos_token
     print(f"Setting EOS_TOKEN to {EOS_TOKEN}")  # noqa
 
+    if is_dummy is True:
+        num_train_epochs = 1
+        print(f"Training in dummy mode. Setting num_train_epochs to '{num_train_epochs}'")  # noqa
+        print(f"Training in dummy mode. Reducing dataset size to '400'.")  # noqa
+
     if finetuning_type == "sft":
 
         def format_samples_sft(examples):
@@ -218,9 +223,9 @@ def check_if_huggingface_model_exists(model_id: str, default_value: str = "mlabo
     try:
         api.model_info(model_id)
     except RepositoryNotFoundError:
-        print(f"Model '{sft_base_model_repo_id}' does not exist.")  # noqa
+        print(f"Model '{model_id}' does not exist.")  # noqa
         model_id = default_value
-        print(f"Defaulting to '{sft_base_model_repo_id}'")  # noqa
+        print(f"Defaulting to '{model_id}'")  # noqa
         print("Train your own 'TwinLlama-3.1-8B' to avoid this behavior.")  # noqa
 
     return model_id

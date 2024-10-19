@@ -6,5 +6,4 @@ trl==0.9.6
 bitsandbytes==0.43.3
 comet-ml==3.44.3
 flash-attn==2.3.6
-# unsloth==2024.10.2
 unsloth==2024.9.post2

@@ -8,6 +8,7 @@ from llm_engineering import settings
 from pipelines import (
     digital_data_etl,
     end_to_end_data,
+    evaluating,
     export_artifact_to_json,
     feature_engineering,
     generate_datasets,
@@ -98,6 +99,12 @@ Examples:
     help="Whether to run the training pipeline.",
 )
 @click.option(
+    "--run-evaluation",
+    is_flag=True,
+    default=False,
+    help="Whether to run the evaluation pipeline.",
+)
+@click.option(
     "--export-settings",
     is_flag=True,
     default=False,
@@ -113,6 +120,7 @@ def main(
     run_generate_instruct_datasets: bool = False,
     run_generate_preference_datasets: bool = False,
     run_training: bool = False,
+    run_evaluation: bool = False,
     export_settings: bool = False,
 ) -> None:
     assert (
@@ -123,6 +131,7 @@ def main(
         or run_generate_instruct_datasets
         or run_generate_preference_datasets
         or run_training
+        or run_evaluation
         or export_settings
     ), "Please specify an action to run."
 
@@ -179,6 +188,12 @@ def main(
         pipeline_args["config_path"] = root_dir / "configs" / "training.yaml"
         pipeline_args["run_name"] = f"training_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
         training.with_options(**pipeline_args)(**run_args_cd)
+
+    if run_evaluation:
+        run_args_cd = {}
+        pipeline_args["config_path"] = root_dir / "configs" / "evaluating.yaml"
+        pipeline_args["run_name"] = f"evaluation_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+        evaluating.with_options(**pipeline_args)(**run_args_cd)
 
 
 if __name__ == "__main__":

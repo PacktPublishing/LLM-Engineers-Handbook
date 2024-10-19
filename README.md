@@ -355,6 +355,12 @@ poetry poe run-training-pipeline
 ```
 This will start the training code using the configs from `configs/training.yaml` directly in SageMaker. You can visualize the results in Comet ML's dashboard.
 
+We start the evaluation pipeline through ZenML by running the following:
+```shell
+poetry poe run-evaluation-pipeline
+```
+This will start the evaluation code using the configs from `configs/evaluating.yaml` directly in SageMaker. You can visualize the results in `*-results` datasets saved to your HuggingFace profile.
+
 ### Inference
 
 For creating an AWS SageMaker Inference Endpoint, run:
@@ -469,6 +475,11 @@ You can configure what artifacts to export by tweaking the `configs/export_artif
 Run the training pipeline:
 ```shell
 poetry poe run-training-pipeline
+```
+
+Run the evaluation pipeline:
+```shell
+poetry poe run-evaluation-pipeline
 ```
 
 > [!WARNING]
