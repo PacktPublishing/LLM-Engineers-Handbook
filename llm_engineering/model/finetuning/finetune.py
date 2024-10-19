@@ -6,16 +6,16 @@ from unsloth import PatchDPOTrainer
 
 PatchDPOTrainer()
 
-from typing import Any, List, Literal, Optional
+from typing import Any, List, Literal, Optional  # noqa: E402
 
 import torch  # noqa
-from datasets import concatenate_datasets, load_dataset
-from huggingface_hub import HfApi
-from huggingface_hub.utils import RepositoryNotFoundError
-from transformers import TextStreamer, TrainingArguments
-from trl import DPOConfig, DPOTrainer, SFTTrainer
-from unsloth import FastLanguageModel, is_bfloat16_supported
-from unsloth.chat_templates import get_chat_template
+from datasets import concatenate_datasets, load_dataset  # noqa: E402
+from huggingface_hub import HfApi  # noqa: E402
+from huggingface_hub.utils import RepositoryNotFoundError  # noqa: E402
+from transformers import TextStreamer, TrainingArguments  # noqa: E402
+from trl import DPOConfig, DPOTrainer, SFTTrainer  # noqa: E402
+from unsloth import FastLanguageModel, is_bfloat16_supported  # noqa: E402
+from unsloth.chat_templates import get_chat_template  # noqa: E402
 
 alpaca_template = """Below is an instruction that describes a task. Write a response that appropriately completes the request.
 
@@ -68,7 +68,7 @@ def finetune(
     lora_rank: int = 32,
     lora_alpha: int = 32,
     lora_dropout: float = 0.0,
-    target_modules: List[str] = ["q_proj", "k_proj", "v_proj", "up_proj", "down_proj", "o_proj", "gate_proj"],
+    target_modules: List[str] = ["q_proj", "k_proj", "v_proj", "up_proj", "down_proj", "o_proj", "gate_proj"],  # noqa: B006
     chat_template: str = "chatml",
     learning_rate: float = 3e-4,
     num_train_epochs: int = 3,
