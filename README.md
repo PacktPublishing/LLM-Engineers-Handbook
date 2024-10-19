@@ -149,7 +149,7 @@ To authenticate to HuggingFace, you must fill out the `HUGGINGFACE_ACCESS_TOKEN`
 
 Comet ML is required only during training.
 
-To authenticate to Comet ML, you must fill out the `COMET_API_KEY` and `COMET_WORKSPACE` env vars with an authentication token and workspace name.
+To authenticate to Comet ML, you must fill out the `COMET_API_KEY` env var with your authentication token.
 
 → Check out this [tutorial](https://www.comet.com/docs/v2/api-and-sdk/rest-api/overview/) to learn how to get the Comet ML variables from above.
 
@@ -353,6 +353,7 @@ We start the training pipeline through ZenML by running the following:
 ```shell
 poetry poe run-training-pipeline
 ```
+This will start the training code using the configs from `configs/training.yaml` directly in SageMaker. You can visualize the results in Comet ML's dashboard.
 
 ### Inference
 

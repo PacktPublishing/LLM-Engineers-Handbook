@@ -1,3 +1,3 @@
-from .tokenize import tokenize
+from .train import train
 
-__all__ = ["tokenize"]
+__all__ = ["train"]

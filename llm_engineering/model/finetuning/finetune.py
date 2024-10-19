@@ -1,137 +1,304 @@
 import argparse
 import os
-import warnings
+from pathlib import Path
 
-import torch
-from datasets import load_dataset
-from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
-from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments
-from trl import SFTTrainer
+from unsloth import PatchDPOTrainer
+
+PatchDPOTrainer()
+
+from typing import Any, List, Literal, Optional
+
+import torch  # noqa
+from datasets import concatenate_datasets, load_dataset
+from huggingface_hub import HfApi
+from huggingface_hub.utils import RepositoryNotFoundError
+from transformers import TextStreamer, TrainingArguments
+from trl import DPOConfig, DPOTrainer, SFTTrainer
+from unsloth import FastLanguageModel, is_bfloat16_supported
+from unsloth.chat_templates import get_chat_template
+
+alpaca_template = """Below is an instruction that describes a task. Write a response that appropriately completes the request.
+
+### Instruction:
+{}
+
+### Response:
+{}"""
 
 
-def model_fn(model_dir):
-    model = AutoModelForCausalLM.from_pretrained(model_dir)
-    tokenizer = AutoTokenizer.from_pretrained(model_dir)
-    
+def load_model(
+    model_name: str,
+    max_seq_length: int,
+    load_in_4bit: bool,
+    lora_rank: int,
+    lora_alpha: int,
+    lora_dropout: float,
+    target_modules: List[str],
+    chat_template: str,
+) -> tuple:
+    model, tokenizer = FastLanguageModel.from_pretrained(
+        model_name=model_name,
+        max_seq_length=max_seq_length,
+        load_in_4bit=load_in_4bit,
+    )
+
+    model = FastLanguageModel.get_peft_model(
+        model,
+        r=lora_rank,
+        lora_alpha=lora_alpha,
+        lora_dropout=lora_dropout,
+        target_modules=target_modules,
+    )
+
+    tokenizer = get_chat_template(
+        tokenizer,
+        chat_template=chat_template,
+    )
+
     return model, tokenizer
 
 
-def setup_torch_config():
-    if torch.cuda.get_device_capability()[0] >= 8:
-        torch_dtype = torch.bfloat16
-        try:
-            import flash_attn
-            from packaging import version
+def finetune(
+    finetuning_type: Literal["sft", "dpo"],
+    model_name: str,
+    output_dir: str,
+    dataset_huggingface_workspace: str,
+    max_seq_length: int = 2048,
+    load_in_4bit: bool = False,
+    lora_rank: int = 32,
+    lora_alpha: int = 32,
+    lora_dropout: float = 0.0,
+    target_modules: List[str] = ["q_proj", "k_proj", "v_proj", "up_proj", "down_proj", "o_proj", "gate_proj"],
+    chat_template: str = "chatml",
+    learning_rate: float = 3e-4,
+    num_train_epochs: int = 3,
+    per_device_train_batch_size: int = 2,
+    gradient_accumulation_steps: int = 8,
+    beta: float = 0.5,  # Only for DPO
+    is_dummy: bool = True,
+) -> tuple:
+    model, tokenizer = load_model(
+        model_name, max_seq_length, load_in_4bit, lora_rank, lora_alpha, lora_dropout, target_modules, chat_template
+    )
+    EOS_TOKEN = tokenizer.eos_token
+    print(f"Setting EOS_TOKEN to {EOS_TOKEN}")  # noqa
 
-            if version.parse(flash_attn.__version__) >= version.parse("2.1.0"):
-                attn_implementation = "flash_attention_2"
-                print("Using FlashAttention 2")  # noqa
-            else:
-                attn_implementation = "eager"
-                print(f"FlashAttention version {flash_attn.__version__} is not compatible. Using eager implementation.")  # noqa
-        except ImportError:
-            warnings.warn("FlashAttention not installed. Defaulting to eager attention.")  # noqa
-            attn_implementation = "eager"
+    if finetuning_type == "sft":
+
+        def format_samples_sft(examples):
+            text = []
+            for instruction, output in zip(examples["instruction"], examples["output"], strict=False):
+                message = alpaca_template.format(instruction, output) + EOS_TOKEN
+                text.append(message)
+
+            return {"text": text}
+
+        dataset1 = load_dataset(f"{dataset_huggingface_workspace}/llmtwin", split="train")
+        dataset2 = load_dataset("mlabonne/FineTome-Alpaca-100k", split="train[:10000]")
+        dataset = concatenate_datasets([dataset1, dataset2])
+        if is_dummy:
+            dataset = dataset.select(range(400))
+        print(f"Loaded dataset with {len(dataset)} samples.")  # noqa
+
+        dataset = dataset.map(format_samples_sft, batched=True, remove_columns=dataset.column_names)
+        dataset = dataset.train_test_split(test_size=0.05)
+
+        print("Training dataset example:")  # noqa
+        print(dataset["train"][0])  # noqa
+
+        trainer = SFTTrainer(
+            model=model,
+            tokenizer=tokenizer,
+            train_dataset=dataset["train"],
+            eval_dataset=dataset["test"],
+            dataset_text_field="text",
+            max_seq_length=max_seq_length,
+            dataset_num_proc=2,
+            packing=True,
+            args=TrainingArguments(
+                learning_rate=learning_rate,
+                num_train_epochs=num_train_epochs,
+                per_device_train_batch_size=per_device_train_batch_size,
+                gradient_accumulation_steps=gradient_accumulation_steps,
+                fp16=not is_bfloat16_supported(),
+                bf16=is_bfloat16_supported(),
+                logging_steps=1,
+                optim="adamw_8bit",
+                weight_decay=0.01,
+                lr_scheduler_type="linear",
+                per_device_eval_batch_size=per_device_train_batch_size,
+                warmup_steps=10,
+                output_dir=output_dir,
+                report_to="comet_ml",
+                seed=0,
+            ),
+        )
+    elif finetuning_type == "dpo":
+        PatchDPOTrainer()
+
+        def format_samples_dpo(example):
+            example["prompt"] = alpaca_template.format(example["prompt"], "")
+            example["chosen"] = example["chosen"] + EOS_TOKEN
+            example["rejected"] = example["rejected"] + EOS_TOKEN
+
+            return {"prompt": example["prompt"], "chosen": example["chosen"], "rejected": example["rejected"]}
+
+        dataset = load_dataset(f"{dataset_huggingface_workspace}/llmtwin-dpo", split="train")
+        if is_dummy:
+            dataset = dataset.select(range(400))
+        print(f"Loaded dataset with {len(dataset)} samples.")  # noqa
+
+        dataset = dataset.map(format_samples_dpo)
+        dataset = dataset.train_test_split(test_size=0.05)
+
+        print("Training dataset example:")  # noqa
+        print(dataset["train"][0])  # noqa
+
+        trainer = DPOTrainer(
+            model=model,
+            ref_model=None,
+            tokenizer=tokenizer,
+            beta=beta,
+            train_dataset=dataset["train"],
+            eval_dataset=dataset["test"],
+            max_length=max_seq_length // 2,
+            max_prompt_length=max_seq_length // 2,
+            args=DPOConfig(
+                learning_rate=learning_rate,
+                num_train_epochs=num_train_epochs,
+                per_device_train_batch_size=per_device_train_batch_size,
+                gradient_accumulation_steps=gradient_accumulation_steps,
+                fp16=not is_bfloat16_supported(),
+                bf16=is_bfloat16_supported(),
+                optim="adamw_8bit",
+                weight_decay=0.01,
+                lr_scheduler_type="linear",
+                per_device_eval_batch_size=per_device_train_batch_size,
+                warmup_steps=10,
+                output_dir=output_dir,
+                eval_steps=0.2,
+                logging_steps=1,
+                report_to="comet_ml",
+                seed=0,
+            ),
+        )
     else:
-        torch_dtype = torch.float16
-        attn_implementation = "eager"
-    return torch_dtype, attn_implementation
+        raise ValueError("Invalid finetuning_type. Choose 'sft' or 'dpo'.")
 
-
-def load_model_and_tokenizer(args, torch_dtype, attn_implementation):
-    model = AutoModelForCausalLM.from_pretrained(
-        args.model_id,
-        device_map="auto",
-        attn_implementation=attn_implementation,
-        torch_dtype=torch_dtype,
-        token=os.environ.get("HF_TOKEN"),
-    )
-    tokenizer = AutoTokenizer.from_pretrained(args.model_id)
-
-    tokenizer.pad_token = tokenizer.eos_token
-    tokenizer.padding_side = "right"
-
-    peft_config = LoraConfig(
-        r=16,
-        lora_alpha=32,
-        lora_dropout=0,
-        bias="none",
-        task_type="CAUSAL_LM",
-        target_modules="all-linear",
-    )
-
-    if args.use_qlora:
-        model = prepare_model_for_kbit_training(model)
-    model = get_peft_model(model, peft_config)
-
-    return model, tokenizer, peft_config
-
-
-def train(args):
-    torch_dtype, attn_implementation = setup_torch_config()
-    model, tokenizer, peft_config = load_model_and_tokenizer(args, torch_dtype, attn_implementation)
-
-    # Load dataset
-    dataset = load_dataset("mlabonne/llmtwin")
-
-    # Set up training arguments
-    training_args = TrainingArguments(
-        output_dir=args.model_dir,
-        num_train_epochs=args.epochs,
-        per_device_train_batch_size=args.train_batch_size,
-        per_device_eval_batch_size=args.eval_batch_size,
-        warmup_steps=args.warmup_steps,
-        learning_rate=args.learning_rate,
-        fp16=True,
-        logging_dir=f"{args.output_data_dir}/logs",
-        logging_steps=100,
-        evaluation_strategy="steps",
-        save_strategy="steps",
-        eval_steps=500,
-        save_steps=500,
-        save_total_limit=2,
-        load_best_model_at_end=True,
-        optim="paged_adamw_8bit" if args.use_qlora else "adamw_torch",
-    )
-
-    # Initialize SFTTrainer
-    trainer = SFTTrainer(
-        model=model,
-        args=training_args,
-        train_dataset=dataset["train"],
-        eval_dataset=dataset["test"],
-        peft_config=peft_config,
-        dataset_text_field="instruction",
-        max_seq_length=args.max_seq_length,
-        tokenizer=tokenizer,
-    )
-
-    # Train the model
     trainer.train()
 
-    # Save the fine-tuned model
-    trainer.model.save_pretrained(args.model_dir)
-    tokenizer.save_pretrained(args.model_dir)
+    return model, tokenizer
+
+
+def inference(
+    model: Any,
+    tokenizer: Any,
+    prompt: str = "Write a paragraph to introduce supervised fine-tuning.",
+    max_new_tokens: int = 256,
+) -> None:
+    model = FastLanguageModel.for_inference(model)
+    message = alpaca_template.format(prompt, "")
+    inputs = tokenizer([message], return_tensors="pt").to("cuda")
+
+    text_streamer = TextStreamer(tokenizer)
+    _ = model.generate(**inputs, streamer=text_streamer, max_new_tokens=max_new_tokens, use_cache=True)
+
+
+def save_model(model: Any, tokenizer: Any, output_dir: str, push_to_hub: bool = False, repo_id: Optional[str] = None):
+    model.save_pretrained_merged(output_dir, tokenizer, save_method="merged_16bit")
+
+    if push_to_hub and repo_id:
+        print(f"Saving model to '{repo_id}'")  # noqa
+        model.push_to_hub_merged(repo_id, tokenizer, save_method="merged_16bit")
+
+
+def check_if_huggingface_model_exists(model_id: str, default_value: str = "mlabonne/TwinLlama-3.1-8B") -> str:
+    api = HfApi()
+
+    try:
+        api.model_info(model_id)
+    except RepositoryNotFoundError:
+        print(f"Model '{sft_base_model_repo_id}' does not exist.")  # noqa
+        model_id = default_value
+        print(f"Defaulting to '{sft_base_model_repo_id}'")  # noqa
+        print("Train your own 'TwinLlama-3.1-8B' to avoid this behavior.")  # noqa
+
+    return model_id
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    # Hyperparameters sent by the client are passed as command-line arguments to the script
-    parser.add_argument("--epochs", type=int, default=1)
-    parser.add_argument("--train_batch_size", type=int, default=2)
-    parser.add_argument("--eval_batch_size", type=int, default=2)
-    parser.add_argument("--warmup_steps", type=int, default=10)
+    parser.add_argument("--num_train_epochs", type=int, default=3)
+    parser.add_argument("--per_device_train_batch_size", type=int, default=2)
     parser.add_argument("--learning_rate", type=float, default=3e-4)
-    parser.add_argument("--use_qlora", type=bool, default=False)
-    parser.add_argument("--max_seq_length", type=int, default=2048)
+    parser.add_argument("--dataset_huggingface_workspace", type=str, default="mlabonne")
+    parser.add_argument("--model_output_huggingface_workspace", type=str, default="mlabonne")
+    parser.add_argument("--is_dummy", type=bool, default=False, help="Flag to reduce the dataset size for testing")
+    parser.add_argument(
+        "--finetuning_type",
+        type=str,
+        choices=["sft", "dpo"],
+        default="sft",
+        help="Parameter to choose the finetuning stage.",
+    )
 
-    # Data, model, and output directories
-    parser.add_argument("--model_id", type=str, default="meta-llama/Meta-Llama-3.1-8B")
     parser.add_argument("--output_data_dir", type=str, default=os.environ["SM_OUTPUT_DATA_DIR"])
     parser.add_argument("--model_dir", type=str, default=os.environ["SM_MODEL_DIR"])
     parser.add_argument("--n_gpus", type=str, default=os.environ["SM_NUM_GPUS"])
 
     args = parser.parse_args()
 
-    train(args)
+    print(f"Num training epochs: '{args.num_train_epochs}'")  # noqa
+    print(f"Per device train batch size: '{args.per_device_train_batch_size}'")  # noqa
+    print(f"Learning rate: {args.learning_rate}")  # noqa
+    print(f"Datasets will be loaded from Hugging Face workspace: '{args.dataset_huggingface_workspace}'")  # noqa
+    print(f"Models will be saved to Hugging Face workspace: '{args.model_output_huggingface_workspace}'")  # noqa
+    print(f"Training in dummy mode? '{args.is_dummy}'")  # noqa
+    print(f"Finetuning type: '{args.finetuning_type}'")  # noqa
+
+    print(f"Output data dir: '{args.output_data_dir}'")  # noqa
+    print(f"Model dir: '{args.model_dir}'")  # noqa
+    print(f"Number of GPUs: '{args.n_gpus}'")  # noqa
+
+    if args.finetuning_type == "sft":
+        print("Starting SFT training...")  # noqa
+        base_model_name = "meta-llama/Meta-Llama-3.1-8B"
+        print(f"Training from base model '{base_model_name}'")  # noqa
+
+        output_dir_sft = Path(args.model_dir) / "output_sft"
+        model, tokenizer = finetune(
+            finetuning_type="sft",
+            model_name=base_model_name,
+            output_dir=str(output_dir_sft),
+            dataset_huggingface_workspace=args.dataset_huggingface_workspace,
+            num_train_epochs=args.num_train_epochs,
+            per_device_train_batch_size=args.per_device_train_batch_size,
+            learning_rate=args.learning_rate,
+        )
+        inference(model, tokenizer)
+
+        sft_output_model_repo_id = f"{args.model_output_huggingface_workspace}/TwinLlama-3.1-8B"
+        save_model(model, tokenizer, "model_sft", push_to_hub=True, repo_id=sft_output_model_repo_id)
+    elif args.finetuning_type == "dpo":
+        print("Starting DPO training...")  # noqa
+
+        sft_base_model_repo_id = f"{args.model_output_huggingface_workspace}/TwinLlama-3.1-8B"
+        sft_base_model_repo_id = check_if_huggingface_model_exists(sft_base_model_repo_id)
+        print(f"Training from base model '{sft_base_model_repo_id}'")  # noqa
+
+        output_dir_dpo = Path(args.model_dir) / "output_dpo"
+        model, tokenizer = finetune(
+            finetuning_type="dpo",
+            model_name=sft_base_model_repo_id,
+            output_dir=str(output_dir_dpo),
+            dataset_huggingface_workspace=args.dataset_huggingface_workspace,
+            num_train_epochs=1,
+            per_device_train_batch_size=args.per_device_train_batch_size,
+            learning_rate=2e-6,
+            is_dummy=args.is_dummy,
+        )
+        inference(model, tokenizer)
+
+        dpo_output_model_repo_id = f"{args.model_output_huggingface_workspace}/TwinLlama-3.1-8B-DPO"
+        save_model(model, tokenizer, "model_dpo", push_to_hub=True, repo_id=dpo_output_model_repo_id)

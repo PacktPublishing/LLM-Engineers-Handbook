@@ -18,7 +18,6 @@ class Settings(BaseSettings):
 
     # Comet ML (during training)
     COMET_API_KEY: str | None = None
-    COMET_WORKSPACE: str = "llm-engineers-handbook"
     COMET_PROJECT: str = "twin"
 
     # --- Required settings when deploying the code. ---
