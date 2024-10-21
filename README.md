@@ -44,7 +44,7 @@ The code also uses and depends on the following cloud services. For now, you don
 
 - [HuggingFace](https://huggingface.com/): Model registry
 - [Comet ML](https://www.comet.com/site/): Experiment tracker
-- [Opik (powered by Comet ML)](https://www.comet.com/site/products/opik/): LLM evaluation and prompt monitoring
+- [Opik (powered by Comet ML)](https://www.comet.com/site/products/opik/): Prompt monitoring
 - [ZenML](https://www.zenml.io/): Orchestrator and artifacts layer
 - [AWS](https://aws.amazon.com/): Compute and storage
 - [MongoDB](https://www.mongodb.com/): NoSQL database
