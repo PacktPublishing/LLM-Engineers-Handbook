@@ -63,7 +63,7 @@ cd LLM-Engineers-Handbook
 
 Next, we have to prepare your Python environment and its adjacent dependencies. 
 
-## Install Python 3.11 using pyenv (Optional)
+## Install Python 3.11 using pyenv (Optional if you have Python 3.11 globally installed)
 
 If you have a different global Python version than Python 3.11, you can use pyenv to install Python 3.11 only at the project level. Verify your Python version with:
 ```shell
