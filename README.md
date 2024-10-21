@@ -155,8 +155,9 @@ To authenticate to Comet ML, you must fill out the `COMET_API_KEY` env var with 
 
 ### Opik
 
-As [Opik](https://www.comet.com/opik) is developed by Comet ML, we can leverage the `COMET_API_KEY` to authenticate. Thus, no additional action is required. Check out 🔗 [this link](https://www.comet.com/opik) to visualize their dashboard.
+[Opik](https://www.comet.com/opik) monitors prompts during production. However, its seamless setup can also make it extremely useful for local development when debugging and testing the LLM and RAG inference logic.
 
+As [Opik](https://www.comet.com/opik) is developed by Comet ML, we can leverage the `COMET_API_KEY` env var issued in the previous step to authenticate. Thus, no additional action is required. Check out 🔗 [this link](https://www.comet.com/opik) to visualize their dashboard.
 
 ## Set up .env settings file (for deployment)
 
@@ -316,6 +317,8 @@ Default credentials:
 
 You can **search** your MongoDB collections using your **IDEs MongoDB plugin** (which you have to install separately), where you have to use the database URI to connect to the MongoDB database hosted within the Docker container: `mongodb://llm_engineering:llm_engineering@127.0.0.1:27017`
 
+> [!IMPORTANT]
+> Everything related to training or running the LLMs (e.g., training, evaluation, inference) can only be run if you set up AWS SageMaker, as explained in the next section on cloud infrastructure.
 
 # Set up cloud infrastructure (for production)
 
@@ -399,7 +402,7 @@ Also, we provide instructions on how to set everything up in **Chapter 11**, sec
 
 ## Comet ML & Opik
 
-If you created an account and have set the `COMET_API_KEY` correctly, you can visualize the results on their self-hosted dashboards at:
+You can visualize the results on their self-hosted dashboards if you created a Comet account and correctly set the `COMET_API_KEY` env var. As Opik is powered by Comet, you don't have to set up anything else along Comet:
 - [Comet ML (for experiment tracking)](https://www.comet.com/)
 - [Opik (for prompt monitoring)](https://www.comet.com/opik)
 
@@ -507,6 +510,8 @@ Call the inference real-time RESTful API with a test query:
 ```shell
 poetry poe call-inference-ml-service
 ```
+
+Remember that you can monitor the prompt traces on [Opik](https://www.comet.com/opik).
 
 > [!WARNING]
 > For the inference service to work, you must have the LLM microservice deployed to AWS SageMaker, as explained in the setup cloud infrastructure section.
