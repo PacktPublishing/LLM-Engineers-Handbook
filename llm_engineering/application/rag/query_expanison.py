@@ -1,3 +1,4 @@
+import opik
 from langchain_openai import ChatOpenAI
 from loguru import logger
 
@@ -9,6 +10,7 @@ from .prompt_templates import QueryExpansionTemplate
 
 
 class QueryExpansion(RAGStep):
+    @opik.track(name="QueryExpansion.generate")
     def generate(self, query: Query, expand_to_n: int) -> list[Query]:
         assert expand_to_n > 0, f"'expand_to_n' should be greater than 0. Got {expand_to_n}."
 

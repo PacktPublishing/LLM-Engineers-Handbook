@@ -44,7 +44,7 @@ The code also uses and depends on the following cloud services. For now, you don
 
 - [HuggingFace](https://huggingface.com/): Model registry
 - [Comet ML](https://www.comet.com/site/): Experiment tracker
-- [Opik](https://www.comet.com/site/products/opik/): LLM evaluation and prompt monitoring
+- [Opik (powered by Comet ML)](https://www.comet.com/site/products/opik/): LLM evaluation and prompt monitoring
 - [ZenML](https://www.zenml.io/): Orchestrator and artifacts layer
 - [AWS](https://aws.amazon.com/): Compute and storage
 - [MongoDB](https://www.mongodb.com/): NoSQL database
@@ -147,7 +147,7 @@ To authenticate to HuggingFace, you must fill out the `HUGGINGFACE_ACCESS_TOKEN`
 
 ### Comet ML
 
-Comet ML is required only during training.
+[Comet ML](https://www.comet.com) is required only during training.
 
 To authenticate to Comet ML, you must fill out the `COMET_API_KEY` env var with your authentication token.
 
@@ -155,7 +155,7 @@ To authenticate to Comet ML, you must fill out the `COMET_API_KEY` env var with 
 
 ### Opik
 
-> Added soon
+As [Opik](https://www.comet.com/opik) is developed by Comet ML, we can leverage the `COMET_API_KEY` to authenticate. Thus, no additional action is required. Check out 🔗 [this link](https://www.comet.com/opik) to visualize their dashboard.
 
 
 ## Set up .env settings file (for deployment)
@@ -396,6 +396,12 @@ We use GitHub Actions to implement our CI/CD pipelines. To implement your own, y
 - `AWS_REGION`
 
 Also, we provide instructions on how to set everything up in **Chapter 11**, section **Adding LLMOps to the LLM Twin**.
+
+## Comet ML & Opik
+
+If you created an account and have set the `COMET_API_KEY` correctly, you can visualize the results on their self-hosted dashboards at:
+- [Comet ML (for experiment tracking)](https://www.comet.com/)
+- [Opik (for prompt monitoring)](https://www.comet.com/opik)
 
 
 # Usage of pipelines and other tools

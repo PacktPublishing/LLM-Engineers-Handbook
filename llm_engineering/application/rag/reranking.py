@@ -1,3 +1,5 @@
+import opik
+
 from llm_engineering.application.networks import CrossEncoderModelSingleton
 from llm_engineering.domain.embedded_chunks import EmbeddedChunk
 from llm_engineering.domain.queries import Query
@@ -11,6 +13,7 @@ class Reranker(RAGStep):
 
         self._model = CrossEncoderModelSingleton()
 
+    @opik.track(name="Reranker.generate")
     def generate(self, query: Query, chunks: list[EmbeddedChunk], keep_top_k: int) -> list[EmbeddedChunk]:
         if self._mock:
             return chunks

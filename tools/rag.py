@@ -2,11 +2,12 @@ from langchain.globals import set_verbose
 from loguru import logger
 
 from llm_engineering.application.rag.retriever import ContextRetriever
-
-set_verbose(True)
-
+from llm_engineering.infrastructure.opik_utils import configure_opik
 
 if __name__ == "__main__":
+    configure_opik()
+    set_verbose(True)
+
     query = """
         My name is Paul Iusztin.
         

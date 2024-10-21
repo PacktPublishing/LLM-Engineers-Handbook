@@ -1,5 +1,6 @@
 import concurrent.futures
 
+import opik
 from loguru import logger
 from qdrant_client.models import FieldCondition, Filter, MatchValue
 
@@ -24,6 +25,7 @@ class ContextRetriever:
         self._metadata_extractor = SelfQuery(mock=mock)
         self._reranker = Reranker(mock=mock)
 
+    @opik.track(name="ContextRetriever.search")
     def search(
         self,
         query: str,

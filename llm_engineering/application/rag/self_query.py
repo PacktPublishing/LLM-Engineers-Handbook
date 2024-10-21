@@ -1,3 +1,4 @@
+import opik
 from langchain_openai import ChatOpenAI
 from loguru import logger
 
@@ -11,6 +12,7 @@ from .prompt_templates import SelfQueryTemplate
 
 
 class SelfQuery(RAGStep):
+    @opik.track(name="SelfQuery.generate")
     def generate(self, query: Query) -> Query:
         if self._mock:
             return query
