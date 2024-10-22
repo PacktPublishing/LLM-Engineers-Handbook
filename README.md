@@ -363,7 +363,7 @@ We start the evaluation pipeline through ZenML by running the following:
 ```shell
 poetry poe run-evaluation-pipeline
 ```
-This will start the evaluation code using the configs from `configs/evaluating.yaml` directly in SageMaker. You can visualize the results in `*-results` datasets saved to your HuggingFace profile.
+This will start the evaluation code using the configs from `configs/evaluating.yaml` directly in SageMaker. You can visualize the results in `*-results` datasets saved to your Hugging Face profile.
 
 ### Inference
 
@@ -565,7 +565,7 @@ Based on the setup and usage steps described above, assuming the local and cloud
 
 5. SFT fine-tuning Llamma 3.1: `poetry poe run-training-pipeline`
 
-6. For DPO, go to `configs/training`, change `finetuning_type` to `dpo`, and run `poetry poe run-training-pipeline` again
+6. For DPO, go to `configs/training.yaml`, change `finetuning_type` to `dpo`, and run `poetry poe run-training-pipeline` again
 
 7. Evaluate fine-tuned models: `poetry poe run-evaluation-pipeline`
 
@@ -574,7 +574,7 @@ Based on the setup and usage steps described above, assuming the local and cloud
 > [!IMPORTANT]
 > From now on, for these steps to work, you need to properly set up AWS SageMaker, such as running `poetry install --with aws` and filling in the AWS-related environment variables and configs.
 
-8. Call only the RAG retrieval module: `poetry poe call-rag-retrieval-module `
+8. Call only the RAG retrieval module: `poetry poe call-rag-retrieval-module`
 
 9. Deploy the LLM Twin microservice to SageMaker: `poetry poe deploy-inference-endpoint`
 
