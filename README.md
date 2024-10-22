@@ -548,7 +548,7 @@ poetry poe test
 
 Based on the setup and usage steps described above, assuming the local and cloud infrastructure works and the `.env` is filled as expected, follow the next steps to run the LLM system end-to-end:
 
-## Data 
+## Data
 
 1. Collect data: `poetry poe run-digital-data-etl`
 
@@ -558,7 +558,7 @@ Based on the setup and usage steps described above, assuming the local and cloud
 
 4. Compute preference alignment dataset: `poetry poe run-generate-preference-datasets-pipeline`
 
-## Model
+## Training
 
 > [!IMPORTANT]
 > From now on, for these steps to work, you need to properly set up AWS SageMaker, such as running `poetry install --with aws` and filling in the AWS-related environment variables and configs.
