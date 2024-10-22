@@ -24,7 +24,7 @@
 - [Inference](#inference)
 - [Linting & formatting (QA)](#linting--formatting-qa)
 - [Tests](#tests)
-- [💡 How to run the project end-to-end](#💡-how-to-run-the-project-end-to-end)
+- [💡 How to run the project end-to-end](#how-to-run-the-project-end-to-end)
 
 # Dependencies
 
@@ -544,7 +544,7 @@ Run all the tests using the following command:
 poetry poe test
 ```
 
-# 💡 How to run the project end-to-end
+# How to run the project end-to-end
 
 Based on the setup and usage steps described above, assuming the local and cloud infrastructure works and the `.env` is filled as expected, follow the next steps to run the LLM system end-to-end:
 
