@@ -24,7 +24,7 @@
 - [Inference](#inference)
 - [Linting & formatting (QA)](#linting--formatting-qa)
 - [Tests](#tests)
-- [💡 How to run the project end-to-end](#how-to-run-the-project-end-to-end)
+- [💡 How to run the project end-to-end](#💡-how-to-run-the-project-end-to-end)
 
 # Dependencies
 
