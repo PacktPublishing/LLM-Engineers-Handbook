@@ -7,6 +7,5 @@ settings:
     
 parameters:
   author_full_names:
-    - Alex Vesa
     - Maxime Labonne
     - Paul Iusztin

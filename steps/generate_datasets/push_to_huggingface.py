@@ -1,3 +1,4 @@
+from loguru import logger
 from typing_extensions import Annotated
 from zenml import step
 
@@ -14,6 +15,8 @@ def push_to_huggingface(
     assert (
         settings.HUGGINGFACE_ACCESS_TOKEN is not None
     ), "Huggingface access token must be provided for pushing to Huggingface"
+
+    logger.info(f"Pushing dataset {dataset_id} to Hugging Face.")
 
     huggingface_dataset = dataset.to_huggingface(flatten=True)
     huggingface_dataset.push_to_hub(dataset_id, token=settings.HUGGINGFACE_ACCESS_TOKEN)

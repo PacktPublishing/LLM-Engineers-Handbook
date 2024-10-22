@@ -2,7 +2,11 @@ from pathlib import Path
 
 from huggingface_hub import HfApi
 from loguru import logger
-from sagemaker.huggingface import HuggingFace
+
+try:
+    from sagemaker.huggingface import HuggingFace
+except ModuleNotFoundError:
+    logger.warning("Couldn't load SageMaker imports. Run 'poetry install --with aws' to support AWS.")
 
 from llm_engineering.settings import settings
 

@@ -73,7 +73,7 @@ class ArticleChunkingHandler(ChunkingDataHandler):
     def metadata(self) -> dict:
         return {
             "min_length": 1000,
-            "max_length": 1000,
+            "max_length": 2000,
         }
 
     def chunk(self, data_model: CleanedArticleDocument) -> list[ArticleChunk]:

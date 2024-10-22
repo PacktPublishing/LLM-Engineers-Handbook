@@ -24,6 +24,7 @@
 - [Inference](#inference)
 - [Linting & formatting (QA)](#linting--formatting-qa)
 - [Tests](#tests)
+- [💡 How to run the project end-to-end](#how-to-run-the-project-end-to-end)
 
 # Dependencies
 
@@ -107,12 +108,12 @@ poetry --version
 
 We use Poetry to install all the project's requirements to run it locally. Until deploying the code to AWS, we don't need to install any AWS dependencies. Also, we install Poe the Poet as a Poetry plugin to manage our CLI commands and pre-commit to verify our code before committing changes to git:
 ```shell
+poetry env use 3.11
 poetry install --without aws
-poetry self add 'poethepoet[poetry_plugin]==0.29.0'
-pre-commit install
+poetry run pre-commit install
 ```
 
-We run all the scripts using [Poe the Poet](https://poethepoet.natn.io/index.html). To start using it, you don't have to do anything else but install Poe the Poet as a Poetry plugin, as described above: `poetry self add 'poethepoet[poetry_plugin]'`
+We run all the scripts using [Poe the Poet](https://poethepoet.natn.io/index.html) as our task manager.
 
 To activate the environment created by Poetry, run:
 ```shell
@@ -542,6 +543,43 @@ Run all the tests using the following command:
 ```shell
 poetry poe test
 ```
+
+# 💡 How to run the project end-to-end
+
+Based on the setup and usage steps described above, assuming the local and cloud infrastructure works and the `.env` is filled as expected, follow the next steps to run the LLM system end-to-end:
+
+## Data 
+
+1. Collect data: `poetry poe run-digital-data-etl`
+
+2. Compute features: `poetry poe run-feature-engineering-pipeline`
+
+3. Compute instruct dataset: `poetry poe run-generate-instruct-datasets-pipeline`
+
+4. Compute preference alignment dataset: `poetry poe run-generate-preference-datasets-pipeline`
+
+## Model
+
+> [!IMPORTANT]
+> From now on, for these steps to work, you need to properly set up AWS SageMaker, such as running `poetry install --with aws` and filling in the AWS-related environment variables and configs.
+
+5. SFT fine-tuning Llamma 3.1: `poetry poe run-training-pipeline`
+
+6. For DPO, go to `configs/training`, change `finetuning_type` to `dpo`, and run `poetry poe run-training-pipeline` again
+
+7. Evaluate fine-tuned models: `poetry poe run-evaluation-pipeline`
+
+## Inference
+
+8. Call only the RAG retrieval module: `poetry poe call-rag-retrieval-module `
+
+9. Deploy the LLM Twin microservice to SageMaker: `poetry poe deploy-inference-endpoint`
+
+10. Test the LLM Twin microservice: `poetry poe test-sagemaker-endpoint`
+
+11. Start end-to-end RAG server: `poetry poe run-inference-ml-service`
+
+12. Test RAG server: `poetry poe call-inference-ml-service`
 
 # License
 
