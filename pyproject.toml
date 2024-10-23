@@ -8,7 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "~3.11"
-zenml = {version = "0.67.0", extras = ["server"]}
+zenml = { version = "0.67.0", extras = ["server"] }
 pymongo = "^4.6.2"
 click = "^8.0.1"
 loguru = "^0.7.2"
@@ -133,7 +133,7 @@ bash-docker-container = "docker run --rm -it --network host --env-file .env llmt
 lint-check = "poetry run ruff check ."
 format-check = "poetry run ruff format --check ."
 lint-check-docker = "sh -c 'docker run --rm -i hadolint/hadolint < Dockerfile'"
-gitleaks-check = "docker run -v .:/src zricethezav/gitleaks:latest detect -v --source=/src"
+gitleaks-check = "docker run -v .:/src zricethezav/gitleaks:latest dir /src/llm_engineering"
 lint-fix = "poetry run ruff check --fix ."
 format-fix = "poetry run ruff format ."
 
