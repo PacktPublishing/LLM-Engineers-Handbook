@@ -198,12 +198,17 @@ For your AWS set-up to work correctly, you need the AWS CLI installed on your lo
 
 In **Chapter 2**, section **Preparing for AWS**, we provided step-by-step instructions on how to install the AWS CLI, create an admin user on AWS and get an access key to set up the `AWS_ACCESS_KEY` and `AWS_SECRET_KEY` environment variables.
 
-If you already have an AWS admin user in place, you have to configure the following env vars:
+If you already have an AWS admin user in place, you have to configure the following env vars in your `.env` file:
 ```shell
 AWS_REGION="eu-central-1" # Change it with your AWS region.
 AWS_ACCESS_KEY="<your_aws_access_key>"
 AWS_SECRET_KEY="<your_aws_secret_key>"
 ```
+AWS credentials are typically stored in `~/.aws/credentials`. You can view this file directly using `cat` or similar commands:
+```shell
+cat ~/.aws/credentials
+```
+
 
 > [!IMPORTANT]
 > Find more configuration options in the [settings.py](https://github.com/PacktPublishing/LLM-Engineers-Handbook/blob/main/llm_engineering/settings.py) file. Every variable from the `Settings` class can be configured through the `.env` file. 
@@ -338,15 +343,15 @@ To ensure best practices, we must create a new AWS user restricted to creating a
 ```shell
 poetry poe create-sagemaker-role
 ```
-It will create a `sagemaker_user_credentials.json` file at the root of your repository with your new `AWS_ACCESS_KEY` and `AWS_SECRET_KEY` values. Replace them in your `.env` file. 
+It will create a `sagemaker_user_credentials.json` file at the root of your repository with your new `AWS_ACCESS_KEY` and `AWS_SECRET_KEY` values. **But before replacing your new AWS credentials, also run the following command to create the execution role (to create it using your admin credentials).**
 
-Now, we have to create an IAM execution role used by AWS SageMaker to access other AWS resources on our behalf. Create it by running:
+To create the IAM execution role used by AWS SageMaker to access other AWS resources on our behalf, run the following:
 ```shell
 poetry poe create-sagemaker-execution-role
 ```
 It will create a `sagemaker_execution_role.json` file at the root of your repository with your new `AWS_ARN_ROLE` value. Add it to your `.env` file. 
 
-Once you've updated the `AWS_ACCESS_KEY`, `AWS_SECRET_KEY`, and `AWS_ARN_ROLE` values in your `.env` file, you're ready to start using AWS SageMaker. This step is crucial to complete the setup.
+Once you've updated the `AWS_ACCESS_KEY`, `AWS_SECRET_KEY`, and `AWS_ARN_ROLE` values in your `.env` file, you can use AWS SageMaker. **Note that this step is crucial to complete the AWS setup.**
 
 > [!IMPORTANT]
 > Step-by-step instructions on how to follow these steps are provided in **Chapter 10**, in the section **Implementing the LLM microservice using AWS SageMaker**.

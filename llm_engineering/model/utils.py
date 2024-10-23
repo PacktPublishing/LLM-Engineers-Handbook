@@ -1,6 +1,10 @@
-import boto3
-from botocore.exceptions import ClientError
 from loguru import logger
+
+try:
+    import boto3
+    from botocore.exceptions import ClientError
+except ModuleNotFoundError:
+    logger.warning("Couldn't load AWS or SageMaker imports. Run 'poetry install --with aws' to support AWS.")
 
 from llm_engineering.settings import settings
 

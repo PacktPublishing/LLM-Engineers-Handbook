@@ -1,13 +1,21 @@
 import json
 from pathlib import Path
 
-import boto3
 from loguru import logger
+
+try:
+    import boto3
+except ModuleNotFoundError:
+    logger.warning("Couldn't load AWS or SageMaker imports. Run 'poetry install --with aws' to support AWS.")
 
 from llm_engineering.settings import settings
 
 
 def create_sagemaker_execution_role(role_name: str):
+    assert settings.AWS_REGION, "AWS_REGION is not set."
+    assert settings.AWS_ACCESS_KEY, "AWS_ACCESS_KEY is not set."
+    assert settings.AWS_SECRET_KEY, "AWS_SECRET_KEY is not set."
+
     # Create IAM client
     iam = boto3.client(
         "iam",

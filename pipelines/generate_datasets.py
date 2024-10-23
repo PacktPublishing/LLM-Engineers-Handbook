@@ -10,7 +10,7 @@ def generate_datasets(
     test_split_size: float = 0.1,
     push_to_huggingface: bool = False,
     dataset_id: str | None = None,
-    mock: bool = True,
+    mock: bool = False,
     wait_for: str | list[str] | None = None,
 ) -> None:
     cleaned_documents = cd_steps.query_feature_store(after=wait_for)
