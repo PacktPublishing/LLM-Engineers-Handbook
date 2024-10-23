@@ -61,6 +61,7 @@ jobs:
       - name: Install packages
         run: |
           poetry install
+          poetry self add 'poethepoet[poetry_plugin]==0.29.0'
 
       - name: Run tests
         run: |
