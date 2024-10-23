@@ -110,6 +110,7 @@ We use Poetry to install all the project's requirements to run it locally. Until
 ```shell
 poetry env use 3.11
 poetry install --without aws
+poetry self add 'poethepoet[poetry_plugin]'
 poetry run pre-commit install
 ```
 
