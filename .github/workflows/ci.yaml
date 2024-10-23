@@ -29,7 +29,7 @@ jobs:
       - name: Install packages
         run: |
           poetry install --only dev
-          poetry self add 'poethepoet[poetry_plugin]==0.29.0'
+          poetry self add 'poethepoet[poetry_plugin]'
 
       - name: gitleaks check
         run: poetry poe gitleaks-check
@@ -61,7 +61,7 @@ jobs:
       - name: Install packages
         run: |
           poetry install
-          poetry self add 'poethepoet[poetry_plugin]==0.29.0'
+          poetry self add 'poethepoet[poetry_plugin]'
 
       - name: Run tests
         run: |
