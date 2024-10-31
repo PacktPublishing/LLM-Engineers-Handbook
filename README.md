@@ -5,6 +5,7 @@
   <h3>
     Repository containing all the code for the LLM Engineer's Handbook.
   </h3>
+  <i>by <a href="https://github.com/iusztinpaul">Paul Iusztin</a> and <a href="https://github.com/mlabonne">Maxime Labonne</a>
 </div>
 
 <p align="center">
