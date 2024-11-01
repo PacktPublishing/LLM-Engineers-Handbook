@@ -113,53 +113,28 @@ We use Poetry to install all the project's requirements to run it locally. Until
 ```shell
 poetry env use 3.11
 poetry install --without aws
-poetry self add 'poethepoet[poetry_plugin]'
 poetry run pre-commit install
 ```
 
 We run all the scripts using [Poe the Poet](https://poethepoet.natn.io/index.html) as our task manager.
 
-<details>
-<summary>Troubleshooting **Poe the Poet** installation. Errors while running `poetry self add 'poethepoet[poetry_plugin]'` </summary>
-If you get a `ChefBuildError` error while running `poetry self add 'poethepoet[poetry_plugin]'` (or any other error), the error is likely related to Poetry's plugin installation process. 
-
-Here are a few potential solutions:
-
-1. First, try installing poethepoet without the Poetry plugin functionality:
-```bash
-poetry add poethepoet
-```
-
-2. If that doesn't work, you can try installing it globally using pip:
-```bash
-pip install poethepoet
-```
-
-3. If you're still having issues, you can try updating Poetry first and then installing poethepoet:
-```bash
-poetry self update
-poetry add poethepoet
-```
-
-4. As a last resort, you could try uninstalling and reinstalling Poetry completely:
-```bash
-# Uninstall Poetry
-curl -sSL https://install.python-poetry.org | python3 - --uninstall
-
-# Reinstall Poetry
-curl -sSL https://install.python-poetry.org | python3 -
-
-# Then try adding poethepoet again
-poetry add poethepoet
-```
-
-Also, note that even without `poethepoet`, you can still run the project's commands directly using Poetry's run command with slightly different syntax. For example, instead of `poetry poe local-infrastructure-up`, you could use the underlying command directly, which you can find in the `pyproject.toml` file.
-</details>
-
 To activate the environment created by Poetry, run:
 ```shell
 poetry shell
 ```
+Now, you can start running `poe` command:
+```bash
+poetry poe ...
+```
+
+<details>
+<summary>Troubleshooting **Poe the Poet** installation.</summary>
+
+Note that even without `poethepoet`, you can still run the project's commands directly using Poetry's run command with slightly different syntax. 
+
+For example, instead of `poetry poe local-infrastructure-up`, you could use the underlying command directly, which you can find in the `pyproject.toml` file.
+</details>
+
 Now, let’s configure our local project with all the necessary credentials and tokens to run the code locally.
 
 ## Set up .env settings file (for local development)
