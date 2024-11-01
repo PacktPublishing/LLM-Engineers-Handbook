@@ -116,13 +116,13 @@ poetry install --without aws
 poetry run pre-commit install
 ```
 
-We run all the scripts using [Poe the Poet](https://poethepoet.natn.io/index.html) as our task manager.
+As our task manager, we run all the scripts using [Poe the Poet](https://poethepoet.natn.io/index.html).
 
 To activate the environment created by Poetry, run:
 ```shell
 poetry shell
 ```
-Now, you can start running `poe` command:
+Now, you can start running `poe` commands:
 ```bash
 poetry poe ...
 ```
