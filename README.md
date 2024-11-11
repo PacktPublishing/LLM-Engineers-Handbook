@@ -178,7 +178,7 @@ As [Opik](https://www.comet.com/opik) is developed by Comet ML, we can leverage 
 
 ## Set up .env settings file (for deployment)
 
-when deploying the project to the cloud, we must set additional settings for Mongo, Qdrant, and AWS.
+When deploying the project to the cloud, we must set additional settings for Mongo, Qdrant, and AWS.
 
 If you are just working localy, the default values of these env vars will work out-of-the-box.
 
