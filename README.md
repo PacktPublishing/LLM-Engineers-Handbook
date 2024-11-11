@@ -210,7 +210,7 @@ You can create a Qdrant cluster for free on [Qdrant's serverless platform](https
 
 ### AWS
 
-For your AWS set-up to work correctly, you need the AWS CLI installed on your local machine and properly configured with an admin user (or a user with permission to create new SageMaker, ECR and S3 resources; using an admin user will make everything more straightforward).
+For your AWS set-up to work correctly, you need the AWS CLI installed on your local machine and properly configured with an admin user (or a user with enough permissions to create new SageMaker, ECR and S3 resources; using an admin user will make everything more straightforward).
 
 In **Chapter 2**, section **Preparing for AWS**, we provided step-by-step instructions on how to install the AWS CLI, create an admin user on AWS and get an access key to set up the `AWS_ACCESS_KEY` and `AWS_SECRET_KEY` environment variables.
 
