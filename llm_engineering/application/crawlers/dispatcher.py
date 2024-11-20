@@ -45,7 +45,7 @@ class CrawlerDispatcher:
         for pattern, crawler in self._crawlers.items():
             if re.match(pattern, url):
                 return crawler()
-            else:
-                logger.warning(f"No crawler found for {url}. Defaulting to CustomArticleCrawler.")
+        else:
+            logger.warning(f"No crawler found for {url}. Defaulting to CustomArticleCrawler.")
 
             return CustomArticleCrawler()
