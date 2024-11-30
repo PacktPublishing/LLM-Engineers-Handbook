@@ -30,7 +30,10 @@ def generate_answers(model_id: str, dataset_name: str):
 
     dataset = load_dataset(dataset_name, split="test")
     if IS_DUMMY:
-        dataset = dataset.select(range(10))
+        try:
+            dataset = dataset.select(range(10))
+        except Exception:
+            print("Dummy mode active. Failed to trim the dataset to 10 samples.")  # noqa
     print(f"Dataset size: {len(dataset)}")  # noqa
     dataset = dataset.map(lambda sample: {"prompt": format(sample)})
 

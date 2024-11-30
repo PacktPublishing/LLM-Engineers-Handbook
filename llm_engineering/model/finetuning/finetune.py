@@ -105,7 +105,7 @@ def finetune(
             try:
                 dataset = dataset.select(range(400))
             except Exception:
-                print("Dummy mode active. Could not trim the dataset.")  # noqa
+                print("Dummy mode active. Failed to trim the dataset to 400 samples.")  # noqa
         print(f"Loaded dataset with {len(dataset)} samples.")  # noqa
 
         dataset = dataset.map(format_samples_sft, batched=True, remove_columns=dataset.column_names)
@@ -156,7 +156,7 @@ def finetune(
             try:
                 dataset = dataset.select(range(400))
             except Exception:
-                print("Dummy mode active. Could not trim the dataset.")  # noqa
+                print("Dummy mode active. Failed to trim the dataset to 400 samples.")  # noqa
         print(f"Loaded dataset with {len(dataset)} samples.")  # noqa
 
         dataset = dataset.map(format_samples_dpo)
