@@ -199,7 +199,7 @@ model_ids = [
     check_if_huggingface_model_exists(
         f"{MODEL_HUGGINGFACE_WORKSPACE}/TwinLlama-3.1-8B-DPO", default_value="mlabonne/TwinLlama-3.1-8B-DPO"
     ),
-    "meta-llama/Meta-Llama-3.1-8B-Instruct",
+    "meta-llama/Llama-3.1-8B-Instruct",
 ]
 
 if __name__ == "__main__":

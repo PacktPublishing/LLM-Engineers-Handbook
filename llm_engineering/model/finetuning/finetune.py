@@ -268,7 +268,7 @@ if __name__ == "__main__":
 
     if args.finetuning_type == "sft":
         print("Starting SFT training...")  # noqa
-        base_model_name = "meta-llama/Meta-Llama-3.1-8B"
+        base_model_name = "meta-llama/Llama-3.1-8B"
         print(f"Training from base model '{base_model_name}'")  # noqa
 
         output_dir_sft = Path(args.model_dir) / "output_sft"
