@@ -102,7 +102,10 @@ def finetune(
         dataset2 = load_dataset("mlabonne/FineTome-Alpaca-100k", split="train[:10000]")
         dataset = concatenate_datasets([dataset1, dataset2])
         if is_dummy:
-            dataset = dataset.select(range(400))
+            try:
+                dataset = dataset.select(range(400))
+            except Exception:
+                print("Dummy mode active. Could not trim the dataset.")  # noqa
         print(f"Loaded dataset with {len(dataset)} samples.")  # noqa
 
         dataset = dataset.map(format_samples_sft, batched=True, remove_columns=dataset.column_names)
@@ -150,7 +153,10 @@ def finetune(
 
         dataset = load_dataset(f"{dataset_huggingface_workspace}/llmtwin-dpo", split="train")
         if is_dummy:
-            dataset = dataset.select(range(400))
+            try:
+                dataset = dataset.select(range(400))
+            except Exception:
+                print("Dummy mode active. Could not trim the dataset.")  # noqa
         print(f"Loaded dataset with {len(dataset)} samples.")  # noqa
 
         dataset = dataset.map(format_samples_dpo)
