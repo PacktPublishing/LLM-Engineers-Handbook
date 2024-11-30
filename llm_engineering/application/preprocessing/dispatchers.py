@@ -38,12 +38,12 @@ class CleaningHandlerFactory:
 
 
 class CleaningDispatcher:
-    cleaning_factory = CleaningHandlerFactory()
+    factory = CleaningHandlerFactory()
 
     @classmethod
     def dispatch(cls, data_model: NoSQLBaseDocument) -> VectorBaseDocument:
         data_category = DataCategory(data_model.get_collection_name())
-        handler = cls.cleaning_factory.create_handler(data_category)
+        handler = cls.factory.create_handler(data_category)
         clean_model = handler.clean(data_model)
 
         logger.info(
@@ -69,12 +69,12 @@ class ChunkingHandlerFactory:
 
 
 class ChunkingDispatcher:
-    cleaning_factory = ChunkingHandlerFactory
+    factory = ChunkingHandlerFactory
 
     @classmethod
     def dispatch(cls, data_model: VectorBaseDocument) -> list[VectorBaseDocument]:
         data_category = data_model.get_category()
-        handler = cls.cleaning_factory.create_handler(data_category)
+        handler = cls.factory.create_handler(data_category)
         chunk_models = handler.chunk(data_model)
 
         logger.info(
@@ -102,7 +102,7 @@ class EmbeddingHandlerFactory:
 
 
 class EmbeddingDispatcher:
-    cleaning_factory = EmbeddingHandlerFactory
+    factory = EmbeddingHandlerFactory
 
     @classmethod
     def dispatch(
@@ -119,7 +119,7 @@ class EmbeddingDispatcher:
         assert all(
             data_model.get_category() == data_category for data_model in data_model
         ), "Data models must be of the same category."
-        handler = cls.cleaning_factory.create_handler(data_category)
+        handler = cls.factory.create_handler(data_category)
 
         embedded_chunk_model = handler.embed_batch(data_model)
 
