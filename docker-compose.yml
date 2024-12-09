@@ -2,14 +2,11 @@ services:
   mongo:
     image: mongo:latest
     container_name: "llm_engineering_mongo"
-    logging:
-      options:
-        max-size: 1g
     environment:
       MONGO_INITDB_ROOT_USERNAME: "llm_engineering"
       MONGO_INITDB_ROOT_PASSWORD: "llm_engineering"
     ports:
-      - 27017:27017
+      - "27017:27017"
     volumes:
       - mongo_data:/data/db
     networks:
@@ -20,16 +17,38 @@ services:
     image: qdrant/qdrant:latest
     container_name: "llm_engineering_qdrant"
     ports:
-      - 6333:6333
-      - 6334:6334
-    expose:
-      - 6333
-      - 6334
+      - "6333:6333"
+      - "6334:6334"
     volumes:
       - qdrant_data:/qdrant/storage
     networks:
       - local
     restart: always
+
+  # clearml:
+  #   image: allegroai/clearml:latest
+  #   container_name: "llm_engineering_clearml"
+  #   ports:
+  #     - "8008:8008"
+  #     - "8080:8080"
+  #   networks:
+  #     - local
+  #   restart: always
+
+  # app:
+  #   build: .
+  #   container_name: "llm_engineering_app"
+  #   ports:
+  #     - "5000:5000"
+  #   volumes:
+  #     - .:/app
+  #   depends_on:
+  #     - mongo
+  #     - qdrant
+  #     - clearml
+  #   networks:
+  #     - local
+  #   restart: always
 
 volumes:
   mongo_data:
@@ -38,3 +57,70 @@ volumes:
 networks:
   local:
     driver: bridge
+# services:
+#   mongo:
+#     image: mongo:latest
+#     container_name: "llm_engineering_mongo"
+#     logging:
+#       options:
+#         max-size: 1g
+#     environment:
+#       MONGO_INITDB_ROOT_USERNAME: "llm_engineering"
+#       MONGO_INITDB_ROOT_PASSWORD: "llm_engineering"
+#     ports:
+#       - 27017:27017
+#     volumes:
+#       - mongo_data:/data/db
+#     networks:
+#       - local
+#     restart: always
+
+#   qdrant:
+#     image: qdrant/qdrant:latest
+#     container_name: "llm_engineering_qdrant"
+#     ports:
+#       - 6333:6333
+#       - 6334:6334
+#     expose:
+#       - 6333
+#       - 6334
+#     volumes:
+#       - qdrant_data:/qdrant/storage
+#     networks:
+#       - local
+#     restart: always
+
+# volumes:
+#   mongo_data:
+#   qdrant_data:
+
+# networks:
+#   local:
+#     driver: bridge
+#   clearml:
+#     image: allegroai/clearml:latest
+#     container_name: "llm_engineering_clearml"
+#     ports:
+#       - 8008:8008
+#       - 8080:8080
+#     environment:
+#       - CLEARML_API_ACCESS_KEY=your_access_key
+#       - CLEARML_API_SECRET_KEY=your_secret_key
+#       - CLEARML_API_HOST=http://clearml:8008
+#     networks:
+#       - local
+#     restart: always
+
+#   app:
+#     build: .
+#     container_name: "llm_engineering_app"
+#     ports:
+#       - 5000:5000
+#     volumes:
+#       - .:/app
+#     depends_on:
+#       - mongo
+#       - qdrant
+#     networks:
+#       - local
+#     restart: always
