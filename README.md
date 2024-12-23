@@ -10,6 +10,10 @@
   </a>
 </p>
 
+<p align="center">
+  Find the book on <a href="https://www.amazon.com/LLM-Engineers-Handbook-engineering-production/dp/1836200072/">Amazon</a> or <a href="https://www.packtpub.com/en-us/product/llm-engineers-handbook-9781836200062">Packt</a>
+</p>
+
 ## 🌟 Features
 
 The goal of this book is to create your own end-to-end LLM-based system using best practices:
