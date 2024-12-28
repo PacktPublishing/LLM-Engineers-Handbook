@@ -1,5 +1,4 @@
 from abc import ABC
-from typing import Optional
 
 from pydantic import UUID4, Field
 
@@ -35,7 +34,7 @@ class RepositoryDocument(Document):
 
 
 class PostDocument(Document):
-    image: Optional[str] = None
+    image: str | None = None
     link: str | None = None
 
     class Settings:
