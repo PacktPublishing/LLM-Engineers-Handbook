@@ -41,6 +41,7 @@ langchain-community = "^0.2.11"
 fastapi = ">=0.100,<=0.110"
 uvicorn = "^0.30.6"
 opik = "^0.2.2"
+torch = "2.2.2"
 
 
 [tool.poetry.group.dev.dependencies]
