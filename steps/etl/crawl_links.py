@@ -46,9 +46,8 @@ def _crawl_link(dispatcher: CrawlerDispatcher, link: str, user: UserDocument) ->
 
 
 def _add_to_metadata(metadata: dict, domain: str, successfull_crawl: bool) -> dict:
-    if domain not in metadata:
-        metadata[domain] = {}
-    metadata[domain]["successful"] = metadata.get(domain, {}).get("successful", 0) + successfull_crawl
-    metadata[domain]["total"] = metadata.get(domain, {}).get("total", 0) + 1
+    metadata.setdefault(domain, {"successful": 0, "total": 0})
+    metadata[domain]["successful"] += successfull_crawl
+    metadata[domain]["total"] += 1
 
     return metadata
