@@ -3,3 +3,4 @@ datasets==2.20.0
 vllm==0.6.1.post2
 tqdm==4.66.4
 openai==1.55.3
+torch==2.2.2
