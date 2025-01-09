@@ -52,8 +52,8 @@ The code also uses and depends on the following cloud services. For now, you don
 | Service | Purpose |
 |---------|---------|
 | [HuggingFace](https://huggingface.com/) | Model registry |
-| [Comet ML](https://www.comet.com/site/) | Experiment tracker |
-| [Opik](https://www.comet.com/site/products/opik/) | Prompt monitoring |
+| [Comet ML](https://www.comet.com/site/products/opik/?utm_source=llm_handbook&utm_medium=github&utm_campaign=opik) | Experiment tracker |
+| [Opik](https://www.comet.com/site/products/opik/?utm_source=llm_handbook&utm_medium=github&utm_campaign=opik) | Prompt monitoring |
 | [ZenML](https://www.zenml.io/) | Orchestrator and artifacts layer |
 | [AWS](https://aws.amazon.com/) | Compute and storage |
 | [MongoDB](https://www.mongodb.com/) | NoSQL database |
@@ -269,7 +269,7 @@ To authenticate to Comet ML (required only during training) and Opik, you must f
 COMET_API_KEY=your_api_key_here
 ```
 
-→ Check out this [tutorial](https://www.comet.com/docs/v2/api-and-sdk/rest-api/overview/) to learn how to get the Comet ML variables from above. You can also access Opik's dashboard using 🔗[this link](https://www.comet.com/opik).
+→ Check out this [tutorial](https://www.comet.com/docs/opik/?utm_source=llm_handbook&utm_medium=github&utm_campaign=opik) to learn how to get started with Opik. You can also access Opik's dashboard using 🔗[this link](https://www.comet.com/opik?utm_source=llm_handbook&utm_medium=github&utm_content=opik).
 
 ### 6. Deployment Setup
 
@@ -466,8 +466,8 @@ Also, we provide instructions on how to set everything up in **Chapter 11**, sec
 #### Comet ML & Opik
 
 You can visualize the results on their self-hosted dashboards if you create a Comet account and correctly set the `COMET_API_KEY` env var. As Opik is powered by Comet, you don't have to set up anything else along Comet:
-- [Comet ML (for experiment tracking)](https://www.comet.com/)
-- [Opik (for prompt monitoring)](https://www.comet.com/opik)
+- [Comet ML (for experiment tracking)](https://www.comet.com/?utm_source=llm_handbook&utm_medium=github&utm_campaign=opik)
+- [Opik (for prompt monitoring)](https://www.comet.com/opik?utm_source=llm_handbook&utm_medium=github&utm_campaign=opik)
 
 ## ⚡ Pipelines
 
