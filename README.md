@@ -40,7 +40,7 @@ To install and run the project locally, you need the following dependencies.
 |------|---------|---------|------------------|
 | pyenv | ≥2.3.36 | Multiple Python versions (optional) | [Install Guide](https://github.com/pyenv/pyenv?tab=readme-ov-file#installation) |
 | Python | 3.11 | Runtime environment | [Download](https://www.python.org/downloads/) |
-| Poetry | ≥1.8.3 | Package management | [Install Guide](https://python-poetry.org/docs/#installation) |
+| Poetry | >= 1.8.3 and < 2.0 | Package management | [Install Guide](https://python-poetry.org/docs/#installation) |
 | Docker | ≥27.1.1 | Containerization | [Install Guide](https://docs.docker.com/engine/install/) |
 | AWS CLI | ≥2.15.42 | Cloud management | [Install Guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) |
 | Git | ≥2.44.0 | Version control | [Download](https://git-scm.com/downloads) |
