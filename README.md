@@ -112,6 +112,9 @@ The code logic and imports flow as follows: `infrastructure` → `model` → `ap
 
 ## 💻 Installation
 
+> [!NOTE]
+> If you are experiencing issues while installing and running the repository, consider checking the [Issues](https://github.com/PacktPublishing/LLM-Engineers-Handbook/issues) GitHub section for other people who solved similar problems or directly asking us for help.
+
 ### 1. Clone the Repository
 
 Start by cloning the repository and navigating to the project directory:
