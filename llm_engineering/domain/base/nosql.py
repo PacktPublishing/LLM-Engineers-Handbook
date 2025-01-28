@@ -48,11 +48,7 @@ class NoSQLBaseDocument(BaseModel, Generic[T], ABC):
 
         if "_id" not in parsed and "id" in parsed:
             parsed["_id"] = str(parsed.pop("id"))
-
-        for key, value in parsed.items():
-            if isinstance(value, uuid.UUID):
-                parsed[key] = str(value)
-
+        
         return parsed
 
     def model_dump(self: T, **kwargs) -> dict:
