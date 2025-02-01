@@ -14,6 +14,13 @@
   Find the book on <a href="https://www.amazon.com/LLM-Engineers-Handbook-engineering-production/dp/1836200072/">Amazon</a> or <a href="https://www.packtpub.com/en-us/product/llm-engineers-handbook-9781836200062">Packt</a>
 </p>
 
+# LLM-Engineering 프로젝트
+
+이 프로젝트는 LLM 기반 엔지니어링 솔루션을 개발하는 프로젝트입니다.
+
+## CI/CD 테스트
+이 줄은 CI/CD 테스트를 위한 변경 사항입니다.
+
 ## 🌟 Features
 
 The goal of this book is to create your own end-to-end LLM-based system using best practices:
