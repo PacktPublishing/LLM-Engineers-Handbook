@@ -1,6 +1,6 @@
 settings:
   docker:
-    parent_image: 992382797823.dkr.ecr.eu-central-1.amazonaws.com/zenml-rlwlcs:latest
+    parent_image: 122610508479.dkr.ecr.us-east-1.amazonaws.com/zenml-lbynmz
     skip_build: True
   orchestrator.sagemaker:
     synchronous: false
@@ -9,5 +9,5 @@ parameters:
   test_split_size: 0.05
   dataset_type: "preference"
   push_to_huggingface: true
-  dataset_id: pauliusztin/llmtwin-dpo
-  mock: false
+  dataset_id: Oysiyl/llmtwin-dpo
+  mock: true
