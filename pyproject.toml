@@ -8,7 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "~3.11"
-zenml = { version = "0.74.0", extras = ["server"] }
+zenml = { version = "0.67.0", extras = ["server"] }
 pymongo = "^4.6.2"
 click = "^8.0.1"
 loguru = "^0.7.2"
@@ -41,7 +41,6 @@ langchain-community = "^0.2.11"
 fastapi = ">=0.100,<=0.110"
 uvicorn = "^0.30.6"
 opik = "^0.2.2"
-torch = "2.2.2"
 
 
 [tool.poetry.group.dev.dependencies]
