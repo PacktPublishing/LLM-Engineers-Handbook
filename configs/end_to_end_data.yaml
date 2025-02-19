@@ -82,6 +82,6 @@ parameters:
         - https://maximelabonne.substack.com/p/how-to-start-machine-learning-for-developers-in-2022-390af12b193f
   # Generate instruct dataset pipeline parameters
   test_split_size: 0.1
-  push_to_huggingface: true
+  push_to_huggingface: false
   dataset_id: pauliusztin/llmtwin
   mock: false
