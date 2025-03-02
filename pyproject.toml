@@ -61,81 +61,49 @@ sagemaker-huggingface-inference-toolkit = "^2.4.0"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-# ----------------------------------
-# --- Poe the Poet Configuration ---
-# ----------------------------------
-
 [tool.poe.tasks]
 # Data pipelines
-run-digital-data-etl-alex = "echo 'It is not supported anymore.'"
-run-digital-data-etl-maxime = "poetry run python -m tools.run --run-etl --no-cache --etl-config-filename digital_data_etl_maxime_labonne.yaml"
-run-digital-data-etl-paul = "poetry run python -m tools.run --run-etl --no-cache --etl-config-filename digital_data_etl_paul_iusztin.yaml"
-run-digital-data-etl = [
-    "run-digital-data-etl-maxime",
-    "run-digital-data-etl-paul",
-]
-run-feature-engineering-pipeline = "poetry run python -m tools.run --no-cache --run-feature-engineering"
-run-generate-instruct-datasets-pipeline = "poetry run python -m tools.run --no-cache --run-generate-instruct-datasets"
-run-generate-preference-datasets-pipeline = "poetry run python -m tools.run --no-cache --run-generate-preference-datasets"
-run-end-to-end-data-pipeline = "poetry run python -m tools.run --no-cache --run-end-to-end-data"
+run-digital-data-etl-alex = { cmd = "echo 'It is not supported anymore.'" }
+run-digital-data-etl-maxime = { cmd = "poetry run python -m tools.run --run-etl --no-cache --etl-config-filename digital_data_etl_maxime_labonne.yaml" }
+run-digital-data-etl-paul = { cmd = "poetry run python -m tools.run --run-etl --no-cache --etl-config-filename digital_data_etl_paul_iusztin.yaml" }
+run-digital-data-etl = { sequence = ["run-digital-data-etl-maxime", "run-digital-data-etl-paul"] }
+run-feature-engineering-pipeline = { cmd = "poetry run python -m tools.run --no-cache --run-feature-engineering" }
+run-generate-instruct-datasets-pipeline = { cmd = "poetry run python -m tools.run --no-cache --run-generate-instruct-datasets" }
+run-generate-preference-datasets-pipeline = { cmd = "poetry run python -m tools.run --no-cache --run-generate-preference-datasets" }
+run-end-to-end-data-pipeline = { cmd = "poetry run python -m tools.run --no-cache --run-end-to-end-data" }
 
 # Utility pipelines
-run-export-artifact-to-json-pipeline = "poetry run python -m tools.run --no-cache --run-export-artifact-to-json"
-run-export-data-warehouse-to-json = "poetry run python -m tools.data_warehouse --export-raw-data"
-run-import-data-warehouse-from-json = "poetry run python -m tools.data_warehouse --import-raw-data"
+run-export-artifact-to-json-pipeline = { cmd = "poetry run python -m tools.run --no-cache --run-export-artifact-to-json" }
+run-export-data-warehouse-to-json = { cmd = "poetry run python -m tools.data_warehouse --export-raw-data" }
+run-import-data-warehouse-from-json = { cmd = "poetry run python -m tools.data_warehouse --import-raw-data" }
 
 # Training pipelines
-run-training-pipeline = "poetry run python -m tools.run --no-cache --run-training"
-run-evaluation-pipeline = "poetry run python -m tools.run --no-cache --run-evaluation"
+run-training-pipeline = { cmd = "poetry run python -m tools.run --no-cache --run-training" }
+run-evaluation-pipeline = { cmd = "poetry run python -m tools.run --no-cache --run-evaluation" }
 
 # Inference
-call-rag-retrieval-module = "poetry run python -m tools.rag"
-
-run-inference-ml-service = "poetry run uvicorn tools.ml_service:app --host 0.0.0.0 --port 8000 --reload"
-call-inference-ml-service = "curl -X POST 'http://127.0.0.1:8000/rag' -H 'Content-Type: application/json' -d '{\"query\": \"My name is Paul Iusztin. Could you draft a LinkedIn post discussing RAG systems? I am particularly interested in how RAG works and how it is integrated with vector DBs and LLMs.\"}'"
+call-rag-retrieval-module = { cmd = "poetry run python -m tools.rag" }
+run-inference-ml-service = { cmd = "poetry run uvicorn tools.ml_service:app --host 0.0.0.0 --port 8000 --reload" }
+call-inference-ml-service = { cmd = """curl -X POST 'http://127.0.0.1:8000/rag' -H 'Content-Type: application/json' -d '{"query": "My name is Paul Iusztin. Could you draft a LinkedIn post discussing RAG systems? I am particularly interested in how RAG works and how it is integrated with vector DBs and LLMs."}'""" }
 
 # Infrastructure
-## Local infrastructure
-local-docker-infrastructure-up = "docker compose up -d"
-local-docker-infrastructure-down = "docker compose stop"
-local-zenml-server-down = "poetry run zenml down"
-local-infrastructure-up = [
-    "local-docker-infrastructure-up",
-    "local-zenml-server-down",
-    "local-zenml-server-up",
-]
-local-infrastructure-down = [
-    "local-docker-infrastructure-down",
-    "local-zenml-server-down",
-]
-set-local-stack = "poetry run zenml stack set default"
-set-aws-stack = "poetry run zenml stack set aws-stack"
-set-asynchronous-runs = "poetry run zenml orchestrator update aws-stack --synchronous=False"
-zenml-server-disconnect = "poetry run zenml disconnect"
-
-## Settings
-export-settings-to-zenml = "poetry run python -m tools.run --export-settings"
-delete-settings-zenml = "poetry run zenml secret delete settings"
-
-## SageMaker
-create-sagemaker-role = "poetry run python -m llm_engineering.infrastructure.aws.roles.create_sagemaker_role"
-create-sagemaker-execution-role = "poetry run python -m llm_engineering.infrastructure.aws.roles.create_execution_role"
-deploy-inference-endpoint = "poetry run python -m llm_engineering.infrastructure.aws.deploy.huggingface.run"
-test-sagemaker-endpoint = "poetry run python -m llm_engineering.model.inference.test"
-delete-inference-endpoint = "poetry run python -m llm_engineering.infrastructure.aws.deploy.delete_sagemaker_endpoint"
-
-## Docker
-build-docker-image = "docker buildx build --platform linux/amd64 -t llmtwin -f Dockerfile ."
-run-docker-end-to-end-data-pipeline = "docker run --rm --network host --shm-size=2g --env-file .env llmtwin poetry poe --no-cache --run-end-to-end-data"
-bash-docker-container = "docker run --rm -it --network host --env-file .env llmtwin bash"
+local-docker-infrastructure-up = { cmd = "docker compose up -d" }
+local-docker-infrastructure-down = { cmd = "docker compose stop" }
+local-zenml-server-down = { cmd = "poetry run zenml down" }
+local-infrastructure-up = { sequence = ["local-docker-infrastructure-up", "local-zenml-server-down", "local-zenml-server-up"] }
+local-infrastructure-down = { sequence = ["local-docker-infrastructure-down", "local-zenml-server-down"] }
+set-local-stack = { cmd = "poetry run zenml stack set default" }
+set-aws-stack = { cmd = "poetry run zenml stack set aws-stack" }
+set-asynchronous-runs = { cmd = "poetry run zenml orchestrator update aws-stack --synchronous=False" }
+zenml-server-disconnect = { cmd = "poetry run zenml disconnect" }
 
 # QA
-lint-check = "poetry run ruff check ."
-format-check = "poetry run ruff format --check ."
-lint-check-docker = "sh -c 'docker run --rm -i hadolint/hadolint < Dockerfile'"
-gitleaks-check = "docker run -v .:/src zricethezav/gitleaks:latest dir /src/llm_engineering"
-lint-fix = "poetry run ruff check --fix ."
-format-fix = "poetry run ruff format ."
+lint-check = { cmd = "poetry run ruff check ." }
+format-check = { cmd = "poetry run ruff format --check ." }
+lint-check-docker = { cmd = "sh -c 'docker run --rm -i hadolint/hadolint < Dockerfile'" }
+gitleaks-check = { cmd = "docker run -v .:/src zricethezav/gitleaks:latest dir /src/llm_engineering" }
+lint-fix = { cmd = "poetry run ruff check --fix ." }
+format-fix = { cmd = "poetry run ruff format ." }
 
 [tool.poe.tasks.local-zenml-server-up]
 control.expr = "sys.platform"
