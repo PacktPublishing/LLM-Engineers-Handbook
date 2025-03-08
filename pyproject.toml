@@ -146,6 +146,10 @@ env = { OBJC_DISABLE_INITIALIZE_FORK_SAFETY = "YES" }
 cmd = "poetry run zenml up"
 
 [[tool.poe.tasks.local-zenml-server-up.switch]]
+case = "win32"
+cmd = "poetry run zenml up --blocking"
+
+[[tool.poe.tasks.local-zenml-server-up.switch]]
 cmd = "poetry run zenml up"
 
 # Tests
