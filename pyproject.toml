@@ -16,6 +16,7 @@ rich = "^13.7.1"
 numpy = "^1.26.4"
 poethepoet = "0.29.0"
 datasets = "^3.0.1"
+torch = "2.2.2"
 
 # Digital data ETL
 selenium = "^4.21.0"
@@ -41,7 +42,6 @@ langchain-community = "^0.2.11"
 fastapi = ">=0.100,<=0.110"
 uvicorn = "^0.30.6"
 opik = "^0.2.2"
-torch = "2.2.2"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -99,7 +99,7 @@ call-inference-ml-service = "curl -X POST 'http://127.0.0.1:8000/rag' -H 'Conten
 ## Local infrastructure
 local-docker-infrastructure-up = "docker compose up -d"
 local-docker-infrastructure-down = "docker compose stop"
-local-zenml-server-down = "poetry run zenml down"
+local-zenml-server-down = "poetry run zenml logout --local"
 local-infrastructure-up = [
     "local-docker-infrastructure-up",
     "local-zenml-server-down",
@@ -144,10 +144,14 @@ control.expr = "sys.platform"
 [[tool.poe.tasks.local-zenml-server-up.switch]]
 case = "darwin"
 env = { OBJC_DISABLE_INITIALIZE_FORK_SAFETY = "YES" }
-cmd = "poetry run zenml up"
+cmd = "poetry run zenml login --local"
 
 [[tool.poe.tasks.local-zenml-server-up.switch]]
-cmd = "poetry run zenml up"
+case = "win32"
+cmd = "poetry run zenml login --local --blocking"
+
+[[tool.poe.tasks.local-zenml-server-up.switch]]
+cmd = "poetry run zenml login --local"
 
 # Tests
 [tool.poe.tasks.test]
