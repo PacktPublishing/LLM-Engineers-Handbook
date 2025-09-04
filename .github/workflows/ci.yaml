@@ -2,6 +2,7 @@ name: CI
 
 on:
   pull_request:
+  workflow_dispatch: # new add to try 手動觸發
     
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
