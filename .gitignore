@@ -169,8 +169,27 @@ cython_debug/
 
 # Data
 output/
+output_mac/
 sagemaker_*.json
 run_ids.txt
+
+# Generated data and artifacts
+data/generated_*.csv
+data/generated_*.json
+data/artifacts/*.json
+!data/data_warehouse_raw_data/
+
+# Training and model outputs
+training_output.log
+*.ckpt
+*.pth
+*.pt
+*.bin
+*.safetensors
+runs/
+checkpoints/
+models/
+wandb/
 
 # Virtual environments
 *_venv

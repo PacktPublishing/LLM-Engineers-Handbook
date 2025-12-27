@@ -1,0 +1,79 @@
+# Unsloth Fine-Tuning Requirements
+# Installation guide for supervised fine-tuning with Unsloth
+
+# Core dependencies
+# ================
+
+# Unsloth - Optimized training library
+# Install from source for latest updates and compatibility
+# Note: Installation steps may vary based on CUDA version and environment
+# See: https://github.com/unslothai/unsloth for latest instructions
+
+# For CUDA 12.1+:
+# pip install "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
+
+# For CUDA 11.8:
+# pip install "unsloth[cu118-ampere-torch230] @ git+https://github.com/unslothai/unsloth.git"
+
+# Core ML libraries
+torch>=2.1.0
+transformers>=4.37.0
+datasets>=2.14.0
+trl>=0.7.10  # Transformer Reinforcement Learning
+peft>=0.8.0  # Parameter-Efficient Fine-Tuning
+accelerate>=0.25.0
+
+# Training and optimization
+bitsandbytes>=0.42.0  # 8-bit optimizers
+scipy>=1.11.0
+
+# Experiment tracking
+comet-ml>=3.35.0  # For tracking experiments (optional but recommended)
+
+# Utilities
+huggingface-hub>=0.20.0  # For model upload/download
+python-dotenv>=1.0.0  # For environment variables
+tqdm>=4.65.0  # Progress bars
+
+# Optional but recommended
+# ========================
+# For better performance and features
+
+# Flash Attention 2 (for faster training)
+# Requires compatible GPU (Ampere or newer: A100, A40, L4, RTX 30xx/40xx)
+# ninja  # Build tool for flash-attention
+# flash-attn>=2.3.0
+
+# For quantization and deployment
+# bitsandbytes>=0.42.0  # Already included above
+
+# For evaluation
+# rouge-score>=0.1.2
+# nltk>=3.8.1
+# evaluate>=0.4.0
+
+# Development tools
+# =================
+# Uncomment for development
+
+# jupyter>=1.0.0
+# ipython>=8.12.0
+# matplotlib>=3.7.0  # For visualization
+# pandas>=2.0.0  # For data analysis
+
+# Notes:
+# ======
+# 1. CUDA version compatibility is critical - match your system's CUDA version
+# 2. Unsloth installation may require specific torch/transformers versions
+# 3. For the latest installation instructions, always check:
+#    - https://github.com/unslothai/unsloth
+#    - https://github.com/PacktPublishing/LLM-Engineering
+# 4. Some dependencies (like flash-attention) require compilation
+# 5. Consider using conda for environment management
+
+# Installation command example:
+# =============================
+# conda create -n unsloth python=3.10
+# conda activate unsloth
+# pip install -r requirements-unsloth.txt
+# pip install "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
