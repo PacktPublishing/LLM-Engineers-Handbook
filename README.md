@@ -248,15 +248,31 @@ cp .env.example .env # The file must be at your repository's root!
 
 2. Now, let's understand how to fill in all the essential variables within the `.env` file to get you started. The following are the mandatory settings we must complete when working locally:
 
-#### OpenAI
+#### LLM Provider
 
-To authenticate to OpenAI's API, you must fill out the `OPENAI_API_KEY` env var with an authentication token.
+By default, this project uses OpenAI as the LLM provider. You can also use [MiniMax](https://platform.minimax.io) as an alternative provider by setting the `LLM_PROVIDER` env var:
 
 ```env
+# Use OpenAI (default)
+LLM_PROVIDER=openai
 OPENAI_API_KEY=your_api_key_here
+
+# Or use MiniMax
+LLM_PROVIDER=minimax
+MINIMAX_API_KEY=your_api_key_here
+MINIMAX_MODEL_ID=MiniMax-M2.7  # or MiniMax-M2.7-highspeed
 ```
 
-→ Check out this [tutorial](https://platform.openai.com/docs/quickstart) to learn how to provide one from OpenAI.
+**OpenAI**: Check out this [tutorial](https://platform.openai.com/docs/quickstart) to learn how to get an API key from OpenAI.
+
+**MiniMax**: Get your API key at [platform.minimax.io](https://platform.minimax.io). MiniMax offers two models:
+
+| Model | Description |
+|-------|-------------|
+| `MiniMax-M2.7` | Peak Performance. Ultimate Value. Master the Complex (default) |
+| `MiniMax-M2.7-highspeed` | Same performance, faster and more agile |
+
+Both models support a 204,800-token context window with up to 192K token output.
 
 #### Hugging Face
 

@@ -9,9 +9,16 @@ class Settings(BaseSettings):
 
     # --- Required settings even when working locally. ---
 
+    # LLM Provider selection: "openai" (default) or "minimax"
+    LLM_PROVIDER: str = "openai"
+
     # OpenAI API
     OPENAI_MODEL_ID: str = "gpt-4o-mini"
     OPENAI_API_KEY: str | None = None
+
+    # MiniMax API (OpenAI-compatible, https://platform.minimax.io)
+    MINIMAX_API_KEY: str | None = None
+    MINIMAX_MODEL_ID: str = "MiniMax-M2.7"
 
     # Huggingface API
     HUGGINGFACE_ACCESS_TOKEN: str | None = None
@@ -70,16 +77,9 @@ class Settings(BaseSettings):
 
     @property
     def OPENAI_MAX_TOKEN_WINDOW(self) -> int:
-        official_max_token_window = {
-            "gpt-3.5-turbo": 16385,
-            "gpt-4-turbo": 128000,
-            "gpt-4o": 128000,
-            "gpt-4o-mini": 128000,
-        }.get(self.OPENAI_MODEL_ID, 128000)
+        from llm_engineering.infrastructure.llm_provider import get_max_token_window
 
-        max_token_window = int(official_max_token_window * 0.90)
-
-        return max_token_window
+        return get_max_token_window()
 
     @classmethod
     def load_settings(cls) -> "Settings":
