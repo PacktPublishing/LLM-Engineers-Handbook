@@ -26,7 +26,7 @@ jobs:
         with:
           poetry-version: 1.8.3
 
-      - name: Install packages
+      - name: Install packages by poetry
         run: |
           poetry install --only dev
           poetry self add 'poethepoet[poetry_plugin]'
