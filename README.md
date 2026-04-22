@@ -239,10 +239,10 @@ Now, let's configure our local project with all the necessary credentials and to
 
 After you have installed all the dependencies, you must create and fill a `.env` file with your credentials to appropriately interact with other services and run the project. Setting your sensitive credentials in a `.env` file is a good security practice, as this file won't be committed to GitHub or shared with anyone else. 
 
-1. First, copy our example by running the following:
+1. First, copy our example by running the following at the root of your repository:
 
 ```bash
-cp .env.example .env # The file must be at your repository's root!
+cp .env.example .env 
 ```
 
 2. Now, let's understand how to fill in all the essential variables within the `.env` file to get you started. The following are the mandatory settings we must complete when working locally:
