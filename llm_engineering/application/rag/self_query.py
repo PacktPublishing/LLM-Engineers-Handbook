@@ -1,11 +1,10 @@
 import opik
-from langchain_openai import ChatOpenAI
 from loguru import logger
 
 from llm_engineering.application import utils
 from llm_engineering.domain.documents import UserDocument
 from llm_engineering.domain.queries import Query
-from llm_engineering.settings import settings
+from llm_engineering.infrastructure.llm_provider import get_chat_model
 
 from .base import RAGStep
 from .prompt_templates import SelfQueryTemplate
@@ -18,7 +17,7 @@ class SelfQuery(RAGStep):
             return query
 
         prompt = SelfQueryTemplate().create_template()
-        model = ChatOpenAI(model=settings.OPENAI_MODEL_ID, api_key=settings.OPENAI_API_KEY, temperature=0)
+        model = get_chat_model(temperature=0)
 
         chain = prompt | model
 

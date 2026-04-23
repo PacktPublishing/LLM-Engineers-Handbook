@@ -1,9 +1,8 @@
 import opik
-from langchain_openai import ChatOpenAI
 from loguru import logger
 
 from llm_engineering.domain.queries import Query
-from llm_engineering.settings import settings
+from llm_engineering.infrastructure.llm_provider import get_chat_model
 
 from .base import RAGStep
 from .prompt_templates import QueryExpansionTemplate
@@ -19,7 +18,7 @@ class QueryExpansion(RAGStep):
 
         query_expansion_template = QueryExpansionTemplate()
         prompt = query_expansion_template.create_template(expand_to_n - 1)
-        model = ChatOpenAI(model=settings.OPENAI_MODEL_ID, api_key=settings.OPENAI_API_KEY, temperature=0)
+        model = get_chat_model(temperature=0)
 
         chain = prompt | model
 
