@@ -5,9 +5,10 @@ services:
     logging:
       options:
         max-size: 1g
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: "llm_engineering"
-      MONGO_INITDB_ROOT_PASSWORD: "llm_engineering"
+    # Disable authentication for local development to avoid connection issues
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: "llm_engineering"
+    #   MONGO_INITDB_ROOT_PASSWORD: "llm_engineering"
     ports:
       - 27017:27017
     volumes:
