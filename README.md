@@ -4,6 +4,8 @@
   <h1>👷 LLM Engineer's Handbook</h1>
   <p class="tagline">Official repository of the <a href="https://www.amazon.com/LLM-Engineers-Handbook-engineering-production/dp/1836200072/">LLM Engineer's Handbook</a> by <a href="https://github.com/iusztinpaul">Paul Iusztin</a> and <a href="https://github.com/mlabonne">Maxime Labonne</a></p>
   <a href="https://trendshift.io/repositories/12257" target="_blank"><img src="https://trendshift.io/api/badge/repositories/12257" alt="PacktPublishing%2FLLM-Engineers-Handbook | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+  <br/>
+  <a href="docs/CODEBASE-INTELLIGENCE.md"><img src="https://img.shields.io/badge/Code_Intelligence-indexed-blue" alt="Code Intelligence"/></a>
 </div>
 </br>
 
@@ -32,6 +34,21 @@ You can download and use the final trained model on [Hugging Face](https://huggi
 
 > [!IMPORTANT]
 > The code in this GitHub repository is actively maintained and may contain updates not reflected in the book. **Always refer to this repository for the latest version of the code.**
+
+## 📚 Documentation & Learning Path
+
+This repository ships a curated study layer in `docs/` that turns the book into a build-from-scratch path. Start at the index, then follow the reading plan and the roadmap:
+
+- [`docs/README.md`](docs/README.md) — the documentation index; start here.
+- [`docs/READING-PLAN.md`](docs/READING-PLAN.md) — how to study: a prioritized menu of decisions and read-depth rules.
+- [`docs/ROADMAP.md`](docs/ROADMAP.md) — the six-milestone plan from architecture to production, with evidence gates.
+- [`docs/BOOK-MAP.md`](docs/BOOK-MAP.md) — chapter → session → code mapping, per-chapter Definition of Done, and dependency order.
+- [`docs/CURRICULUM.md`](docs/CURRICULUM.md) — the chapter-by-chapter learning path.
+- [`docs/DECISIONS.md`](docs/DECISIONS.md) — the Architecture Decision Record (ADR) log.
+- [`docs/CODEBASE-INTELLIGENCE.md`](docs/CODEBASE-INTELLIGENCE.md) — code graph, architecture, and query tooling.
+- [`docs/GETTING_STARTED.md`](docs/GETTING_STARTED.md) — setup and run commands.
+
+Read the book as a menu of decisions, not page by page. Build the evaluation harness before any fine-tuning, and close every phase with a runnable artifact. See `docs/ROADMAP.md` for the order and the evidence that proves each milestone.
 
 ## 🔗 Dependencies
 
@@ -73,6 +90,7 @@ Here is the directory overview:
 .
 ├── code_snippets/       # Standalone example code
 ├── configs/             # Pipeline configuration files
+├── docs/                # Study guide, roadmap, and session walkthroughs
 ├── llm_engineering/     # Core project package
 │   ├── application/    
 │   ├── domain/         
@@ -112,6 +130,8 @@ The code logic and imports flow as follows: `infrastructure` → `model` → `ap
 `configs/`: ZenML YAML configuration files to control the execution of pipelines and steps.
 
 `code_snippets/`: Independent code examples that can be executed independently.
+
+`docs/`: A curated study layer: the index, reading plan, roadmap, book map, curriculum, decision log, and per-chapter session walkthroughs. Start at [`docs/README.md`](docs/README.md).
 
 ## 💻 Installation
 

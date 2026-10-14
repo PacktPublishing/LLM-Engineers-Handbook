@@ -207,7 +207,7 @@ class VectorBaseDocument(BaseModel, Generic[T], ABC):
     def get_collection_name(cls: Type[T]) -> str:
         if not hasattr(cls, "Config") or not hasattr(cls.Config, "name"):
             raise ImproperlyConfigured(
-                "The class should define a Config class with" "the 'name' property that reflects the collection's name."
+                "The class should define a Config class withthe 'name' property that reflects the collection's name."
             )
 
         return cls.Config.name

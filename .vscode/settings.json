@@ -12,4 +12,5 @@
         "notebook.source.fixAll": "explicit",
         "notebook.source.organizeImports": "explicit"
     },
+    "commentTranslate.targetLanguage": "ar",
 }
