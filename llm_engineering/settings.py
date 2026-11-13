@@ -1,3 +1,5 @@
+import os
+
 from loguru import logger
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from zenml.client import Client
@@ -42,6 +44,8 @@ class Settings(BaseSettings):
     AWS_ACCESS_KEY: str | None = None
     AWS_SECRET_KEY: str | None = None
     AWS_ARN_ROLE: str | None = None
+    # Optional: named profile from ~/.aws/config for boto3/SageMaker (e.g. "llm-twin").
+    AWS_PROFILE: str | None = None
 
     # --- Optional settings used to tweak the code. ---
 
@@ -126,3 +130,8 @@ class Settings(BaseSettings):
 
 
 settings = Settings.load_settings()
+
+# pydantic-settings does not export .env values to os.environ, but boto3 only reads
+# AWS_PROFILE from there. A value already set in the shell takes precedence.
+if settings.AWS_PROFILE:
+    os.environ.setdefault("AWS_PROFILE", settings.AWS_PROFILE)

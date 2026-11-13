@@ -286,6 +286,7 @@ if __name__ == "__main__":
             num_train_epochs=args.num_train_epochs,
             per_device_train_batch_size=args.per_device_train_batch_size,
             learning_rate=args.learning_rate,
+            is_dummy=args.is_dummy,
         )
         inference(model, tokenizer)
 
