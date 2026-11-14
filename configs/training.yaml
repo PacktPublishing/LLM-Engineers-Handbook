@@ -6,9 +6,9 @@ settings:
     synchronous: false
 
 parameters:
-  finetuning_type: sft
+  finetuning_type: dpo # 'sft' = instruction tuning; 'dpo' = preference tuning on top of the SFT model.
   num_train_epochs: 3
   per_device_train_batch_size: 2
   learning_rate: 3e-4
   dataset_huggingface_workspace: mryoussef79
-  is_dummy: true # Change this to 'false' to run the training with the full dataset and epochs.
+  is_dummy: false # Set to 'true' for a quick, cheap smoke test (400 samples, 1 epoch).
