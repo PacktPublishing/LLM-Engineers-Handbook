@@ -10,7 +10,7 @@ from typing import Any, List, Literal, Optional  # noqa: E402
 
 import torch  # noqa
 from datasets import concatenate_datasets, load_dataset  # noqa: E402
-from huggingface_hub import HfApi  # noqa: E402
+from huggingface_hub import HfApi, snapshot_download  # noqa: E402
 from huggingface_hub.utils import RepositoryNotFoundError  # noqa: E402
 from transformers import TextStreamer, TrainingArguments  # noqa: E402
 from trl import DPOConfig, DPOTrainer, SFTTrainer  # noqa: E402
@@ -83,10 +83,20 @@ def finetune(
     EOS_TOKEN = tokenizer.eos_token
     print(f"Setting EOS_TOKEN to {EOS_TOKEN}")  # noqa
 
+    warmup_steps = 10
     if is_dummy is True:
         num_train_epochs = 1
+        # With 400 samples (packed to ~24 sequences for SFT), the default 2x8 effective batch
+        # gives a single optimizer step, run at 1/10 of the LR because of warmup. Use smaller
+        # steps so dummy runs still produce a readable loss curve in Comet.
+        gradient_accumulation_steps = 1
+        warmup_steps = 2
         print(f"Training in dummy mode. Setting num_train_epochs to '{num_train_epochs}'")  # noqa
         print(f"Training in dummy mode. Reducing dataset size to '400'.")  # noqa
+        print(  # noqa
+            f"Training in dummy mode. Setting gradient_accumulation_steps to '{gradient_accumulation_steps}' "
+            f"and warmup_steps to '{warmup_steps}'."
+        )
 
     if finetuning_type == "sft":
 
@@ -135,8 +145,10 @@ def finetune(
                 weight_decay=0.01,
                 lr_scheduler_type="linear",
                 per_device_eval_batch_size=per_device_train_batch_size,
-                warmup_steps=10,
+                warmup_steps=warmup_steps,
                 output_dir=output_dir,
+                eval_strategy="steps",
+                eval_steps=0.2,  # Evaluate every 20% of training -> eval_loss in Comet.
                 report_to="comet_ml",
                 seed=0,
             ),
@@ -185,8 +197,9 @@ def finetune(
                 weight_decay=0.01,
                 lr_scheduler_type="linear",
                 per_device_eval_batch_size=per_device_train_batch_size,
-                warmup_steps=10,
+                warmup_steps=warmup_steps,
                 output_dir=output_dir,
+                eval_strategy="steps",  # Without this, eval_steps is ignored.
                 eval_steps=0.2,
                 logging_steps=1,
                 report_to="comet_ml",
@@ -274,7 +287,18 @@ if __name__ == "__main__":
 
     if args.finetuning_type == "sft":
         print("Starting SFT training...")  # noqa
-        base_model_name = "meta-llama/Llama-3.1-8B"
+        # Unsloth's ungated mirror of Meta's Llama-3.1-8B (same weights), pinned to a
+        # Sep 2024 revision. Why:
+        # - unsloth==2024.9.post2 rejects "meta-llama/Llama-3.1-8B" as "not supported
+        #   in your current Unsloth version".
+        # - The repo's Feb 2025 re-upload saved tokenizer.json in the tokenizers>=0.20
+        #   format, which the pinned tokenizers 0.19 cannot parse ("untagged enum
+        #   ModelWrapper"). Unsloth does not forward `revision` to the tokenizer, so we
+        #   download the snapshot and pass its local path instead.
+        base_model_name = snapshot_download(
+            "unsloth/Meta-Llama-3.1-8B",
+            revision="3514c510ea4ba4d650522f467d4d0cef7de4a43c",
+        )
         print(f"Training from base model '{base_model_name}'")  # noqa
 
         output_dir_sft = Path(args.model_dir) / "output_sft"
