@@ -50,9 +50,26 @@ def generate_answers(model_id: str, dataset_name: str):
 
     print(f"Uploading results for {model_id}")  # noqa
     dataset.push_to_hub(f"{DATASET_HUGGINGFACE_WORKSPACE}/{model_id.split('/')[-1]}-results")
-    gc.collect()
+
+    # Free GPU memory before the next model is loaded into the same GPU.
+    del llm
+    release_gpu_memory()
 
     return dataset
+
+
+def release_gpu_memory() -> None:
+    gc.collect()
+    try:
+        import torch
+        from vllm.distributed.parallel_state import destroy_distributed_environment, destroy_model_parallel
+
+        destroy_model_parallel()
+        destroy_distributed_environment()
+        gc.collect()
+        torch.cuda.empty_cache()
+    except Exception as e:
+        print(f"Could not fully release GPU memory: {e}")  # noqa
 
 
 def evaluate_answer(instruction: str, answer: str, client: OpenAI) -> dict:
@@ -224,8 +241,13 @@ if __name__ == "__main__":
     for model_id in model_ids:
         dataset = load_dataset(f"{DATASET_HUGGINGFACE_WORKSPACE}/{model_id.split('/')[-1]}-results", split="all")
 
-        score = sum(dataset["accuracy"]) / len(dataset["accuracy"])
-        print(f"{model_id.split('/')[-1]} - Accuracy: {score:.2f}")  # noqa
-
-        score = sum(dataset["style"]) / len(dataset["style"])
-        print(f"{model_id.split('/')[-1]} - Style: {score:.2f}")  # noqa
+        model_name = model_id.split("/")[-1]
+        for metric in ("accuracy", "style"):
+            scores = [s for s in dataset[metric] if isinstance(s, (int, float))]
+            skipped = len(dataset[metric]) - len(scores)
+            if skipped:
+                print(f"{model_name} - {metric}: skipped {skipped} unparseable judge replies")  # noqa
+            if scores:
+                print(f"{model_name} - {metric.capitalize()}: {sum(scores) / len(scores):.2f} (n={len(scores)})")  # noqa
+            else:
+                print(f"{model_name} - {metric.capitalize()}: no valid scores")  # noqa
