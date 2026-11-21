@@ -24,9 +24,13 @@ print(f"{MODEL_HUGGINGFACE_WORKSPACE=}")  # noqa
 print(f"{IS_DUMMY=}")  # noqa
 print("=============================")  # noqa
 
+# Models that were not fine-tuned on the Alpaca format and must be prompted with their own
+# chat template; otherwise they don't know where to stop and ramble up to max_tokens.
+CHAT_TEMPLATE_MODELS = {"meta-llama/Llama-3.1-8B-Instruct"}
+
 
 def generate_answers(model_id: str, dataset_name: str):
-    def format(sample):
+    def format_alpaca(sample):
         return "Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\n{}\n\n### Response:\n".format(
             sample["instruction"]
         )
@@ -38,11 +42,33 @@ def generate_answers(model_id: str, dataset_name: str):
         except Exception:
             print("Dummy mode active. Failed to trim the dataset to 10 samples.")  # noqa
     print(f"Dataset size: {len(dataset)}")  # noqa
-    dataset = dataset.map(lambda sample: {"prompt": format(sample)})
 
     print(f"Generating answers for {model_id}")  # noqa
     llm = LLM(model=model_id, max_model_len=2048)
-    sampling_params = SamplingParams(temperature=0.8, top_p=0.95, min_p=0.05, max_tokens=2048)
+    stop_token_ids = None
+
+    if model_id in CHAT_TEMPLATE_MODELS:
+        tokenizer = llm.get_tokenizer()
+
+        def format_chat(sample):
+            prompt = tokenizer.apply_chat_template(
+                [{"role": "user", "content": sample["instruction"]}], tokenize=False, add_generation_prompt=True
+            )
+            # vLLM adds the BOS token itself when tokenizing; avoid a duplicated BOS.
+            if tokenizer.bos_token and prompt.startswith(tokenizer.bos_token):
+                prompt = prompt[len(tokenizer.bos_token) :]
+            return prompt
+
+        dataset = dataset.map(lambda sample: {"prompt": format_chat(sample)})
+        stop_token_ids = [tokenizer.convert_tokens_to_ids("<|eot_id|>")]
+        print(f"Using the chat template for {model_id}")  # noqa
+    else:
+        dataset = dataset.map(lambda sample: {"prompt": format_alpaca(sample)})
+    print(f"Example prompt:\n{dataset[0]['prompt']}")  # noqa
+
+    sampling_params = SamplingParams(
+        temperature=0.8, top_p=0.95, min_p=0.05, max_tokens=2048, stop_token_ids=stop_token_ids
+    )
     outputs = llm.generate(dataset["prompt"], sampling_params)
 
     answers = [output.outputs[0].text for output in outputs]

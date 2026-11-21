@@ -6,4 +6,4 @@ settings:
     synchronous: false
 
 parameters:
-  is_dummy: true # Change this to 'false' to run the evaluation on the full dataset.
+  is_dummy: false # Set to 'true' for a quick, cheap smoke test (first 10 test samples per model).
