@@ -417,6 +417,9 @@ First, reinstall your Python dependencies with the AWS group:
 poetry install --with aws
 ```
 
+> [!NOTE]
+> The SageMaker Python SDK is intentionally pinned to **V2** (`sagemaker>=2.232.2,<3` in `pyproject.toml`). The code uses V2-only APIs (`sagemaker.huggingface.HuggingFace`, `HuggingFaceProcessor`, `HuggingFaceModel`, `get_huggingface_llm_image_uri`) that V3 removed, and ZenML 0.74's SageMaker orchestrator also depends on V2. V2 is in maintenance mode and reaches End-of-Support on **July 6, 2027**, so migrate to V3 (`ModelTrainer` / `FrameworkProcessor` / `ModelBuilder`) before then. See the [V2→V3 migration guide](https://github.com/aws/sagemaker-python-sdk/blob/master/migration.md).
+
 #### AWS SageMaker
 
 > [!NOTE]
